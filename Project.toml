@@ -1,5 +1,7 @@
-
 name = "BlockOptim"
 uuid = "7e727885-0b10-4b07-aad6-3ce240a7f679"
 authors = ["Daniel Henderson"]
 version = "0.1.0"
+
+[deps]
+TRS = "8b052949-c101-4ca3-9a7e-43a2532b2fa8"
