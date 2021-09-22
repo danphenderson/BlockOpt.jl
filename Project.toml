@@ -1,7 +1,4 @@
 name = "BlockOpt"
-uuid = "7e727885-0b10-4b07-aad6-3ce240a7f679"
+uuid = "7a727885-0b10-4b07-aad6-3ce240a7f679"
 authors = ["Daniel Henderson"]
 version = "0.1.0"
-
-[deps]
-
