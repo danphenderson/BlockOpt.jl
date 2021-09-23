@@ -31,9 +31,11 @@ function Δ_update_optimal(Δₖ, Δₘ, pₖ_norm, ρ)
     return Δₖ
 end
 
+
 function Sₖ_update_std(Sₖ, Yₖ)
 	return orth(Yₖ - Sₖ*(Sₖ' * Yₖ))
 end
+
 
 function Sₖ_update_2(Sₖ, Yₖ)
 	n, w = size(Sₖ, 1), size(Sₖ, 2)
@@ -41,6 +43,7 @@ function Sₖ_update_2(Sₖ, Yₖ)
 
 	return orth(Sₖ - X*(X' * Sₖ))
 end
+
 
 function Sₖ_update_3(Sₖ, Yₖ)
 	n, w = size(Sₖ, 1), size(Sₖ, 2)
@@ -76,7 +79,7 @@ function gAD(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
         g[i]    = Ydual[i].value
         Y[i, :] = Ydual[i].partials[:]
     end
-
+    
     return g, Y
 end
 
@@ -94,5 +97,6 @@ function gHS(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
 
     return g, Y₂[:, temp], [Y₁ Y₂[:, 1:temp-1]] # g, h, Y
 end
+
 
 export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_2, Sₖ_update_3
