@@ -1,4 +1,4 @@
-function qntrHS(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driver=nothing)
+function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driver=nothing)
 
     d = (isa(driver, Nothing) ? Driver(n=length(x0)) : driver)
 
@@ -75,4 +75,4 @@ function qntrHS(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driver
     return result
 end
 
-export qntrHS
+export optimize

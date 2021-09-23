@@ -12,6 +12,7 @@ TRS = "8b052949-c101-4ca3-9a7e-43a2532b2fa8"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+UncNLPrograms = "5e2b213f-86d3-459f-a7bf-7361e1159e4f"
 
 [targets]
-test = ["Test"]
+test = ["Test", "UncNLPrograms"]
