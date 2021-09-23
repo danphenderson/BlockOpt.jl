@@ -98,7 +98,7 @@ end
 end
 
 @userplot RhoTrace
-@recipe function f(result::StepTrace)
+@recipe function f(result::RhoTrace)
     xlabel --> "Steps Taken"
     title  --> "$(result.args[1].d.name) (n = $(result.args[1].d.n))"
     yaxis  --> :log
@@ -108,7 +108,7 @@ end
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
             push!(x, result.args[i].ρ_vals)
-            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ ||p_k||\$"
+            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ \\rho_k\$"
         end
         label --> labels
         x
