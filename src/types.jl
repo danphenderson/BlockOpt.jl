@@ -1,4 +1,3 @@
-
 Base.@kwdef struct Driver
     n::Int
     w::Int        = 3
@@ -24,7 +23,7 @@ mutable struct Result
     p_vals::AbstractArray{<:Real}
     cost::Int
     k::Int
-    
+
     function Result(d, x₀, f₀, g₀_norm, Δ₀)
     	new(d, similar(x₀), [f₀], [g₀_norm], [Δ₀], Vector{Float64}(), Vector{Float64}(), 2, 0)
     end
