@@ -1,7 +1,7 @@
 
 Base.@kwdef struct Driver
     n::Int
-    w::Int		  = 3
+    w::Int        = 3
     name::String  = ""
     ϵ::Float64    = 10.0e-7
     δ::Float64    = 1.0e-12
@@ -15,7 +15,7 @@ end
 
 mutable struct Result
     d::Driver
-    x_term  
+    x_term::AbstractArray{<:Real}  
     f_vals::AbstractArray{<:Real}
     g_norms::AbstractArray{<:Real}
     Δ_vals::AbstractArray{<:Real}
@@ -24,7 +24,7 @@ mutable struct Result
     p_vals::AbstractArray{<:Real}
     cost::Int
     k::Int
-
+    
     function Result(d, x₀, f₀, g₀_norm, Δ₀)
     	new(d, similar(x₀), [f₀], [g₀_norm], [Δ₀], Vector{Float64}(), Vector{Float64}(), 2, 0)
     end
