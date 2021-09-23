@@ -33,23 +33,23 @@ end
 
 
 function Sₖ_update_std(Sₖ, Yₖ)
-	return orth(Yₖ - Sₖ*(Sₖ' * Yₖ))
+    return orth(Yₖ - Sₖ*(Sₖ' * Yₖ))
 end
 
 
 function Sₖ_update_2(Sₖ, Yₖ)
-	n, w = size(Sₖ, 1), size(Sₖ, 2)
-	X = randn(n, 2w-1)
+    n, w = size(Sₖ, 1), size(Sₖ, 2)
+    X = randn(n, 2w-1)
 
-	return orth(Sₖ - X*(X' * Sₖ))
+    return orth(Sₖ - X*(X' * Sₖ))
 end
 
 
 function Sₖ_update_3(Sₖ, Yₖ)
-	n, w = size(Sₖ, 1), size(Sₖ, 2)
-	X = orth(randn(n, 2w-1))
+    n, w = size(Sₖ, 1), size(Sₖ, 2)
+    X = orth(randn(n, 2w-1))
 
-	return orth(Yₖ - X*(X' * Yₖ))
+    return orth(Yₖ - X*(X' * Yₖ))
 end
 
 
@@ -79,7 +79,7 @@ function gAD(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
         g[i]    = Ydual[i].value
         Y[i, :] = Ydual[i].partials[:]
     end
-    
+
     return g, Y
 end
 

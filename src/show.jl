@@ -1,4 +1,3 @@
-
 function show_driver(io::IO, d::Driver)
     @printf io "\n%s %s Driver: n = %d, w = %d\n" d.name d.QN d.n d.w
     @printf io "-----------------------------------------------------------\n"
