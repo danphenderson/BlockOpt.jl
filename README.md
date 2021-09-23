@@ -1,2 +1,2 @@
 # BlockOptim.jl
-Implements Quasi-Newton Block updates with a trust-region subproblem.
+Implements a Quasi-Newton Block update with a trust-region subproblem.
