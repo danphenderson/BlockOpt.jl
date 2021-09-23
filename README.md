@@ -24,4 +24,4 @@ in a notebook enviroment.
 
 The TRS.jl package is an unregistered package requirement for BlockOpt.jl
 and it must be installed independetly and prior to installation of the BlockOpt
-package.
+package. 
