@@ -1,4 +1,4 @@
-module BlockOptim
+module BlockOpt
 
 using LinearAlgebra, ForwardDiff, TRS, Printf, RecipesBase
 
