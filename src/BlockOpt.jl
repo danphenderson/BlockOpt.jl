@@ -7,6 +7,4 @@ include("types.jl")
 include("show.jl")
 include("optimize.jl")
 
-
-
 end # module

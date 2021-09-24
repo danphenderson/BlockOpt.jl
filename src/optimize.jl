@@ -1,8 +1,8 @@
 function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driver=nothing)
 
-    d = (isa(driver, Nothing) ? Driver(n=length(x0)) : driver)
+    d = (isa(driver, Nothing) ? Driver(f=f, ∇f=∇f, x₀=x₀) : driver)
 
-    QN, Sₖ_update, Δ_update, ϵ, δ, Δₘ = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.Δₘ
+    QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀ = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀
 
     xₖ, Sₖ = x₀, d.S₀ 
 
@@ -14,9 +14,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     Qₖ = [hₖ gₖ Yₖ]
 
-    gₖ_norm = norm(gₖ)
-
-    Δₖ = 0.1*gₖ_norm
+    Δₖ = Δ₀
 
     P, b, C = trs_model(Qₖ, Hₖ, gₖ)
 
@@ -44,12 +42,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
         ρ = ared / pred
 
-        # The assertion errors when trs_small returns two solutions
-        # and the smaller objetive lies in the second column.
-        # See algorithm 2, of Adachi et al
-        # @assert pred ≥ 0.0 
-
-        if ρ > 0
+        if ared > 0.0
             xₖ = xₜ
 
             fₖ = fₜ

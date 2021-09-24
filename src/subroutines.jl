@@ -91,7 +91,7 @@ function gHS(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
 
     g, Y₁ = gAD(∇f!, x, S[:, 1:w])
 
-    _, Y₂ = gAD(∇f!, x, [S[:, w+1:2w-1] g])
+    _, Y₂ = gAD(∇f!, x, [S[:, w+1:end] g])
 
     return g, Y₂[:, end], [Y₁ Y₂[:, 1:end-1]] # g, h, Y
 end
