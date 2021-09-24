@@ -93,10 +93,8 @@ function gHS(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
 
     _, Y₂ = gAD(∇f!, x, [S[:, w+1:2w-1] g])
 
-    temp = size(Y₂, 2)
-
-    return g, Y₂[:, temp], [Y₁ Y₂[:, 1:temp-1]] # g, h, Y
+    return g, Y₂[:, end], [Y₁ Y₂[:, 1:end-1]] # g, h, Y
 end
 
 
-export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_2, Sₖ_update_3
+export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_2, Sₖ_update_3, Δ_update, Δ_update_optimal

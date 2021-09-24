@@ -5,9 +5,10 @@ Base.@kwdef struct Driver
     ϵ::Float64    = 10.0e-7
     δ::Float64    = 1.0e-12
     Δₘ::Float64   = 1.0
-    max_iter::Int = 1000
+    max_iter::Int = 2000
     QN::Function  = bSR1
-    Sₖ_update::Function = Sₖ_update_std 	
+    Sₖ_update::Function = Sₖ_update_std
+    Δ_update::Function = Δ_update	
     S₀::AbstractArray{<:Real} = orth(rand(n, 2w-1))
     H₀::AbstractArray{<:Real} = (zeros(n,n) + I)
 end
@@ -39,8 +40,8 @@ function obs!(res::Result, fₖ, gₖ_norm, Δₖ, ρ, pₖ)
     return nothing
 end
 
-function terminal_obs!(res::Result, x_star)
-    res.x_star = x_star
+function terminal_obs!(res::Result, x_term)
+    res.x_term = x_term
 end
 
 export Driver, Result

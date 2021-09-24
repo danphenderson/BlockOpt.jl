@@ -14,29 +14,46 @@ function Base.show(io::IO, m::Result)
     @printf io "-----------------------------------------------------------\n"
     @printf io "  %s" (pass ? "SUCCESS" : "FAIL")
     @printf io "  %1.2e %s %1.4e" last(m.g_norms) (pass ? "≤" : "≰") m.d.ϵ
-    @printf io "  in %d steps\n"  (length(m.g_norms)-1)
-    @printf io "  gAD Evaluations: %d\n\n" m.cost
-    @printf io "  f(x₀)  = %1.4e\n"   first(m.f_vals)
-    @printf io "  ∇f(x₀) = %1.4e\n\n" first(m.g_norms)
+    @printf io "  in %d steps\n"                (length(m.g_norms)-1)
+    @printf io "  gAD Evaluations: %d\n\n"      m.cost
+    @printf io "  f(x₀)     = %1.4e\n"          first(m.f_vals)
+    @printf io "  ||∇f(xₖ)|| = %1.4e\n\n"       first(m.g_norms)
     @printf io "  Terminal Iteration: k = %d\n" m.k
-    @printf io "  f(xₖ)  = %1.4e\n"    last(m.f_vals)
-    @printf io "  ∇f(xₖ) = %1.4e\n\n"  last(m.g_norms) 
-    @printf io "  Minimum Δ:     %1.4e\n" minimum(m.Δ_vals)
-    @printf io "  Minimum Step:  %1.4e\n" minimum(m.p_vals)
+    @printf io "  f(xₖ)      = %1.4e\n"         last(m.f_vals)
+    @printf io "  ||∇f(xₖ)|| = %1.4e\n\n"       last(m.g_norms) 
+    @printf io "  Minimum Δ:      %1.4e\n"      minimum(m.Δ_vals)
+    @printf io "  Minimum Step:   %1.4e\n"      minimum(m.p_vals)
+    @printf io "  Minimum f:      %1.4e\n"      minimum(m.f_vals)
+    @printf io "  Minimum ||∇f||: %1.4e\n"      minimum(m.g_norms)
 end
+
+
+function log_display(v, name::String)
+    if (m=minimum(v)) > 0.0
+        return v
+    elseif m ≈ 0.0
+        @warn "$name: shifted by $(eps(Float64)) to display on Log Scale"
+        return v .+ eps(Float64)
+    end
+    @warn "$name: shifted by $m to display on Log Scale"
+    return v .+ m
+end
+
 
 @userplot ObjTrace
 @recipe function f(result::ObjTrace)
-    xlabel := "Steps Taken"
-    title  --> "$(result.args[1].d.name) (n = $(result.args[1].d.n))"
+    xguide := "Steps Taken"
+    title  --> "Objective Function Trace"
     yaxis  --> :log
     legend --> :topright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
-            push!(x, result.args[i].f_vals)
-            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ f_k\$"
+            qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
+            v = log_display(result.args[i].f_vals, name)
+            labels[1,i] = "\$ ~ f_k\\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
+            push!(x, v)
         end
         label --> labels
         x
@@ -45,16 +62,17 @@ end
 
 @userplot GradTrace
 @recipe function f(result::GradTrace)
-    xlabel --> "Steps Taken"
-    title  --> "$(result.args[1].d.name) (n = $(result.args[1].d.n))"
+    xguide := "Steps Taken"
+    title  --> "Normed Gradient Trace"
     yaxis  --> :log
     legend --> :topright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
+            qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
+            labels[1,i] = "\$~ \\nabla f_k\\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
             push!(x, result.args[i].g_norms)
-            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ \\nabla f_k\$"
         end
         label --> labels
         x
@@ -63,16 +81,17 @@ end
 
 @userplot RadiusTrace
 @recipe function f(result::RadiusTrace)
-    xlabel --> "Steps Taken"
-    title  --> "$(result.args[1].d.name) (n = $(result.args[1].d.n))"
+    xguide := "Steps Taken"
+    title  --> "Trust-Region Subproblem Radius Trace"
     yaxis  --> :log
     legend --> :topright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
+            qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
+            labels[1,i] = "\$~ \\Delta_k\\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
             push!(x, result.args[i].Δ_vals)
-            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ \\Delta_k\$"
         end
         label --> labels
         x
@@ -81,16 +100,18 @@ end
 
 @userplot StepTrace
 @recipe function f(result::StepTrace)
-    xlabel --> "Steps Taken"
-    title  --> "$(result.args[1].d.name) (n = $(result.args[1].d.n))"
+    xguide := "Steps Taken"
+    title  --> "Step Distance Trace"
     yaxis  --> :log
     legend --> :topright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
+            qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
+
+            labels[1,i] = "\$~ ||p_k~|| \\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
             push!(x, result.args[i].p_vals)
-            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ ||p_k||\$"
         end
         label --> labels
         x
@@ -99,16 +120,17 @@ end
 
 @userplot RhoTrace
 @recipe function f(result::RhoTrace)
-    xlabel --> "Steps Taken"
-    title  --> "$(result.args[1].d.name) (n = $(result.args[1].d.n))"
+    xguide :=  "Steps Taken"
+    title  --> "Actual Reduction to Model Reduction Ratio Trace"
     yaxis  --> :log
     legend --> :topright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
+            qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
+            labels[1,i] = "\$~ \\rho_k\\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
             push!(x, result.args[i].ρ_vals)
-            labels[1,i] = "\$\\mathrm{$(result.args[i].d.QN) } ~ w = \\mathrm{$(result.args[i].d.w)} ~ \\rho_k\$"
         end
         label --> labels
         x

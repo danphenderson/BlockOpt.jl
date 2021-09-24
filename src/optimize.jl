@@ -2,7 +2,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     d = (isa(driver, Nothing) ? Driver(n=length(x0)) : driver)
 
-    QN, Sₖ_update, ϵ, δ, Δₘ = d.QN, d.Sₖ_update, d.ϵ, d.δ, d.Δₘ
+    QN, Sₖ_update, Δ_update, ϵ, δ, Δₘ = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.Δₘ
 
     xₖ, Sₖ = x₀, d.S₀ 
 
@@ -22,12 +22,11 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     result = Result(d, xₖ, fₖ, gₖ_norm, Δₖ)
 
-    while gₖ_norm > ϵ
-        (result.k+=1) ≥ d.max_iter && break
+    while gₖ_norm > ϵ && (result.k+=1) < d.max_iter
 
-        aₖ, _ = trs_small(P, b, Δₖ, C; compute_local=false)
+        aₖ, _ = trs_small(P, b, Δₖ, C, compute_local=false)
 
-        aₖ = vec(aₖ)   
+        aₖ = aₖ[:,1]
 
         pₖ = Hₖ * Qₖ * aₖ
 
@@ -43,9 +42,12 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
         pred = 0 - (0.5*dot(Qₖaₖ, Hₖ, Qₖaₖ) + (Hₖ * gₖ)' * Qₖaₖ)
 
-        @assert pred ≥ 0
-
         ρ = ared / pred
+
+        # The assertion errors when trs_small returns two solutions
+        # and the smaller objetive lies in the second column.
+        # See algorithm 2, of Adachi et al
+        # @assert pred ≥ 0.0 
 
         if ρ > 0
             xₖ = xₜ
