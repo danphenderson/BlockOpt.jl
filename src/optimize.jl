@@ -2,7 +2,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     d = (isa(driver, Nothing) ? Driver(f=f, ∇f=∇f, x₀=x₀) : driver)
 
-    QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀ = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀
+    n, QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀ = d.n, d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀
 
     xₖ, Sₖ = x₀, d.S₀ 
 
@@ -10,9 +10,11 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     gₖ, hₖ, Yₖ = gHS(∇f, xₖ, Sₖ) 
 
-    Hₖ = QN(d.H₀, [Sₖ gₖ], [Yₖ hₖ], δ)
+    α = 1/(sum(eigvals(Sₖ'*Yₖ))/n)
 
-    Qₖ = [hₖ gₖ Yₖ]
+    Hₖ = QN(d.H₀*α, [Sₖ gₖ/gₖ_norm], [Yₖ hₖ/gₖ_norm], δ)
+
+    Qₖ = [hₖ/gₖ_norm gₖ/gₖ_norm Yₖ]
 
     Δₖ = Δ₀
 
@@ -51,11 +53,11 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
             gₖ, hₖ, Yₖ = gHS(∇f, xₖ, Sₖ) 
 
-            Hₖ = QN(Hₖ, [Sₖ gₖ], [Yₖ hₖ], δ)
-
-            Qₖ = [hₖ gₖ Yₖ]
-
             gₖ_norm = norm(gₖ)
+
+            Hₖ = QN(Hₖ, [Sₖ gₖ/gₖ_norm], [Yₖ hₖ/gₖ_norm], δ)
+
+            Qₖ = [hₖ/gₖ_norm gₖ/gₖ_norm Yₖ]
 
             P, b, C = trs_model(Qₖ, Hₖ, gₖ)
 

@@ -7,7 +7,7 @@ Base.@kwdef struct Driver
     w::Int                    = 3
     name::String              = ""
     ϵ::Float64                = 10.0e-7
-    δ::Float64                = 1.0e-12
+    δ::Float64                = 10.0e-10
     gₖ_norm::Float64          = norm(∇f(similar(x₀), x₀))
     Δₘ::Float64               = 1.0
     Δ₀::Float64               = 0.1*gₖ_norm

@@ -97,4 +97,4 @@ function gHS(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
 end
 
 
-export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_2, Sₖ_update_3, Δ_update, Δ_update_optimal
+export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_2, Sₖ_update_3, Δ_update, Δ_update_optimal, trs_model

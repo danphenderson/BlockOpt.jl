@@ -4,19 +4,22 @@ using Test, LinearAlgebra, Printf, BlockOpt
     QNDriver
 
 Holds unit test information for the Quasi-Newton Updates.
+We initialize A ∈ ℜⁿˣⁿ to be symmetric positive definite with eigenvalues
+uniformly distributed from [0,10]. We use the scaled identity as the 
+initial approximation to the A⁻¹. The scalling factor is α, the 1 over the mean
+of the eigenvalues of A. This is a various generous test!
 """
 Base.@kwdef struct QNTest
     name::String
     n::Int
     w::Int
-    noise::Float64
     δ        = 1.0e-12
-    ∇²f      = begin A = rand(n, n);   Symmetric(A*A' + I) end 
-    ∇²f⁻¹    = inv(A)
-    H        = zeros(n,n) + I
-    # H        = begin H = ∇²f⁻¹ + noise*rand(n,n);  Symmetric(H+H') end
-    U        = begin U = randn(n, 2w); Matrix(qr(U).Q) end
-    V        = ∇²f*U
+    λs       = sort(n*rand(n))
+    A        = begin Q = orth(randn(n, n)); Q'*diagm(λs)*Q end 
+    Ainv     = inv(A)
+    U        = orth(rand(n, w)) # setting this to n gives convergence in one iteration
+    V        = A*U
+    H        = (zeros(n,n) + I)*1/(sum(λs[1:end])/n)
 end
 
 
@@ -28,8 +31,9 @@ The bSR1 and bPSB indefinite Quasi-Newton block updates requires input:
     U,V ∈ ℜⁿˣ²ʷ  such that UᵀV = VᵀU
 """
 function qn_requirements_test(H, U, V)
-    H_test  =  issymmetric(H)
-    UV_test = U'V ≈ V'U
+    H_test  = (H ≈ H')
+    UV_test = (U'V ≈ V'U)
+    
     return H_test, UV_test
 end
 
@@ -54,61 +58,64 @@ end
 """
     qn_convergence_test
     
-When H⁻¹ is approximating a positive-definite Hessian ∇²f, it is expected
-that H converges to ∇²f⁻¹ when repeatedly updating H with curvature information
-obtained from sampling ∇²f in orthoganol sequence of directions.
+When H⁻¹ is approximating a positive-definite Hessian A, it is expected
+that H converges to A⁻¹ when repeatedly updating H with curvature information
+obtained from sampling ∇²f randomly generated directions. We use orthogonal
+directions to update H with new information. 
 
 Before each update a qn_requirements_test is performed.
 After each update a qn_secant_test is performed. 
 """
-function qn_convergence_test(QN::Function, test::QNTest; max_itr=10, tol = 1.0e-7)
-	∇²f, ∇²f⁻¹, H, U, V, δ = test.∇²f, test.∇²f⁻¹, test.H, test.U, test.V, test.δ
+function qn_convergence_test(QN::Function, test::QNTest; max_itr=10000, tol = 1.0e-8)
+	A, Ainv, H, U, V, δ = test.A, test.Ainv, test.H, test.U, test.V, test.δ
 
-    rel = norm(∇²f⁻¹)
+    Ainv_norm = norm(Ainv)
 
-    i, error = 0, norm(∇²f⁻¹ - H)/rel
+    i, error = 0, norm(Ainv - H)/Ainv_norm
 
 	@printf "    Update: Hₖ = %s(Hₖ₋₁, U, V, δ)\n" QN
-	@printf "          Initial ||∇²f⁻¹ - H|| = %1.5e\n" error
+	@printf "          Initial |A⁻¹ - H| = %1.5e\n" error
 
-	while error > tol && (i+=1) < max_itr 
-        println("κ(∇²f) = $(cond(∇²f)), κ(H) = $(cond(H))")
-
+	while error > tol
         # test
-        H_test, V_test = qn_requirements_test(H, U, V)
+        H_test, UV_test = qn_requirements_test(H, U, V)
+        !H_test      && @printf "Violation at i = %d: ||H   -  Hᵀ||   = %1.4e\n" i norm(H - H') 
+        !UV_test     && @printf "Violation at i = %d: ||UᵀV - VᵀU||   = %1.4e\n" i norm(U'V - V'U)
+
+
         H = QN(H, U, V, δ)
+
         secant_test = qn_secant_test(H, U, V)
-        error = norm(∇²f⁻¹ - H)/rel
+        error = norm(Ainv - H)/Ainv_norm
 
-        # # temporary
-        # try
-        #     @assert H_test == true
-        #     @assert V_test == true 
-        #     @assert secant_test == true
-        # catch e
-        #     println(e)
-        # end
-        
 
-        # obtain supplemental directions 
+        !secant_test && @printf "Violation at i = %d: ||HnewV - U||  = %1.4e\n" i norm(H*V - U)
+
+     
         U = orth(V - U*(U' * V))
-        V = ∇²f*U
+        V = A*U
+        (i+=1) > max_itr && break
 	end
 
-    pass = (i < max_itr ? true : false)
-	@printf "          Final   ||∇²f⁻¹ - H|| = %1.5e\n" error
-	@printf "    %s: Hₖ %s A⁻¹ in %d iterations\n" (pass ? "SUCCESS" : "FAILURE") (pass ? "↛" : "→") i
+    pass = (error < tol ? true : false)
+	@printf "          Final   |A⁻¹ - H| = %1.5e\n" error
+	@printf "    %s: Hₖ %s A⁻¹ in %d iterations\n" (pass ? "SUCCESS" : "FAILURE") (pass ? "→" : "↛" ) i
 	@printf "    ----------------------------------------\n"
 	return error ≤ tol
 end
 
+
 function run_tests()
-    n, w, name = 10, 4, "QN convergence to ill-condition SPD A"
-	TS = [QNTest(name = name, n = n, w = w, noise = 0.05),  QNTest(name = name, n = n, w = w, noise = 0.1)]
+    n, w, name = 10, 1, "QNTest"
+	TS = [QNTest(name = name, n = n, w = w),  QNTest(name = name, n = n, w = w)]
+
 	for test ∈ TS
+        @printf "\n    %s: n = %d, w = %d\n" test.name test.n test.w
+        @printf "    ----------------------------------------\n"
 		qn_convergence_test(bSR1, test)
-		qn_convergence_test(bPSB, test)
+		qn_convergence_test(bPSB, test, max_itr=100000)
 	end
+    return TS
 end
 
 # @testset "qn_convergence_test" begin
