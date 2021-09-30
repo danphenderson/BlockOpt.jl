@@ -2,7 +2,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     d = (isa(driver, Nothing) ? Driver(f=f, ∇f=∇f, x₀=x₀) : driver)
 
-    n, QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀ = d.n, d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀
+    QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀ = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀
 
     xₖ, Sₖ = x₀, d.S₀ 
 
@@ -10,11 +10,9 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     gₖ, hₖ, Yₖ = gHS(∇f, xₖ, Sₖ) 
 
-    α = 1/(sum(eigvals(Sₖ'*Yₖ))/n)
+    Hₖ = QN(d.H₀, [Sₖ gₖ/gₖ_norm], [Yₖ hₖ/gₖ_norm], δ)
 
-    Hₖ = QN(d.H₀*α, [Sₖ gₖ/gₖ_norm], [Yₖ hₖ/gₖ_norm], δ)
-
-    Qₖ = [hₖ/gₖ_norm gₖ/gₖ_norm Yₖ]
+    Qₖ = orth([hₖ/gₖ_norm gₖ/gₖ_norm Yₖ])
 
     Δₖ = Δ₀
 
@@ -34,7 +32,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
         xₜ = xₖ + pₖ      
 
-        fₜ = f(xₜ)  
+        fₜ = f(xₜ) 
 
         Qₖaₖ = Qₖ * aₖ
 
@@ -49,15 +47,21 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
             fₖ = fₜ
 
-            Sₖ = Sₖ_update(Sₖ, Yₖ)
+            Sₖ = Sₖ_update(Sₖ, Yₖ, pₖ)
+
+            # start of secant fold
+            #gₖ_old = gₖ
 
             gₖ, hₖ, Yₖ = gHS(∇f, xₖ, Sₖ) 
+
+            #Hₖ = QN(Hₖ, pₖ, gₖ - gₖ_old, δ)
+            # end
 
             gₖ_norm = norm(gₖ)
 
             Hₖ = QN(Hₖ, [Sₖ gₖ/gₖ_norm], [Yₖ hₖ/gₖ_norm], δ)
 
-            Qₖ = [hₖ/gₖ_norm gₖ/gₖ_norm Yₖ]
+            Qₖ = orth([hₖ/gₖ_norm gₖ/gₖ_norm Yₖ])
 
             P, b, C = trs_model(Qₖ, Hₖ, gₖ)
 

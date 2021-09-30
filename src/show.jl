@@ -15,7 +15,7 @@ function Base.show(io::IO, m::Result)
     @printf io "  %s" (pass ? "SUCCESS" : "FAIL")
     @printf io "  %1.2e %s %1.4e" last(m.g_norms) (pass ? "≤" : "≰") m.d.ϵ
     @printf io "  in %d steps\n"                (length(m.g_norms)-1)
-    @printf io "  gAD Evaluations: %d\n\n"      m.cost
+    @printf io "  gHS Evaluations: %d\n\n"      m.cost
     @printf io "  f(x₀)     = %1.4e\n"          first(m.f_vals)
     @printf io "  ||∇f(xₖ)|| = %1.4e\n\n"       first(m.g_norms)
     @printf io "  Terminal Iteration: k = %d\n" m.k
@@ -42,17 +42,23 @@ end
 
 @userplot ObjTrace
 @recipe function f(result::ObjTrace)
-    xguide := "Steps Taken"
-    title  --> "Objective Function Trace"
+    xguide := "Iterates (gHS evaluations)"
+    yguide := "\$ f_k \$"
+    yguidefontsize := 7
+    xguidefontsize := 7
+    title  --> "Objective Trace"
+    titlefontsize --> 11
+    
     yaxis  --> :log
-    legend --> :topright
+    legend --> :outerright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
             qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
             v = log_display(result.args[i].f_vals, name)
-            labels[1,i] = "\$ ~ f_k\\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
+            #labels[1,i] = "\$ ~ f \\quad \\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
+            labels[1,i] = "\$~ f ~ w= $w ~ n=$n\$ $qn $name"
             push!(x, v)
         end
         label --> labels
@@ -62,16 +68,21 @@ end
 
 @userplot GradTrace
 @recipe function f(result::GradTrace)
-    xguide := "Steps Taken"
+    xguide := "Iterates (gHS evaluations)"
+    yguide := "\$||\\nabla f_k|| \$"
+    yguidefontsize := 7
+    xguidefontsize := 7
     title  --> "Normed Gradient Trace"
+    titlefontsize --> 11
+
     yaxis  --> :log
-    legend --> :topright
+    legend --> :outerright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
             qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
-            labels[1,i] = "\$~ \\nabla f_k\\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
+            labels[1,i] = "\$~ ||\\nabla f|| ~ w= $w ~ n=$n\$ $qn $name"
             push!(x, result.args[i].g_norms)
         end
         label --> labels
@@ -84,7 +95,7 @@ end
     xguide := "Steps Taken"
     title  --> "Trust-Region Subproblem Radius Trace"
     yaxis  --> :log
-    legend --> :topright
+    legend --> :outerright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
@@ -103,13 +114,12 @@ end
     xguide := "Steps Taken"
     title  --> "Step Distance Trace"
     yaxis  --> :log
-    legend --> :topright
+    legend --> :outerright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
         for i ∈ 1:length(result.args)
             qn, w, n, name = result.args[i].d.QN, result.args[i].d.w, result.args[i].d.n, result.args[i].d.name
-
             labels[1,i] = "\$~ ||p_k~|| \\quad\\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n} \\quad \\mathrm{$name}\$"
             push!(x, result.args[i].p_vals)
         end
@@ -123,7 +133,7 @@ end
     xguide :=  "Steps Taken"
     title  --> "Actual Reduction to Model Reduction Ratio Trace"
     yaxis  --> :log
-    legend --> :topright
+    legend --> :outerright
     @series begin
         x = []
         labels = Matrix{String}(undef, 1, length(result.args))
