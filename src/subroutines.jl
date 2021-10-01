@@ -41,11 +41,14 @@ function Δ_update_optimal(Δₖ, Δₘ, pₖ_norm, ρ)
     return Δₖ
 end
 
+function orth(S::AbstractArray{<:Real})
+    return Matrix(qr(S).Q)
+end
 
 function Δ_update(Δₖ, Δₘ, pₖ_norm, ρ)
     if ρ < 0.25
-        Δₖ = 0.25*Δₖ
-    elseif ρ > 0.75 && pₖ_norm > 0.9Δₖ
+        Δₖ = max(0.25*Δₖ, 1.0e-9)
+    elseif ρ > 0.75 && pₖ_norm ≈ Δₖ
         Δₖ = min(2*Δₖ, Δₘ)
     end
 
@@ -53,45 +56,34 @@ function Δ_update(Δₖ, Δₘ, pₖ_norm, ρ)
 end
 
 
-function Sₖ_update_1(Sₖ, Yₖ, pₖ)
+function Sₖ_update_a(Sₖ, Yₖ, pₖ)
     return orth(randn(size(Sₖ, 1), size(Sₖ, 2)))
 end
 
 
-function Sₖ_update_2(Sₖ, Yₖ, pₖ)
-    Mₖ = randn(size(Sₖ, 1), size(Sₖ, 2))
-    return orth(Mₖ - Sₖ*(Sₖ' * Mₖ))
+function Sₖ_update_b(Sₖ, Yₖ, pₖ)
+    M = randn(size(Sₖ, 1), size(Sₖ, 2))
+    return orth(M - Sₖ*(Sₖ' * M))
 end
 
 
-function Sₖ_update_3(Sₖ, Yₖ, pₖ)
-    return orth(Yₖ - Sₖ*(Sₖ' * Yₖ))
+function Sₖ_update_c(Sₖ, Yₖ, pₖ)
+    return orth(Yₖ - Sₖ*(Sₖ'*Yₖ))
 end
 
 
-function orth(S::AbstractArray{<:Real})
-    return Matrix(qr(S).Q)
+function Sₖ_update_d(Sₖ, Yₖ, pₖ)
+    return orth([ orth(randn(size(Sₖ, 1), size(Sₖ, 2)-1)) pₖ ])
 end
 
 
-function Sₖ_update_1_prior(Sₖ, Yₖ, pₖ)
-    Sₖ₊₁ = orth(randn(size(Sₖ, 1), size(Sₖ, 2)))
-    Sₖ₊₁[:, end] = pₖ
-    return Sₖ₊₁
+function Sₖ_update_e(Sₖ, Yₖ, pₖ)
+    M = randn(size(Sₖ, 1), size(Sₖ, 2)-1)
+    return orth([orth(M - S*(S'*M)) pₖ])
 end
 
-function Sₖ_update_2_prior(Sₖ, Yₖ, pₖ)
-    Mₖ = randn(size(Sₖ, 1), size(Sₖ, 2))
-    Sₖ₊₁ = Mₖ - Sₖ*(Sₖ' * Mₖ)
-    Sₖ₊₁[:, end] = pₖ
-    return orth(Sₖ₊₁)
-end
-
-
-function Sₖ_update_3_prior(Sₖ, Yₖ, pₖ)
-    Sₖ₊₁ = Yₖ - Sₖ*(Sₖ' * Yₖ)
-    Sₖ₊₁[:, end] = pₖ
-    return orth(Sₖ₊₁)
+function Sₖ_update_f(Sₖ, Yₖ, pₖ)
+    return orth( [orth(Yₖ[:, end-1] - Sₖ*(Sₖ' * Yₖ[:, end-1])) pₖ])
 end
 
 
@@ -124,4 +116,4 @@ function gHS(∇f!::Function, x::AbstractArray{<:Real}, S::AbstractArray{<:Real}
 end
 
 
-export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_1, Sₖ_update_2, Sₖ_update_3, Sₖ_update_1_prior, Sₖ_update_2_prior, Sₖ_update_3_prior, Δ_update, Δ_update_optimal, trs_model
+export bSR1, bPSB, trs_small, gHS, gAD, orth, Sₖ_update_a, Sₖ_update_b, Sₖ_update_c, Sₖ_update_d, Sₖ_update_e, Sₖ_update_f, Δ_update, Δ_update_optimal, trs_model

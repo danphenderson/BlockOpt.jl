@@ -7,13 +7,13 @@ Base.@kwdef struct Driver
     w::Int                    = 3
     name::String              = ""
     ϵ::Float64                = 10.0e-7
-    δ::Float64                = 10.0e-12
+    δ::Float64                = 10.0e-10
     gₖ_norm::Float64          = norm(∇f(similar(x₀), x₀))
     Δₘ::Float64               = 100.0
     Δ₀::Float64               = 0.1*gₖ_norm
     max_iter::Int             = 2000
     QN::Function              = bSR1
-    Sₖ_update::Function       = Sₖ_update_3
+    Sₖ_update::Function       = Sₖ_update_a
     Δ_update::Function        = Δ_update	
     S₀::AbstractArray{<:Real} = orth(randn(n, 2w-1))
     H₀::AbstractArray{<:Real} = (zeros(n,n) + I)

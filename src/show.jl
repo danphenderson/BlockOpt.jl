@@ -43,7 +43,7 @@ end
 @userplot ObjTrace
 @recipe function f(result::ObjTrace)
     xguide := "Iterates (gHS evaluations)"
-    yguide := "\$ f_k \$"
+    yguide := "\$ f \$"
     yguidefontsize := 7
     xguidefontsize := 7
     title  --> "Objective Trace"

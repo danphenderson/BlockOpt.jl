@@ -2,7 +2,7 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     d = (isa(driver, Nothing) ? Driver(f=f, ∇f=∇f, x₀=x₀) : driver)
 
-    QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀ = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀
+    QN, Sₖ_update, Δ_update, ϵ, δ, gₖ_norm, Δₘ, Δ₀, n = d.QN, d.Sₖ_update, d.Δ_update, d.ϵ, d.δ, d.gₖ_norm, d.Δₘ, d.Δ₀, d.n
 
     xₖ, Sₖ = x₀, d.S₀ 
 
@@ -16,7 +16,9 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
 
     Δₖ = Δ₀
 
-    P, b, C = trs_model(Qₖ, Hₖ, gₖ)
+    α = 1/(sum(eigvals(Sₖ'*Yₖ))/n)
+
+    P, b, C = trs_model(Qₖ, Hₖ*α, gₖ)
 
     result = Result(d, xₖ, fₖ, gₖ_norm, Δₖ)
 
@@ -50,11 +52,11 @@ function optimize(f::Function, ∇f::Function, x₀::AbstractArray{<:Real}, driv
             Sₖ = Sₖ_update(Sₖ, Yₖ, pₖ)
 
             # start of secant fold
-            #gₖ_old = gₖ
+            gₖ_old = gₖ
 
             gₖ, hₖ, Yₖ = gHS(∇f, xₖ, Sₖ) 
 
-            #Hₖ = QN(Hₖ, pₖ, gₖ - gₖ_old, δ)
+            Hₖ = QN(Hₖ, pₖ, gₖ - gₖ_old, δ)
             # end
 
             gₖ_norm = norm(gₖ)
