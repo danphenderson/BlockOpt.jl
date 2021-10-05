@@ -291,7 +291,6 @@ git-tree-sha1 = "935b07623c34f1a2c4de6e1d3b93a7de862f1148"
 repo-rev = "master"
 repo-url = "https://github.com/danphenderson/TRS.jl"
 uuid = "8b052949-c101-4ca3-9a7e-43a2532b2fa8"
-version = "0.1.0"
 
 [[Tar]]
 deps = ["ArgTools", "SHA"]
