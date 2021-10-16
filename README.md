@@ -1,4 +1,13 @@
 # BlockOpt.jl (Currently Under Development)
+| **Documentation** | **Build Status** |
+|:-----------------:|:----------------:|
+| ![Documentation][docs-stable-img]][docs-stable-url] | ![Build Status][build-img][build-url]
+
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: http://jump.dev/MathOptInterface.jl/stable
+[build-img]: https://github.com/JuMP-dev/MathOptInterface.jl/workflows/CI/badge.svg?branch=master
+[build-url]: https://github.com/JuMP-dev/MathOptInterface.jl/actions?query=workflow%3ACI
+
 Implements a Quasi-Newton Block update with a direct solve of the 
 trust-region subproblem to determine the unconstrained minimum of a 
 smooth objective function. Forward-Mode AD is used to generate a block
