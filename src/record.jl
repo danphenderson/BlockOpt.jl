@@ -1,4 +1,4 @@
-import .Abstract: AbstractModelRecord, log, log!
+
 
 """
     ModelRecord <: AbstractModelRecord
@@ -6,12 +6,8 @@ import .Abstract: AbstractModelRecord, log, log!
     Holds a record of a model throughout it's life. 
 """
 @kwdef mutable struct ModelRecord <: AbstractModelRecord
-    log = Vector{Path}()
+    log = Vector{String}()
 end
-
-
-Base.show(io, r::ModelRecord) = show(io, getfield(r, :log))
-
 
 log(r::ModelRecord) = getfield(r, :log)
 

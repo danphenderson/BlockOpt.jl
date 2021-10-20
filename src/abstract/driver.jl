@@ -1,18 +1,17 @@
 export AbstractDriver
-export QN_update, S_update, Δ_update, name, options
-
+export QN_update, S_update, options
 """
     AbstractDriver <: AbstractBlockOptType
 
-    Defines the interfaced base type of an optimization model driver.
+Defines the interfaced base type of an optimization model driver.
 
-    A subtype of AbstractDriver{T,S} impements:
-        [`QN_update`](@ref)
-        [`S_update`](@ref)
-        [`Δ_update`](@ref)
-        [`options`](@ref)
-
-    # TODO: Add reference to implementation 
+# Implements:
+    Accesors:
+        QN_update
+        S_update
+        options
+    Inherts:
+        AbstractDriverOptions
 """
 abstract type AbstractDriver <: AbstractBlockOptType end
 
@@ -32,7 +31,7 @@ S_update(d::AbstractDriver) = @contract AbstractDriver :S_update
 """
     options(d::AbstractDriver)
 
-    Returns a reference to a subtype of [`AbstractDriverOptions`](@ref).
+Returns a reference to a subtype of `AbstractDriverOptions`.
 """
 options(d::AbstractDriver)::AbstractDriverOptions = @contract AbstractDriver :options
 

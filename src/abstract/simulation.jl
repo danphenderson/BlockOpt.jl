@@ -1,58 +1,54 @@
-"""
-        AbstractSimulation
-
-    Abstract supertype for delegating the composed behavior of `AbstractModel`
-    and `AbstractDriver`, which delegate the behavior of `AbstractRecord` and
-    `AbstractOptions`. An `AbstractSimulation` concrete subtype holds the 
-    memory representing a Abstractsimulation `State`. 
-
-    ## Interface Contract
-    A subtype of AbstractSimulation implements required methods:
-        [`model`](@ref)
-        [`driver`](@ref)
-        [`backend`](@ref)
-
-    
-   ## Example
-   See: [`AbstractSimulation`](@ref)
-"""
-abstract type AbstractSimulation end
-
+export AbstractSimulation
+export record, options, driver, solve!
 
 """
-    model(s::AbstractSimulation)::Model
+    AbstractSimulation <: AbstractBlockOptType
+
+Abstract supertype for delegating the composed behavior of `AbstractModel`
+and `Abstractdwhich delegate the behavior of `AbstractRecord` and
+`AbstractOptions`. An `AbstractSimulation` concrete subtype holds the 
+memory representing a Abstractsimulation `State`. 
+
+# Implements:
+    Accesors:
+        model
+        driver
+        backend    
+    Inherts:
+        AbstractModel
+        AbstractDriver
+        Abstractbackend
+"""
+abstract type AbstractSimulation <: AbstractBlockOptType end
+
+
+"""
+record(s::AbstractSimulation)
+"""
+record(s::AbstractSimulation) = record(model(s))
+
+
+"""
+options(s::AbstractSimulation)
+"""
+options(s::AbstractSimulation) = options(driver(s))
+
+
+"""
+model(s::AbstractSimulation)::Model
 """
 model(s::AbstractSimulation)::AbstractModel = @contract AbstractSimulation :model
 
 
 """
-    driver(s::AbstractSimulation)::AbstractDriver
+driver(s::AbstractSimulation)::AbstractDriver
 """
 driver(s::AbstractSimulation)::AbstractDriver = @contract AbstractSimulation :driver
 
 
-"""
-    backend(s::AbstractSimulation)::AbstractDriver
-"""
-backend(s::AbstractSimulation)::AbstractDriver = @contract AbstractSimulation :backend
-
 
 """
-    load_Abstractsimulation
-
-    Copies information from model and driver into Abstractsimulation.
-
-    Also, responsible for ensuring the problem is well-formed for the
-    specified backend.
+solve!(s::AbstractSimulation)
 """
-function _load_simulation(s::AbstractSimulation) 
-    # check backend from backend(s)
+solve!(s::AbstractSimulation) = @contract AbstractSimulation :solve!
 
-    # 
-
-end
-
-"""
-    simulate!
-"""
-function simulate! end

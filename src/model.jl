@@ -1,26 +1,24 @@
-import .Abstract: AbstractModel
-import .Abstract: objective!, gradient!, initial_iterate!, formula!
-import .Abstract: objective, gradient, formula, record
+export Model
 
 """
-    Model <: Model    
+    Model{T,S} <: AbstractModel{T, S}    
 """
 mutable struct Model{T, S} <: AbstractModel{T, S}
     objective::Union{Function, Missing}
     gradient::Union{Function, Missing}
-    dimension::Int
-    initial_iterate::S 
-    name::String
-    formula::String
+    dimension::Union{Int, Missing}
+    initial_iterate::Union{S, Missing} 
+    name::Union{String, Missing}
+    formula::Union{String, Missing}
     record::ModelRecord
 
     function Model{T, S}(
-        objective::Function,
-        gradient::Function;
-        dimension = 100,
-        initial_iterate = fill!(S(undef, dimension), zero(T)),
+        objective = missing,
+        gradient = missing, 
+        initial_iterate = missing;
         name = "",
-        formula = "",
+        dimension = missing,
+        formula = missing,
     ) where {T, S}
         new{T, S}(
             objective,
@@ -34,38 +32,69 @@ mutable struct Model{T, S} <: AbstractModel{T, S}
     end 
 end
 
-@inline function Model(objective::Function, gradient!::Function, initial_iterate::S; kwargs...) where {S}
-    return Model{eltype(S), S}(objective, gradient!, initial_iterate; kwargs...)
+
+"""
+    Model(objective::Function, gradient!::Function, initial_iterate::S; kwargs...)
+"""
+@inline function Model(objective::Function, gradient::Function, initial_iterate::S; kwargs...) where {S}
+    return Model{eltype(S), S}(objective, gradient, initial_iterate; kwargs...)
 end
 
-Base.getproperty(m::Model) = @restrict Model
+
+Base.getproperty(m::Model) = @restrict typeof(Model)
 
 
 Base.propertynames(m::Model) = ()
 
 
-objective!(m::Model, f::Function) = setfield!(m, :objective, f)
+objective!(m::Model, f::Function) = (setfield!(m, :objective, f); m)
 
 
-gradient!(m::Model, ∇f!::Function) = setfield!(m, :gradient, f)
+gradient!(m::Model, ∇f!::Function) = (setfield!(m, :gradient, ∇f!); m)
 
 
-initial_iterate!(m::Model, x0::AbstractArray) = setfield!(m, :initial_iterate, ∇f!)
+initial_iterate!(m::Model, x0::AbstractArray) = begin
+    setfield!(m, :initial_iterate, x0)
+    setfield!(m, :dimension, length(x0))
+    m
+end
 
 
-formula!(m::Model, formula::AbstractString) = setfield!(m, :formula, x0)
+name!(m::Model, name::String) = (setfield!(m, :name, name); m)
 
 
-objective(m::Model) = f -> getfield(m, :objective)
+formula!(m::Model, formula::AbstractString) = (setfield!(m, :formula, formula); m)
 
 
-gradient(m::Model) = ∇f! -> getfield(m, :gradient)
+objective(m::Model) = getfield(m, :objective)
 
 
-dimension(m::Model) = n -> getfield(m, :dimension)
+gradient(m::Model) = getfield(m, :gradient)
 
 
-formula(m::Model) = LaTeX -> getfield(m, :formula)
+initial_iterate(m::Model) = getfield(m, :initial_iterate)
 
 
-record(m::Model)::AbstractModelRecord = getfield(m, :record)
+dimension(m::Model) = getfield(m, :dimension)
+
+
+name(m::Model) = getfield(m, :name)
+
+
+formula(m::Model) = getfield(m, :formula)
+
+
+record(m::Model) = getfield(m, :record)
+
+
+function Base.show(io::IO, m::Model)
+    println(io, "Model: $(name(m))")
+    !isa(formula(m), Missing) && println(io, "$(formula(m))")
+    println(io, "----------------------------------------")
+    println(io, "    objective:        $(objective(m))")
+    println(io, "    gradient:         $(gradient(m))")
+    println(io, "    initial iterate:  $(initial_iterate(m))")
+    println(io, "    dimension:        $(dimension(m))")
+    flush(io)
+    return nothing
+end

@@ -3,22 +3,25 @@ using BlockOpt
 
 makedocs(
     sitename = "BlockOpt",
-    format = Documenter.HTML(),
+    format = Documenter.HTML(
+        # See https://github.com/JuliaDocs/Documenter.jl/issues/868
+        prettyurls = get(ENV, "CI", nothing) == "true",
+        mathengine = Documenter.MathJax2(),
+        collapselevel = 1,
+    ),
     modules = [BlockOpt],
+    checkdocs = :exports,
     pages = [ 
         "Introduction" => "index.md",
 
         "Architecture" => [
             "architecture/info.md",
             "architecture/interface.md",
-            "architecture/reference.md",
         ],
 
-        "Manual" => [
-            "manual/info.md",
-            "manual/model.md",
-            "manual/driver.md",
-            "manual/reference.md"
+        "Reference" => [
+            "reference/model.md",
+            "reference/driver.md",
         ],
 
         "Tutorials" => [

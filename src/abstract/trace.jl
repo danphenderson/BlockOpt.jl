@@ -1,16 +1,24 @@
-export AbstractTrace
-
 """
-    AbstractTrace
+    AbstractTrace <: AbstractBlockOptType
 
-    Defines the interfaced base type of an optimization simulation trace.
-    See also: [`AbstractSimulation`](@ref).
+Defines the interfaced base type of an optimization simulation trace.
 
-    A subtype of AbstractTrace impements:
+See also: `AbstractSimulation`.
 
-    # TODO: Add reference to implementation
+# Implement:
+    Accesors:
+
+    Mutators:
+
 """
 abstract type AbstractTrace <: AbstractBlockOptType end
+
+
+"""
+    trace_level(d::AbstractTrace)
+"""
+trace_level(d::AbstractTrace) = @contract AbstractTrace :level
+
 
 """
     filename(d::AbstractTrace)
@@ -19,12 +27,6 @@ filename(t::AbstractTrace) = @contract AbstractTrace :filename
 
 
 """
-    level(d::AbstractTrace)
-"""
-level(d::AbstractTrace) = @contract AbstractTrace :level
-
-
-"""
-    _io(d::AbstractTrace)
+    io(d::AbstractTrace)
 """
 io(t::AbstractTrace) = @contract AbstractTrace :level

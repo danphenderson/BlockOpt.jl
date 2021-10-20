@@ -1,14 +1,12 @@
-import .Abstract: AbstractTrace, filename, level, io
-
 @enum TraceLevel INFO DEBUG WARN ERROR WEAVE
 
 """
     Trace <: AbstractTrace
 
-    Holds a record of a model throughout it's life. 
+Holds a record of a model throughout it's life. 
 """
-Base.@kwdef struct Trace <: AbstractTrace
-    level::TraceLevel = INFO
+Base.@kwdef struct BlockOptTrace <: AbstractTrace
+    trace_level::TraceLevel = INFO
     filename::String = "Trace"
     io = open(filename, "w+")
 
@@ -17,19 +15,19 @@ Base.@kwdef struct Trace <: AbstractTrace
     end
 end
 
-Base.getproperty(t::Trace) = @restrict typeof(m)
+Base.getproperty(t::BlockOptTrace) = @restrict typeof(t)
 
 
-Base.propertynames(t::Trace) = ()
+Base.propertynames(t::BlockOptTrace) = ()
 
 
-filename(t::Trace) = getfield(t, :filename)
+filename(t::BlockOptTrace) = getfield(t, :filename)
 
 
-level(t::Trace) = getfield(t :level)
+trace_level(t::BlockOptTrace) = getfield(t, :trace_level)
 
 
-io(t::Trace) = getfield(t, :io)
+io(t::BlockOptTrace) = getfield(t, :io)
 
 
 for level in (:info, :debug, :warn, :error, :weave)
@@ -38,7 +36,7 @@ for level in (:info, :debug, :warn, :error, :weave)
     upper_level_sym = Symbol(upper_level_str)
     fn = Symbol(lower_level_str)
     label = " [" * upper_level_str * "] "
-    @eval function $fn(trace::Trace, args...)
+    @eval function $fn(trace::BlockOptTrace, args...)
         if level(trace) <= $upper_level_sym
             let io = io(trace)
                 print(io, trunc(now(), Dates.Second), $label)
@@ -50,8 +48,4 @@ for level in (:info, :debug, :warn, :error, :weave)
             end
         end
     end
-end
-
-function main()
-
 end

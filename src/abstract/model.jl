@@ -1,20 +1,27 @@
+export AbstractModel
+export objective!, gradient!, initial_iterate!, formula!
+export objective, gradient, dimension, formula, record
+export name, name!
+
 """
     AbstractModel{T<:Real, S<:AbstractArray} <: AbstractBlockOptType
 
-    Defines the interfaced base type of an optimization Abstractmodel.
+Defines the interfaced base type of an optimization Abstractmodel.
 
-    A subtype of AbstractModel{T,S} impements:
-        [`obj`](@ref)
-        [`grad!`](@ref)
-        [`name!`](@ref)
-        [`formula!`](@ref)
-        [`initial_iterate!`](@ref)
-        [`dimension`](@ref)
-        [`name`](@ref)
-        [`formula`](@ref)
-        [`initial_iterate`](@ref)
-
-    # TODO: Add reference to implementation 
+# Implements:
+    Mutators:
+        objective!
+        gradient!
+        initial_iterate!
+        formula!
+    Accesors:
+        dimension
+        objective
+        gradient
+        initial_iterate
+        formula
+    Inherts:
+        AbstractModelRecord
 """
 abstract type AbstractModel{T<:Real, S<:AbstractArray} <: AbstractBlockOptType end
 
@@ -22,7 +29,7 @@ abstract type AbstractModel{T<:Real, S<:AbstractArray} <: AbstractBlockOptType e
 """
     objective!(m::AbstractModel, x::AbstractArray)
 
-    Assign `f` as the objective function of model `m`.
+Assign `f` as the objective function of model `m`.
 """
 objective!(m::AbstractModel, f::Function) = @contract AbstractModel :obj
 
@@ -30,10 +37,10 @@ objective!(m::AbstractModel, f::Function) = @contract AbstractModel :obj
 """
     gradient!(m::AbstractModel, ∇f!::Function)
     
-    Assign ``∇f!`` as the gradient function of model `m`.
-    
-    The input ``∇f!`` is in-place, meaning ``∇f!(g, x)`` stores the steepest-descent direction
-    at `x` in the place of `g`.
+Assign ``∇f!`` as the gradient function of model `m`.
+
+The input ``∇f!`` is in-place, meaning ``∇f!(g, x)`` stores the steepest-descent direction
+at `x` in the place of `g`.
 """
 gradient!(m::AbstractModel, ∇f!::Function) = @contract AbstractModel :grad!
 
@@ -41,7 +48,7 @@ gradient!(m::AbstractModel, ∇f!::Function) = @contract AbstractModel :grad!
 """
     initial_iterate!(m::AbstractModel, x0::AbstractArray)
 
-    Assign `x0` as the initial iterate of model `m`.
+Assign `x0` as the initial iterate of model `m`.
 """
 initial_iterate!(m::AbstractModel, x0::AbstractArray) = @contract AbstractModel :initial_iterate!
 
@@ -49,7 +56,7 @@ initial_iterate!(m::AbstractModel, x0::AbstractArray) = @contract AbstractModel 
 """
     formula!(m::AbstractModel, s::AbstractString)
 
-    Assign `s` as the formula of model `m`.
+Assign `s` as the formula of model `m`.
 """
 formula!(m::AbstractModel, formula::AbstractString) = @contract AbstractModel :formula
 
@@ -57,7 +64,7 @@ formula!(m::AbstractModel, formula::AbstractString) = @contract AbstractModel :f
 """
     objective(m::AbstractModel)
 
-    The objective function of model `m`.
+The objective function of model `m`.
 """
 objective(m::AbstractModel) = @contract AbstractModel :objective
 
@@ -65,7 +72,7 @@ objective(m::AbstractModel) = @contract AbstractModel :objective
 """
     gradient(m::AbstractModel)
 
-    The gradient function of model `m`.
+The gradient function of model `m`.
 """
 gradient(m::AbstractModel) = @contract AbstractModel :gradient
 
@@ -73,7 +80,7 @@ gradient(m::AbstractModel) = @contract AbstractModel :gradient
 """
     dimension(m::AbstractModel)
 
-    The dimension of model `m`.
+The dimension of model `m`.
 """
 dimension(m::AbstractModel) = @contract AbstractModel :dimension
 
@@ -81,7 +88,7 @@ dimension(m::AbstractModel) = @contract AbstractModel :dimension
 """
     formula(m::AbstractModel)
 
-    The formula of model `m`.
+The formula of model `m`.
 """
 formula(m::AbstractModel) = @contract AbstractModel :name
 
@@ -89,12 +96,11 @@ formula(m::AbstractModel) = @contract AbstractModel :name
 """
     record(m::AbstractModel)::AbstractModelRecord
 
-    The record of model `m`.
+The record of model `m`.
 """
 record(m::AbstractModel)::AbstractModelRecord = @contract AbstractModel :record
 
 
-# Forward AbstractModelRecord Inherited Behavior
 log(m::AbstractModel) = log(record(m))
 
 

@@ -1,5 +1,3 @@
-import .Abstract: AbstractDriverOptions
-
 """
     DriverOptions <:  AbstractDriverOptions    
 """
@@ -50,3 +48,22 @@ samples!(o::DriverOptions, s) = setfield!(o, :samples, s)
 
 
 max_iterations!(o::DriverOptions, K) = setfield!(o, :max_iterations, K)
+
+
+Base.getproperty(o::DriverOptions) = @restrict typeof(d)
+
+
+Base.propertynames(o::DriverOptions) = ()
+
+
+function Base.show(io::IO, o::DriverOptions)
+    println(io, "\n    Options:")
+    println(io, "    ------------------------------------")
+    println(io, "        samples:        $(samples(o))")
+    println(io, "        Δ_max:          $(Δ_max(o))")
+    println(io, "        δ_tol:          $(δ_tol(o))")
+    println(io, "        ϵ_tol:          $(ϵ_tol(o))")
+    println(io, "        max iterations: $(max_iterations(o))")
+    flush(io)
+    return nothing
+end

@@ -1,9 +1,21 @@
 """
     AbstractDriverOptions <: AbstractBlockOptType
 
-    Defines the interfaced base type for options of an [`AbstractDriver`](@ref).
+Defines the interfaced base type for options of an `AbstractDriver`.
 
-    # TODO: Add reference to implementation 
+# Implements:
+    Accesors:
+        samples
+        Δ_max
+        δ_tol
+        ϵ_tol
+        max_iterations
+    Mutators:
+        samples!
+        Δ_max!
+        δ_tol!
+        ϵ_tol!
+        max_iterations!
 """
 abstract type AbstractDriverOptions <: AbstractBlockOptType end
 
@@ -18,6 +30,17 @@ samples(o::AbstractDriverOptions) = @contract AbstractDriverOptions :samples
     samples!(o::AbstractDriverOptions, samples::Int)
 """
 samples!(o::AbstractDriverOptions, samples::Int) = @contract AbstractDriverOptions :samples!
+
+"""
+    samples(o::AbstractDriverOptions)
+"""
+backend(o::AbstractDriverOptions) = @contract AbstractDriverOptions :backend
+
+
+"""
+    samples!(o::AbstractDriverOptions, samples::Int)
+"""
+backend!(o::AbstractDriverOptions, backend::Symbol) = @contract AbstractDriverOptions :backend!
 
 
 """
