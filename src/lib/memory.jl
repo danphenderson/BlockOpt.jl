@@ -231,6 +231,7 @@ end
 
 
 function init(mem::BlockOptCPUMemory)
+    gradHS(mem)
     α = mean(eigvals(mem.Uₖ[:, 1:end-1] * mem.Vₖ[:, 1:end-1]))
     mem.Δₖ = min(1.1*mem.gₖ_norm/(2*α), mem.Δₘ)
     mem.Hₖ = 1/α * mem.Hₖ

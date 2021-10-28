@@ -110,8 +110,6 @@ optimize!(b::BlockOptCPU)
 function optimize!(b::BlockOptCPU)
     gradHS(b)
 
-    init(b)
-
     trs_model(b) 
 
     trs_small(b)
