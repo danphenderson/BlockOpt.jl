@@ -1,9 +1,8 @@
-export AbstractBackend
 export blockBFGS, blockPSB, blockSR1
-export S_update_a, S_update_b, S_update_c, S_update_d, S_update_e, S_update_f, solve!
+export S_update_a, S_update_b, S_update_c, S_update_d, S_update_e, S_update_f
 
 """
-    AbstractBackend <: AbstractBlockOptType
+AbstractBackend
 
 The abstract base type of a simulation backend.
 
@@ -12,9 +11,8 @@ iterations memory representation. The contract requires accessors which
 specify numerical experiment options under focus.
 
 # Implement:
+    build_backend   
     trace
-    gradAD
-    gradHS
     blockBFGS
     blockSR1
     blockPSB
@@ -27,13 +25,37 @@ specify numerical experiment options under focus.
 
 See also: `AbstractSimulation`.
 """
-abstract type AbstractBackend{T<:Real, S<:AbstractArray} <: AbstractBlockOptType end
+abstract type AbstractBackend end
+
+
+"""
+build_backend(table::Dict{Symbol, Any})
+
+Returns a concrete AbstractBackend type that is constructed from infromation
+accessible to the model `m` and driver `d`.
+
+Note, this needs attention. It means that a backend is dependent on a model type.
+This is a result of `build_backend` belonging to the iterations sole entry point,
+thus, implmentations of `AbstractBackend` must be defined with respect to an
+`AbstractModel` subtype.
+"""
+build_backend(::Type{AbstractBackend}, m::AbstractModel{T, S}, d::AbstractDriver) where {T, S} = @error "backend.jl: must implement constructor"
 
 
 """
 trace(b::AbstractBackend)
 """
 trace(b::AbstractBackend) = @contract AbstractBackend :trace
+
+
+trace_level(b::AbstractBackend) = trace_level(trace(b))
+
+
+filename(b::AbstractBackend) = filename(trace(b))
+
+
+io(b::AbstractBackend) = io(trace(b))
+
 
 
 """
@@ -118,22 +140,12 @@ S_update_f(b::AbstractBackend) = @contract AbstractBackend :S_update_f
 
 
 """
-solve!(b::AbstractBackend)
+optimize!(b::AbstractBackend)
 
 The driver of an AbstractBackend.
 
 See: ``Algorithm 7.1.``
 """
-solve!(b::AbstractBackend) = @contract AbstractBackend :solve!
-
-
-trace_level(b::AbstractBackend) = trace_level(trace(b))
-
-
-filename(b::AbstractBackend) = filename(trace(b))
-
-
-io(b::AbstractBackend) = io(trace(b))
-
+optimize!(b::AbstractBackend) = @contract AbstractBackend :optimize!
 
 

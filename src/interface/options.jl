@@ -1,5 +1,9 @@
+export samples, backend, Δ_max, δ_tol, ϵ_tol, max_iterations, weave_level, log_level
+export samples!, backend!, Δ_max!, δ_tol!, ϵ_tol!, max_iterations!, weave_level!, log_level! 
+
+
 """
-    AbstractDriverOptions <: AbstractBlockOptType
+    AbstractDriverOptions
 
 Defines the interfaced base type for options of an `AbstractDriver`.
 
@@ -17,7 +21,7 @@ Defines the interfaced base type for options of an `AbstractDriver`.
         ϵ_tol!
         max_iterations!
 """
-abstract type AbstractDriverOptions <: AbstractBlockOptType end
+abstract type AbstractDriverOptions end
 
 
 """
@@ -86,6 +90,24 @@ max_iterations(o::AbstractDriverOptions) = @contract AbstractDriverOptions :max_
 
 
 """
-    max_iterations!(o::AbstractDriverOptions, m::Int)
+    max_iterations!(o::AbstractDriverOptions, N::Int)
 """
-max_iterations!(o::AbstractDriverOptions, m) = @contract AbstractDriverOptions :max_iterations!
+max_iterations!(o::AbstractDriverOptions, N) = @contract AbstractDriverOptions :max_iterations!
+
+
+"""
+    trace_level(o::AbstractDriverOptions)
+"""
+weave_level(o::AbstractDriverOptions) = @contract AbstractDriverOptions :weave_level
+
+
+"""
+    trace_level!(o::AbstractDriverOptions, level::Int)
+"""
+weave_level!(o::AbstractDriverOptions, level) = @contract AbstractDriverOptions :weave_level!
+
+
+"""
+    log_level!(o::AbstractDriverOptions, level::Int)
+"""
+log_level!(o::AbstractDriverOptions, level) = @contract AbstractDriverOptions :log_level!

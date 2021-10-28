@@ -75,8 +75,9 @@ end
 """
     AccessError(abstract_type) <: Exception
 
-    Occurs when a concrete type of `abstract_type` has not implemented a specified `behavior`
-    Output: "SubtypingError: `behavior` is a requirement of `abstract_type` contract"
+    Occurs when a concrete type `T` of `abstract_type` is passed to `getproperty`,
+    which occurs when calling `T.f` for any field name f. 
+    Output: "AccessError: `:abstract_type` restricts field access
 """
 struct AccessError <: Exception
     abstract_type::Type
@@ -98,3 +99,21 @@ Restricts field access of the specified "abstract_type".
 macro restrict(abstract_type)
     return :(throw(AccessError($(abstract_type))))
 end
+
+
+"""
+_parse_type(table::Dict{Symbol, Any}, T::Type, instance)
+
+Stores symbol, value pairs consisting of field symbols of `T` and the value
+stored at `instance<:T`.
+"""
+function _parse_type!(table::Dict{Symbol, Any}, T::Type, instance)
+    if instance isa T
+        for field in fieldnames(T)
+            table[field] = getfield(m, field) 
+        end
+    end
+    return nothing
+end
+
+

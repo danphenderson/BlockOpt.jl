@@ -7,9 +7,10 @@ export Driver
 struct Driver <: AbstractDriver
     QN_update::Symbol
     S_update::Symbol
-    options::AbstractDriverOptions
+    pflag::Bool
+    options::DriverOptions
 
-    function Driver(QN_update=:blockSR1, S_update=:S_update_d)
+    function Driver(QN_update=:blockSR1, S_update=:S_update_d, pflag=false)
         new(QN_update, S_update, DriverOptions())
     end
 end
@@ -19,6 +20,9 @@ QN_update(d::Driver) = getfield(d, :QN_update)
 
 
 S_update(d::Driver) = getfield(d, :S_update)
+
+
+pflag(d::Driver) = getfield(d, :pflag)
 
 
 options(d::Driver) = getfield(d, :options)

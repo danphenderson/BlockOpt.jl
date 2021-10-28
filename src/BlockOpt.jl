@@ -3,30 +3,20 @@ module BlockOpt
 
 import Base: @kwdef
 
+using LinearAlgebra
+
+import ForwardDiff: Dual, value
+
+
 include("util.jl")
-include("abstract/types.jl")
-include("record.jl")
-include("model.jl")
-include("options.jl")
-include("driver.jl")
-include("trace.jl")
-include("backend.jl")
-include("simulation.jl")
 
 
-"""
-    optimize(model::AbstractModel, driver::AbstractDriver)
-
-Solve the program given by the `model` subject to the `driver`.
-"""
-optimize(model::Model{T, S}, driver::Driver) where {T, S} = solve!(Simulation(model, driver))
+include("interface/types.jl")
 
 
-"""
-    optimize(model::AbstractModel, driver::AbstractDriver)
+include("lib/types.jl")
 
-Solve for an unconstrained minimizer of ``f``. 
-"""
+
 optimize(f::Function, ∇f::Function, x₀::S) where {S} = optimize(Model{eltype(S), S}(f, ∇f, x₀), Driver())
 
 

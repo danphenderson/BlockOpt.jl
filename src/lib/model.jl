@@ -87,6 +87,12 @@ formula(m::Model) = getfield(m, :formula)
 record(m::Model) = getfield(m, :record)
 
 
+hasdir(m::Model) = hasdir(record(m))
+
+
+directory(m::Model) = directory(record(m))
+
+
 function Base.show(io::IO, m::Model)
     println(io, "Model: $(name(m))")
     !isa(formula(m), Missing) && println(io, "$(formula(m))")
@@ -96,5 +102,5 @@ function Base.show(io::IO, m::Model)
     println(io, "    initial iterate:  $(initial_iterate(m))")
     println(io, "    dimension:        $(dimension(m))")
     flush(io)
-    return nothing
+    return show(record(m))
 end

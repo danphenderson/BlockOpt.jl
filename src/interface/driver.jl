@@ -1,19 +1,18 @@
-export AbstractDriver
 export QN_update, S_update, options
+
+
 """
-    AbstractDriver <: AbstractBlockOptType
+    AbstractDriver
 
 Defines the interfaced base type of an optimization model driver.
 
 # Implements:
-    Accesors:
+    Accesor Methods:
         QN_update
         S_update
         options
-    Inherts:
-        AbstractDriverOptions
 """
-abstract type AbstractDriver <: AbstractBlockOptType end
+abstract type AbstractDriver end
 
 
 """
@@ -64,3 +63,15 @@ max_iterations(d::AbstractDriver) =  max_iterations(options(d))
 
 
 max_iterations!(d::AbstractDriver, m) = max_iterations!(options(d), m)
+
+
+weave_level(d::AbstractDriver) = trace_level(options(d))
+
+
+weave_level!(o::AbstractDriver, level) = trace_level!(options(d), level)
+
+
+log_level(o::AbstractDriver) = log_level(options(d))
+
+
+log_level!(o::AbstractDriver, level) =  log_level!(options(d), level)
