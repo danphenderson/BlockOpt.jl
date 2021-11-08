@@ -1,23 +1,23 @@
 module BlockOpt
 
-
-import Base: @kwdef
-
-using LinearAlgebra
-
-import ForwardDiff: Dual, value
+import Statistics: mean
+using LinearAlgebra, TRS, Dates
+using ForwardDiff
 
 
 include("util.jl")
 
+include("lib/model.jl")
 
-include("interface/types.jl")
+include("lib/options.jl")
 
+include("lib/driver.jl")
 
-include("lib/types.jl")
+include("lib/trace.jl")
 
+include("lib/backend.jl")
 
-optimize(f::Function, ∇f::Function, x₀::S) where {S} = optimize(Model{eltype(S), S}(f, ∇f, x₀), Driver())
+include("lib/simulation.jl")
 
 
 end # module

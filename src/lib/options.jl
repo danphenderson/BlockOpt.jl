@@ -1,31 +1,39 @@
-export LogLevel, TraceLevel
+export DriverOptions
+export samples, Δ_max, δ_tol, ϵ_tol, max_iterations, weave_level, log_level
+export samples!, Δ_max!, δ_tol!, ϵ_tol!, max_iterations!, weave_level!, log_level! 
+export LogLevel, INFO, DEBUG, WARN, ERROR
+export WeaveLevel, NONE, ALL
 
-@enum LogLevel INFO DEBUG WARN ERROR
-@enum WeaveLevel NONE ALL
+
+@enum LogLevel::Int INFO DEBUG WARN ERROR
+
+@enum WeaveLevel::Int NONE ALL
+
 
 """
-    DriverOptions <:  AbstractDriverOptions    
+    DriverOptions 
 """
-mutable struct DriverOptions <: AbstractDriverOptions
+mutable struct DriverOptions
     samples::Int
     Δ_max::Float64
     δ_tol::Float64
     ϵ_tol::Float64
     max_iterations::Int
+    
     log_level::LogLevel
     weave_level::WeaveLevel
 
     function DriverOptions(;
-        samples = 3,
+        samples = 6, # 2w 
         Δ_max = 100,
-        δ_tol = 1e-12,
+        δ_tol = 1.0e-12,
         ϵ_tol = 1e-5,
         max_iterations = 2000,
         log_level = INFO,
-        weave_level = NONE,
+        weave_level = ALL,
     )
         new(samples, Δ_max, δ_tol, ϵ_tol, max_iterations, log_level, weave_level)
-    end 
+    end
 end
 
 
@@ -71,20 +79,20 @@ weave_level!(o::DriverOptions, level::WeaveLevel) = setfield!(o, :weave_level, l
 log_level!(o::DriverOptions, level::LogLevel) = setfield!(o, :log_level, level)
 
 
-Base.getproperty(o::DriverOptions) = @restrict typeof(d)
+Base.getproperty(o::DriverOptions, s::Symbol) = @restrict DriverOptions
 
 
 Base.propertynames(o::DriverOptions) = ()
 
 
 function Base.show(io::IO, o::DriverOptions)
-    println(io, "\n    Options:")
+    println(io, "\n    DriverOptions:")
     println(io, "    ------------------------------------")
     println(io, "        samples:        $(samples(o))")
     println(io, "        Δ_max:          $(Δ_max(o))")
     println(io, "        δ_tol:          $(δ_tol(o))")
     println(io, "        ϵ_tol:          $(ϵ_tol(o))")
-    println(io, "        max iterations: $(max_iterations(o))")
+    println(io, "        max_iterations: $(max_iterations(o))")
     flush(io)
     return nothing
 end

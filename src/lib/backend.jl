@@ -1,128 +1,241 @@
-"""
-BlockOptBackend <: AbstractBackend
-"""
-struct BlockOptCPU <: AbstractBackend
-    trace::BlockOptTrace
-    memory::BlockOptCPUMemory
+mutable struct BlockOptBackend 
+    #TODO: Add types... or really remove dependancies
+    model
+    driver
+    n
+    w
+    xₖ::Vector{Float64}
+    ∇fₖ::Vector{Float64}
+    hₖ::Vector{Float64}
+    pₖ::Vector{Float64}
+    xₜ::Vector{Float64}
+    fₖ::Float64
+    fₜ::Float64
+    ρ::Float64
+    Δₖ::Float64
+    ∇fₖ_norm::Float64
+    pₖ_norm::Float64
+    Sₖ::Matrix{Float64}
+    Yₖ::Matrix{Float64}
+    Uₖ::Matrix{Float64}
+    Vₖ::Matrix{Float64}
+    Hₖ::Symmetric{Float64, Matrix{Float64}}
+    Qₖ::Matrix{Float64}
+    P::Symmetric{Float64, Matrix{Float64}}
+    b::Vector{Float64}
+    C::Symmetric{Float64, Matrix{Float64}}
+    aₖ::Vector{Float64}
+    qₖ::Vector{Float64}
 
-    function BlockOptCPU(memory, trace)
-        new(trace, memory)
+    function BlockOptBackend(m, d)
+        # TODO: the driver & model must be locked from modifications
+        # during simulation, or copy data. Look into a julia Mutex
+        n, w = dimension(m), Int(samples(d)/2)
+
+        xₖ = copy(initial_iterate(m))
+
+        ∇fₖ = hₖ = pₖ = xₜ = qₖ = similar(xₖ)
+
+        fₖ = fₜ = ρ = Δₖ = ∇fₖ_norm = pₖ_norm = 0.0
+
+        Sₖ = orth(randn(n, 2w - 1))
+ 
+        Yₖ = similar(Sₖ)
+
+        Uₖ = zeros(n, 2w)
+
+        Vₖ = similar(Uₖ)
+
+        Hₖ = Symmetric(zeros(n, n) + I)
+
+        Qₖ = zeros(n, 2w+1)
+
+        P = Symmetric(zeros(2w+1 , 2w+1))
+
+        b = zeros(2w+1)
+
+        C = similar(P)
+
+        aₖ = similar(b)
+
+        new(
+            m,
+            d,
+            n,
+            w,
+            xₖ,
+            ∇fₖ,
+            hₖ,
+            pₖ,
+            xₜ,
+            fₖ,
+            fₜ,
+            ρ,
+            Δₖ,
+            ∇fₖ_norm,
+            pₖ_norm,
+            Sₖ,
+            Yₖ, 
+            Uₖ,
+            Vₖ,
+            Hₖ,
+            Qₖ,
+            P,
+            b,
+            C,
+            aₖ,
+            qₖ,
+        )
     end
 end
 
-
-function build_backend(model::Model{T, S}, driver::Driver) where {T, S}
-    return BlockOptCPU(BlockOptCPUMemory{eltype(S), S}(model, driver), BlockOptTrace(model, driver))
+#Base.show(io::IO, b::BlockOptBackend) = return nothing
+function Base.show(io::IO, b::BlockOptBackend)
+    for field ∈ fieldnames(BlockOptBackend)
+        display(getfield(b, field))
+    end
+    flush(io)
+    return nothing
 end
 
 
-orth(S) = Matrix(qr!(S).Q)
+# Accessors used in simulation.jl to weave! (TODO: Restrict this class as well)
+fₖ(b::BlockOptBackend) = b.fₖ
+∇fₖ_norm(b::BlockOptBackend) = b.∇fₖ_norm
+pₖ_norm(b::BlockOptBackend) = b.pₖ_norm
+Δₖ(b::BlockOptBackend) = b.Δₖ
+ρ(b::BlockOptBackend) = b.ρ
+model(b::BlockOptBackend) = getfield(b, :model)
+driver(b::BlockOptBackend) = getfield(b, :driver)
 
 
-trace(b::BlockOptCPU) = getfield(m, :trace)
+# Forward Needed Model Methods
+obj(b::BlockOptBackend, x) = obj(model(b), x)
+grad(b::BlockOptBackend, x) = grad(model(b), x)
+grad!(b::BlockOptBackend, out, x) = grad!(model(b), out, x)
+dimension(b::BlockOptBackend) = dimension(model(b))
 
 
-filename(b::BlockOptCPU) = filename(trace(m))
+# Forward Needed Driver/DriverOptions Methods
+QN_update(b::BlockOptBackend) = QN_update(driver(b))
+S_update(b::BlockOptBackend) = S_update(driver(b))
+pflag(b::BlockOptBackend) = pflag(driver(b))
+samples(b::BlockOptBackend) = samples(driver(b))
+Δ_max(b::BlockOptBackend) = Δ_max(driver(b))
+δ_tol(b::BlockOptBackend) = δ_tol(driver(b))
+ϵ_tol(b::BlockOptBackend) = ϵ_tol(driver(b))
+max_iterations(b::BlockOptBackend) = max_iterations(driver(b))
 
 
-trace_level(b::BlockOptCPU) = level(trace(m))
-
-
-io(b::BlockOptCPU) = io(trace(m))
-
-
-memory(b::BlockOptCPU) = getfield(m, :memory)
-
-"""
-gradHS gradHS(b::BlockOptCPU)
-
-Makes two sequential calls to `gradAD`, generating second-order
-information for `2w-1` sampling directions about a point ``x``,
-including the steepest descent direction.
-
-# Definition
-For an objective function ``f`` mapping ``ℜⁿ → ℜ``,  
-```math
-    g, h, Y ⟵ gradHS(x, S) , \\text{ such that }
-
-        x ∈ ℜⁿˣ¹ 
-        S ∈ ℜⁿˣ²ʷ
-        g = ∇f(x) ∈ ℜⁿˣ¹
-        h = ∇²f(x) ⋅ g ∈ ℜⁿˣ¹
-        Y = ∇²f(x) ⋅ S ∈ ℜⁿˣ²ʷ.
-```
-
-See: Algorithm 3.1.
-"""
-function gradHS(b::BlockOptCPU)
-    gradHS(memory(b))
+function terminal(b::BlockOptBackend, k::Int)
+    if ∇fₖ_norm(b) < ϵ_tol(b) || max_iterations(b) ≤ k 
+        return true
+    end
+    return false
 end
 
 
-"""
-trs_model(b::BlockOptCPU)
-"""
-function trs_model(b::BlockOptCPU)
-    trs_model(memory(b))
+function secantQN(b::BlockOptBackend)
+    b.Hₖ = QN_update(b)(b.Hₖ, grad(b, b.xₜ) - b.∇fₖ, b.pₖ, δ_tol(b))
+    return nothing
 end
 
 
-"""
-trs_solve(b::BlockOptCPU)
-"""
-function trs_solve(b::BlockOptCPU)
-    trs_solve(memory(b))
+function blockQN(b::BlockOptBackend)
+    b.Hₖ = QN_update(b)(b.Hₖ, b.Uₖ, b.Vₖ, δ_tol(b))
+    return nothing
 end
 
 
-"""
-trs_trial(b::AbstractBackend)
-"""
-function trs_trial(b::BlockOptCPU)
-    trs_trial(memory(b))
+function update_Sₖ(b::BlockOptBackend) 
+    b.Sₖ = S_update(b)(b.Sₖ, b.Yₖ, b.pₖ)
+    return nothing
 end
 
 
-function trial_accepted(b::BlockOptCPU)
-    trial_accepted(memory(b))
+function build_trs(b::BlockOptBackend)
+    b.Qₖ = orth([b.∇fₖ/b.∇fₖ_norm b.hₖ/b.∇fₖ_norm b.Yₖ])
+    b.P = Symmetric(b.Qₖ'*b.Hₖ*b.Qₖ)
+    b.b = b.Qₖ'*b.Hₖ*b.∇fₖ
+    b.C = Symmetric(b.Qₖ'*b.Hₖ*b.Hₖ*b.Qₖ)
+    return nothing
 end
 
 
-"""
-Δ_update(b::AbstractBackend)
-"""
-function Δ_update(b::BlockOptCPU)
-    Δ_update(memory(b))
+function solve_trs(b::BlockOptBackend)
+    aₖ, _ = trs_small(b.P, b.b, b.Δₖ, b.C, compute_local=false)
+    b.aₖ = aₖ[:, 1]
+    b.qₖ = b.Qₖ*b.aₖ
+    b.pₖ = b.Hₖ*b.qₖ
+    b.pₖ_norm = norm(b.pₖ)
+    return nothing
 end
 
 
-"""
-QN(b::AbstractBackend)
-"""
-function QN(b::BlockOptCPU)
-    QN(memory(b))
+function build_trial(b::BlockOptBackend)
+    b.xₜ = b.xₖ + b.pₖ
+    b.fₜ = obj(b, b.xₜ)
+    b.ρ = (b.fₖ - b.fₜ)/(0 - (0.5*dot(b.qₖ, b.Hₖ, b.qₖ) + (b.Hₖ * b.∇fₖ)' * b.qₖ))
+    return nothing
 end
 
 
-"""
-optimize!(b::BlockOptCPU)
-"""
-function optimize!(b::BlockOptCPU)
-    gradHS(b)
+function update_Δₖ(b::BlockOptBackend)
+    if 0.0 < b.ρ < 0.25
+        b.Δₖ = 0.25*b.Δₖ
+    elseif b.ρ > 0.75 && b.pₖ_norm ≈ b.Δₖ
+        b.Δₖ = min(2*b.Δₖ, Δ_max(b))
+    end
+    return nothing
+end
 
-    trs_model(b) 
 
-    trs_small(b)
+function accept_trial(b::BlockOptBackend)
+    if b.ρ > 0
+        b.xₖ, b.fₖ = b.xₜ, b.fₜ
+        return true
+    end
+    return false 
+end
 
-    trs_trial(b)
 
-    if trial_accepted(b)
-        if plfag
-            QN 
-        end
+function gAD(b::BlockOptBackend, S) 
+    Sdual = ForwardDiff.Dual{Float64}.(b.xₖ,  eachcol(S)...)
+    Ydual = ForwardDiff.Dual{Float64}.(similar(b.xₖ),  eachcol(S)...)
+    Ydual = grad!(b, Ydual, Sdual)
+    g = similar(b.xₖ)
+    Y = similar(S)
+    @views for i in 1:length(g)
+        g[i]    = Ydual[i].value
+        Y[i, :] = Ydual[i].partials[:]
+    end
+    return g, Y
+end
 
-        QN 
 
-        gradHS
-    end 
+function build_UV(b::BlockOptBackend)
+    b.Uₖ = [b.Sₖ b.∇fₖ / b.∇fₖ_norm] 
+    b.Vₖ = [b.Yₖ b.hₖ  / b.∇fₖ_norm]
+    return nothing
+end
+
+
+function gHS(b::BlockOptBackend)
+    w = Int(samples(b)/2)
+    g, Y₁ = gAD(b, b.Sₖ[:, 1:w])
+    _, Y₂ = gAD(b, [b.Sₖ[:, w+1:end] g])
+    b.∇fₖ_norm, b.∇fₖ, b.hₖ, b.Yₖ = norm(g), g, Y₂[:, end], [Y₁ Y₂[:, 1:end-1]]
+    build_UV(b)
+    return nothing
+end
+
+
+function initialize(b::BlockOptBackend)
+    b.fₖ = obj(b, b.xₖ)
+    gHS(b)
+    α = mean(eigvals(b.Sₖ' * b.Yₖ))
+    b.Δₖ = min(1.1*b.∇fₖ_norm/(2*α), Δ_max(b))
+    b.Hₖ = 1/α * b.Hₖ
+    blockQN(b)
+    return nothing
 end

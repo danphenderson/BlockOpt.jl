@@ -1,69 +1,47 @@
-export Model
+export Model, name, obj, grad!
+export objective, gradient, initial_iterate, formula, dimension, directory
+export objective!, gradient!, initial_iterate!, formula!
+
 
 """
-    Model{T,S} <: AbstractModel{T, S}    
+    Model
 """
-mutable struct Model{T, S} <: AbstractModel{T, S}
+mutable struct Model
+    name::String
     objective::Union{Function, Missing}
     gradient::Union{Function, Missing}
-    dimension::Union{Int, Missing}
-    initial_iterate::Union{S, Missing} 
-    name::Union{String, Missing}
+    initial_iterate::Union{AbstractArray, Missing} 
     formula::Union{String, Missing}
-    record::ModelRecord
+    
+    dimension::Union{Int, Missing}
+    directory::String
+    final::Bool
 
-    function Model{T, S}(
+    function Model(name::String;
         objective = missing,
         gradient = missing, 
-        initial_iterate = missing;
-        name = "",
-        dimension = missing,
+        initial_iterate = missing,
         formula = missing,
-    ) where {T, S}
-        new{T, S}(
+    )
+        dimension = isa(initial_iterate, Missing) ? missing : length(initial_iterate)
+        directory = mkpath(joinpath(pwd(), name))
+        final = !isa(objective, Missing) && !isa(gradient, Missing)
+
+        new(
+            name,
             objective,
             gradient,
-            dimension,
             initial_iterate,
-            name,
             formula,
-            ModelRecord(),
+            dimension,
+            directory,
+            final,
         )
     end 
 end
 
 
-"""
-    Model(objective::Function, gradient!::Function, initial_iterate::S; kwargs...)
-"""
-@inline function Model(objective::Function, gradient::Function, initial_iterate::S; kwargs...) where {S}
-    return Model{eltype(S), S}(objective, gradient, initial_iterate; kwargs...)
-end
-
-
-Base.getproperty(m::Model) = @restrict typeof(Model)
-
-
-Base.propertynames(m::Model) = ()
-
-
-objective!(m::Model, f::Function) = (setfield!(m, :objective, f); m)
-
-
-gradient!(m::Model, ∇f!::Function) = (setfield!(m, :gradient, ∇f!); m)
-
-
-initial_iterate!(m::Model, x0::AbstractArray) = begin
-    setfield!(m, :initial_iterate, x0)
-    setfield!(m, :dimension, length(x0))
-    m
-end
-
-
-name!(m::Model, name::String) = (setfield!(m, :name, name); m)
-
-
-formula!(m::Model, formula::AbstractString) = (setfield!(m, :formula, formula); m)
+name(m::Model) = getfield(m, :name)
 
 
 objective(m::Model) = getfield(m, :objective)
@@ -75,32 +53,76 @@ gradient(m::Model) = getfield(m, :gradient)
 initial_iterate(m::Model) = getfield(m, :initial_iterate)
 
 
-dimension(m::Model) = getfield(m, :dimension)
-
-
-name(m::Model) = getfield(m, :name)
-
-
 formula(m::Model) = getfield(m, :formula)
 
 
-record(m::Model) = getfield(m, :record)
+dimension(m::Model) = getfield(m, :dimension)
 
 
-hasdir(m::Model) = hasdir(record(m))
+directory(m::Model) = getfield(m, :directory)
 
 
-directory(m::Model) = directory(record(m))
+final(m::Model) = getfield(m, :final)
+
+
+objective!(m::Model, f) = !final(m) && begin 
+    setfield!(m, :final, !isa(gradient(m), Missing))
+    setfield!(m, :objective, f) 
+end
+
+
+gradient!(m::Model, ∇f!) = !final(m) && begin 
+    setfield!(m, :final, !isa(objective(m), Missing))
+    setfield!(m, :gradient, ∇f!)
+end
+
+
+initial_iterate!(m::Model, x0) = begin
+    setfield!(m, :dimension, length(x0))
+    setfield!(m, :initial_iterate, x0)
+end
+
+
+formula!(m::Model, formula) = setfield!(m, :formula, formula)
+
+
+obj(m::Model, x) = begin 
+    @lencheck dimension(m) x
+    objective(m)(x) 
+end
+
+
+grad!(m::Model, out, x) = begin
+    @lencheck dimension(m) out x
+    gradient(m)(out, x)
+end
+
+
+grad(m::Model, x) = grad!(m, similar(x), x)
+
+
+hessAD(model, x) = ForwardDiff.jacobian(gradient(model), similar(x), x)
+
+
+hess_sample(model, x, dx) = hessAD(model, x) * dx
+
+
+Base.getproperty(m::Model, s::Symbol) = @restrict Model
+
+
+Base.propertynames(m::Model) = ()
 
 
 function Base.show(io::IO, m::Model)
-    println(io, "Model: $(name(m))")
-    !isa(formula(m), Missing) && println(io, "$(formula(m))")
+    print(io, "$(name(m)) Model:\n")
+    !isa(formula(m), Missing) && println(io, "    $(formula(m))")
+    x0 = initial_iterate(m)
     println(io, "----------------------------------------")
     println(io, "    objective:        $(objective(m))")
     println(io, "    gradient:         $(gradient(m))")
-    println(io, "    initial iterate:  $(initial_iterate(m))")
+    println(io, "    initial iterate:  $(isa(x0, Missing) ? x0 : "[$(x0[begin])...$(x0[end])]")")
     println(io, "    dimension:        $(dimension(m))")
+    println(io, "    directory:        $(directory(m))")
     flush(io)
-    return show(record(m))
+    return nothing
 end
