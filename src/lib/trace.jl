@@ -10,42 +10,51 @@ mutable struct EvaluationTimer
     function EvaluationTimer() new(0.0) end
 end
 
+
 Δt(t::EvaluationTimer) = getfield(t, :Δt)
+
 
 on!(t::EvaluationTimer) = setfield!(t, :Δt,  Δt(t) - time())
 
+
 off!(t::EvaluationTimer) = setfield!(t, :Δt, time() + Δt(t))
  
+
 Base.getproperty(t::EvaluationTimer, s::Symbol) = @restrict EvaluationTimer
+
 
 Base.propertynames(t::EvaluationTimer) = ()
 
 
 """
-Countera
+EvaluationCounter
 
 Holds a count that is incremented in units of 1. 
 """
 mutable struct EvaluationCounter
-    current_count::Int
+    evaluations::Int
 
     function EvaluationCounter() new(0) end
 end
 
-current_count(c::EvaluationCounter) = getfield(c, :current_count)
+
+evaluations(c::EvaluationCounter) = getfield(c, :evaluations)
+
 
 increment!(c::EvaluationCounter, units=1) = begin
-    units > 0 && setfield!(c, :current_count, current_count(c) + units)
-    return current_count(c)
+    units > 0 && setfield!(c, :evaluations, evaluations(c) + units)
+    return evaluations(c)
 end
 
+
 Base.getproperty(t::EvaluationCounter, s::Symbol) = @restrict EvaluationCounter
+
 
 Base.propertynames(t::EvaluationCounter) = ()
 
 
 """
-Profile
+BlockOptProfile
 
 Holds a count of the trust region subproblem solves and gHS evaluations.
 
@@ -66,25 +75,32 @@ struct BlockOptProfile
     end
 end
 
+
 trs_timer(p::BlockOptProfile) = getfield(p, :trs_timer)
+
 
 trs_counter(p::BlockOptProfile) = getfield(p, :trs_counter)
 
+
 ghs_timer(p::BlockOptProfile) = getfield(p, :ghs_timer)
+
 
 ghs_counter(p::BlockOptProfile) = getfield(p, :ghs_counter)
 
+
 Base.getproperty(p::BlockOptProfile, s::Symbol) = @restrict BlockOptProfile
+
 
 Base.propertynames(p::BlockOptProfile) = ()
 
+
 function Base.show(io::IO, p::BlockOptProfile)
-    println(io, "  Profile:")
-    println(io, "  ------------------------------------")
-    print(io,   "      trs_counter:      $(trs_counter(p))")
-    println(io, "      trs_timer:        $(trs_timer(p))")
-    print(io,   "      ghs_counter:      $(ghs_counter(p))")
-    println(io, "      ghs_timer:        $(ghs_timer(p))")
+    println(io, "    Profile:")
+    println(io, "    ------------------------------------")
+    print(io,   "        trs_counter:      $(evaluations(trs_counter(p)))")
+    println(io, "        trs_timer:        $(Δt(trs_timer(p)))")
+    print(io,   "        ghs_counter:      $(evaluations(ghs_counter(p)))")
+    println(io, "        ghs_timer:        $(Δt(ghs_timer(p)))")
     flush(io)
     return nothing
 end
@@ -119,11 +135,35 @@ struct Weaver
 end
 
 
-weave!(w::Weaver, field, val) = append!(getfield(w, field), val)
+f_vals(w::Weaver) = getfield(w, :f_vals)
 
-weave!(w::Nothing, field, val) = getfield(w, field)
+
+∇f_norms(w::Weaver) = getfield(w, :∇f_norms)
+
+
+Δ_vals(w::Weaver) = getfield(w, :Δ_vals)
+
+
+p_norms(w::Weaver) = getfield(w, :p_norms)
+
+
+ρ_vals(w::Weaver) = getfield(w, :ρ_vals)
+
+
+weave!(w::Weaver, field::Symbol, val::Float64) = append!(getfield(w, field), val)
+
+
+weave!(w::Weaver, accessor::Function, val::Float64) = append!(accessor(w), val) 
+
 
 weave_level(w::Weaver) = getfield(w, :weave_level)
+
+
+Base.getproperty(w::Weaver, s::Symbol) = @restrict Weaver
+
+
+Base.propertynames(w::Weaver) = ()
+
 
 function Base.show(io::IO, w::Weaver)
     for field ∈ fieldnames(Weaver)
@@ -146,7 +186,6 @@ struct BlockOptTrace
     profile::BlockOptProfile
     weaver::Weaver
     log_level::LogLevel
-    directory::String
     io::IO
 
     function BlockOptTrace(model, driver)
@@ -155,7 +194,6 @@ struct BlockOptTrace
             BlockOptProfile(),
             Weaver(weave_level(driver)),
             log_level(driver),
-            directory(model),
             open(joinpath(directory(model), "trace.log"), "w+"),  
         )
     end
@@ -164,39 +202,70 @@ end
 
 model(t::BlockOptTrace) = getfield(t, :model)
 
+
 directory(t::BlockOptTrace) = directory(model(t))
+
 
 driver(t::BlockOptTrace) = getfield(t, :driver)
 
-log_level(t::BlockOptTrace) = getfield(t, :log_level)
 
 profile(t::BlockOptTrace) = getfield(t, :profile)
 
+
 trs_timer(t::BlockOptTrace) = trs_timer(profile(t))
+
 
 trs_counter(t::BlockOptTrace) = trs_counter(profile(t))
 
+
 ghs_timer(t::BlockOptTrace) = ghs_timer(profile(t))
+
 
 ghs_counter(t::BlockOptTrace) = ghs_counter(profile(t))
 
+
 weaver(t::BlockOptTrace) = getfield(t, :weaver)
+
 
 weave!(t::BlockOptTrace, field, val) = weave!(weaver(t), field, val)
 
+
+f_vals(t::BlockOptTrace) = f_vals(weaver(t))
+
+
+∇f_norms(t::BlockOptTrace) = ∇f_norms(weaver(t))
+
+
+Δ_vals(t::BlockOptTrace) = Δ_vals(weaver(t))
+
+
+p_norms(t::BlockOptTrace) = p_norms(weaver(t))
+
+
+ρ_vals(t::BlockOptTrace) = ρ_vals(weaver(t))
+
+
 weave_level(t::BlockOptTrace) = weave_level(weaver(t))
+
+
+log_level(t::BlockOptTrace) = getfield(t, :log_level)
+
 
 io(t::BlockOptTrace) = getfield(t, :io)
 
+
 Base.getproperty(t::BlockOptTrace, s::Symbol) = @restrict BlockOptTrace
 
+
 Base.propertynames(t::BlockOptTrace) = ()
+
 
 function Base.show(io::IO, t::BlockOptTrace)
     println(io, "Trace:")
     println(io, "----------------------------------------")
-    show(profile(t))
-    show(weaver(t))
+    show(io, profile(t))
+    show(io, weaver(t))
+    flush(io)
     return nothing
 end
 
@@ -211,7 +280,7 @@ for level in (:info, :debug, :warn, :error)
     @eval function $fn(trace::BlockOptTrace, args...)
         if log_level(trace) <= $upper_level_sym
             let io = io(trace)
-                print(io, trunc(now(), Dates.Second), $label)
+                println(io, trunc(now(), Dates.Second), $label)
                 for (idx, arg) in enumerate(args)
                     idx > 0 && show(io, arg)
                 end

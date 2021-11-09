@@ -1,19 +1,18 @@
-@testset "  @lencheck" begin
-    n = 10;
-    x, y = ones(n), ones(n)
-    z = ones(n-1)
+@testset "@lencheck" begin
+    x, y = ones(10), ones(10)
+    z = ones(9)
     
-    @test (@lencheck n x) ≡ nothing
+    @test (@lencheck 10 x) ≡ nothing
     
-    @test (@lencheck n x y) ≡ nothing
+    @test (@lencheck 10 x y) ≡ nothing
     
-    @test_throws DimensionError @lencheck n z
+    @test_throws DimensionError @lencheck 10 z
     
-    @test_throws DimensionError @lencheck n x z
+    @test_throws DimensionError @lencheck 10 x z
 end
 
 
-@testset "  @contract" begin
+@testset "@contract" begin
     abstract type AbstractFoo end
     
     struct Foo <: AbstractFoo end
@@ -29,18 +28,26 @@ end
 end
 
 
-@testset "  @restrict" begin
+function test_restricted_type(type)
+
+    @test_throws AccessError type.afield
+
+    @test propertynames(type) ≡ ()
+    
+    return nothing
+end
+
+
+@testset "@restrict" begin
     struct Bar
         x
     end
 
-    Base.getproperty(b::Bar, s::Symbol) = @restrict typeof(Bar)
+    Base.getproperty(b::Bar, s::Symbol) = @restrict Bar
+
+    Base.propertynames(b::Bar) = ()
 
     bar = Bar(nothing)
     
-    @test_throws AccessError bar.x
-    
-    @test_throws AccessError bar.y
-    
-    @test getfield(bar, :x) ≡ nothing
+    test_restricted_type(bar);
 end

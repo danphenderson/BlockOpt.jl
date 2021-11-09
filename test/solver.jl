@@ -12,8 +12,6 @@ objective!(quad_model, x -> 0.5*x'∇²f*x)
 
 gradient!(quad_model, (g, x) -> (g .= ∇²f*x))
 
-formula!(quad_model, "\$ \\frac{1}{2} x^\\Top A x +  d^\\Top x\$")
-
 const x₀       = initial_iterate!(quad_model, randn(n))
 
 const f₀       = obj(quad_model, x₀)
@@ -30,9 +28,7 @@ const w        = Int(samples(test_driver)/2)
 @testset "Backend" begin 
     b = BlockOptBackend(quad_model, test_driver) 
 
-
     initialize(b)
-
 
     @testset "initialize" begin
 

@@ -19,12 +19,6 @@ struct Simulation
 end
 
 
-Base.getproperty(s::Simulation) = @restrict typeof(Simulation)
-
-
-Base.propertynames(s::Simulation) = ()
-
-
 trace(s::Simulation) = getfield(s, :trace)
 
 
@@ -43,6 +37,9 @@ ghs_counter(s::Simulation) = ghs_counter(trace(s))
 weave!(s::Simulation, field, val) = weave!(trace(s), field, val)
 
 
+weave_level(s::Simulation) = weave_level(trace(s))
+
+
 backend(s::Simulation) = getfield(s, :backend)
 
 
@@ -58,31 +55,91 @@ pₖ_norm(s::Simulation) = pₖ_norm(backend(s))
 Δₖ(s::Simulation) = Δₖ(backend(s))
 
 
-pₖ(s::Simulation) = pₖ(backend(s))
-
-
 ρ(s::Simulation) = ρ(backend(s))
 
+
+f_vals(s::Simulation) = f_vals(trace(s)) 
+
+
+∇f_norms(s::Simulation) = ∇f_norms(trace(s)) 
+
+
+p_norms(s::Simulation) = p_norms(trace(s)) 
+
+
+Δ_vals(s::Simulation) = Δ_vals(trace(s))
+
+
+ρ_vals(s::Simulation) = ρ_vals(trace(s))
+
+
+io(s::Simulation) = io(trace(s))
+
+
+log_level(s::Simulation) = log_level(trace(s))
+
+
+info!(s::Simulation, args...) = info!(trace(s), args...)
+
+
+debug!(s::Simulation, args...) = debug!(trace(s), args...)
+
+
+warn!(s::Simulation, args...) = warn!(trace(s), args...)
+
+
+error!(s::Simulation, args...) = error!(trace(s), args...)
+
+
 function Base.show(io::IO, s::Simulation)
-    show(trace(s))
-    show(backend(s))
+    show(io(s), trace(s))
+    show(io(s), backend(s))
     return nothing
 end
 
 
+Base.getproperty(s::Simulation, sym::Symbol) = @restrict Simulation
+
+
+Base.propertynames(s::Simulation) = ()
+
+
 function initialize(s::Simulation)
-    #increment!(ghs_counter(s))
+
     initialize(backend(s))
-    weave!(s, :f_vals, fₖ(s))
-    weave!(s, :∇f_norms, ∇fₖ_norm(s))
-    weave!(s, :Δ_vals, Δₖ(s))
+
+    increment!(ghs_counter(s))
+
+    weave!(s, f_vals, fₖ(s))
+
+    weave!(s, ∇f_norms, ∇fₖ_norm(s))
+
+    weave!(s, Δ_vals, Δₖ(s))
+
+    nothing
 end
 
 
+# TODO: add monitor for conditioning and underflow
+#       Use enum, subject to overhaul
 function terminal(s::Simulation)
-    # TODO: add monitor for conditioning and underflow
-    # Use enum, subject to overhaul
-    terminal(backend(s), current_count(trs_counter(s)))
+
+    if terminal(backend(s), evaluations(trs_counter(s)))
+
+        weave!(s, f_vals, fₖ(s))
+
+        weave!(s, ∇f_norms, ∇fₖ_norm(s))
+
+        weave!(s, Δ_vals, Δₖ(s))
+
+        weave!(s, p_norms, pₖ_norm(s))
+
+        weave!(s, ρ_vals, ρ(s))
+
+        return true
+    end
+    
+    return false
 end
 
 
@@ -90,60 +147,104 @@ end
 Build arguments for the trs_small call
 """
 function build_trs(s::Simulation)
+
     build_trs(backend(s))
+
+    nothing
 end
 
 
 function solve_trs(s::Simulation)
-    increment!(trs_counter(s))
+
+    on!(trs_timer(s))
+
     solve_trs(backend(s))
+
+    off!(trs_timer(s))
+
+    increment!(trs_counter(s))
+
+    nothing
 end
 
 
 function build_trial(s::Simulation)
+
     build_trial(backend(s))
+
+    nothing
 end
 
 
 function update_Δₖ(s::Simulation)
+
     update_Δₖ(backend(s))
+
+    nothing
 end
 
 
 function accept_trial(s::Simulation)
+
     if accept_trial(backend(s))
-        weave!(s, :Δ_vals, Δₖ(s))
-        weave!(s, :p_norms, pₖ_norm(s))
-        weave!(s, :ρ_vals, ρ(s))
+
+        weave!(s, f_vals, fₖ(s))
+
+        weave!(s, ∇f_norms, ∇fₖ_norm(s))
+
+        weave!(s, Δ_vals, Δₖ(s))
+
+        weave!(s, p_norms, pₖ_norm(s))
+
+        weave!(s, ρ_vals, ρ(s))
+
         return true
     end
+
     return false
 end
 
 
 function pflag(s::Simulation)
-    pflag(backend(s))
+    return pflag(backend(s))
 end
 
 
 function secantQN(s::Simulation)
+
     secantQN(backend(s))
+
+    nothing
 end
 
 
 function update_Sₖ(s::Simulation)
+
     update_Sₖ(backend(s))
+
+    nothing
 end
 
 
 function gHS(s::Simulation)
-    #increment!(ghs_counter(s))
+
+    on!(ghs_timer(s))
+
     gHS(backend(s))
+
+    off!(ghs_timer(s))
+
+    increment!(ghs_counter(s))
+
+    nothing
 end
 
 
 function blockQN(s::Simulation)
+
     blockQN(backend(s))
+
+    nothing
 end
 
 
@@ -175,6 +276,7 @@ function optimize!(simulation::Simulation)
 
         update_Δₖ(simulation)
     end
+
     return simulation
 end
 

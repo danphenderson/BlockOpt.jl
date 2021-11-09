@@ -19,7 +19,6 @@ mutable struct DriverOptions
     δ_tol::Float64
     ϵ_tol::Float64
     max_iterations::Int
-    
     log_level::LogLevel
     weave_level::WeaveLevel
 

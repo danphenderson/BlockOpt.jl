@@ -6,8 +6,6 @@ export S_update, A, B, C, D, E, F # TODO: change to something sensible
 orth(S::AbstractArray{<:Real}) = Matrix(qr(S).Q)
 
 
-
-
 """
 Random set of orthonormal sample directions. 
 
@@ -123,7 +121,7 @@ struct Driver
     pflag::Bool
     options::DriverOptions
 
-    function Driver(S_update=C, QN_update=SR1, pflag=false, options=DriverOptions())
+    function Driver(;S_update=C, QN_update=SR1, pflag=false, options=DriverOptions())
         # TODO: Confrim S_update and QN_update inputs are valid
         #       Maybe parse symbol and compare to set of strings?
         new(S_update, QN_update, pflag, options)
@@ -147,7 +145,7 @@ options(d::Driver) = getfield(d, :options)
 samples(d::Driver) = samples(options(d))
 
 
-samples!(d::Driver, samples) =  samples!(options(d), samples)
+samples!(d::Driver, samples) = samples!(options(d), samples)
 
 
 Δ_max(d::Driver) = Δ_max(options(d))
