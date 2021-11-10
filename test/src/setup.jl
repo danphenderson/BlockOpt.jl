@@ -1,6 +1,6 @@
 const NAME         = "TestDir"
 const test_model   = Model(NAME);
-const n            = 20
+const n            = 10
 const λs           = sort(n*rand(n))
 const ∇²f          = Symmetric(begin Q = orth(randn(n, n)); Q'*diagm(λs)*Q end)
 const ∇²f⁻¹        = inv(∇²f) 

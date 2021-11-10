@@ -194,7 +194,7 @@ end
 
         @test last(ρ_vals(s)) ≈ ρ(s)
 
-        @test last(p_nroms(s)) ≈ pₖ_norm(s)
+        @test last(p_norms(s)) ≈ pₖ_norm(s)
 
         @test ∇fₖ_norm(s) < ϵ_tol(backend(s))
     end

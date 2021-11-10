@@ -388,7 +388,7 @@ end
         @test Hₖ⁻¹ * b.Sₖ ≈ b.Yₖ  # rhs col of 5.3
 
 
-        @test Hₖ⁻¹'* Mₖ  ≈  Qₖ     # equivalence of 5.3
+        @test Hₖ⁻¹'* Mₖ  ≈  Qₖ    # equivalence of 5.3
 
 
         """
@@ -516,13 +516,15 @@ end
 
         successful_trial && @testset "update_Sₖ subroutine" begin
 
+            Sₖ = b.Sₖ
+
             update_Sₖ(b)
 
             @test b.Sₖ'*b.Sₖ ≈ I
-    
-            @test rank(b.Sₖ) ≡ 2w - 1
 
-            true
+            S_update(b) ≡ B && @test norm(b.Sₖ' * Sₖ) ≤ sqrt(eps(Float64))
+
+            S_update(b) ≡ C && @test norm(b.Sₖ' * Sₖ) ≤ sqrt(eps(Float64))
         end
 
 
@@ -545,8 +547,6 @@ end
             @test b.Vₖ ≈ [b.Yₖ  b.hₖ / b.∇fₖ_norm]
     
             @test b.Uₖ'*b.Vₖ ≈ b.Uₖ'*b.Vₖ
-
-            true
         end
 
 
@@ -558,7 +558,7 @@ end
     
             @test b.Hₖ ≈ b.Hₖ'
 
-            @test b.Hₖ * b.hₖ ≈ b.∇fₖ  # possible typo eqution 5.3 
+            @test b.Hₖ * b.hₖ ≈ b.∇fₖ
     
             @test b.Hₖ * b.Vₖ ≈ b.Uₖ
 

@@ -3,7 +3,7 @@ export pflag, QN_update, SR1, PSB
 export S_update, A, B, C, D, E, F # TODO: change to something sensible
 
 
-orth(S::AbstractArray{<:Real}) = Matrix(qr!(S).Q)
+orth(S::AbstractArray{<:Real}) = Matrix(qr(S).Q)
 
 
 """
@@ -16,7 +16,7 @@ function A(Sₖ, Yₖ, pₖ)
 end
 
 
-"""7
+"""
 Random set of sample directions orthogonal to the pervious sample space given by input Sₖ.
 
 See: Equation ``(6.1b)``.
