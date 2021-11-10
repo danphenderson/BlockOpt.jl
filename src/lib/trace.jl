@@ -94,18 +94,6 @@ Base.getproperty(p::BlockOptProfile, s::Symbol) = @restrict BlockOptProfile
 Base.propertynames(p::BlockOptProfile) = ()
 
 
-function Base.show(io::IO, p::BlockOptProfile)
-    println(io, "    Profile:")
-    println(io, "    ------------------------------------")
-    print(io,   "        trs_counter:      $(evaluations(trs_counter(p)))")
-    println(io, "        trs_timer:        $(Δt(trs_timer(p)))")
-    print(io,   "        ghs_counter:      $(evaluations(ghs_counter(p)))")
-    println(io, "        ghs_timer:        $(Δt(ghs_timer(p)))")
-    flush(io)
-    return nothing
-end
-
-
 """
 Weaver
 
@@ -163,15 +151,6 @@ Base.getproperty(w::Weaver, s::Symbol) = @restrict Weaver
 
 
 Base.propertynames(w::Weaver) = ()
-
-
-function Base.show(io::IO, w::Weaver)
-    for field ∈ fieldnames(Weaver)
-        display(getfield(w, field))
-    end
-    flush(io)
-    return nothing
-end
 
 
 """
@@ -260,16 +239,6 @@ Base.getproperty(t::BlockOptTrace, s::Symbol) = @restrict BlockOptTrace
 Base.propertynames(t::BlockOptTrace) = ()
 
 
-function Base.show(io::IO, t::BlockOptTrace)
-    println(io, "Trace:")
-    println(io, "----------------------------------------")
-    show(io, profile(t))
-    show(io, weaver(t))
-    flush(io)
-    return nothing
-end
-
-
 # generates logging methods info!, warn!, debug!, error!
 for level in (:info, :debug, :warn, :error)
     lower_level_str = String(level)
@@ -284,7 +253,7 @@ for level in (:info, :debug, :warn, :error)
                 for (idx, arg) in enumerate(args)
                     idx > 0 && show(io, arg)
                 end
-                println(io)
+                println(io,"")
                 flush(io)
             end
         end

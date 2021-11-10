@@ -91,13 +91,6 @@ warn!(s::Simulation, args...) = warn!(trace(s), args...)
 error!(s::Simulation, args...) = error!(trace(s), args...)
 
 
-function Base.show(io::IO, s::Simulation)
-    show(io(s), trace(s))
-    show(io(s), backend(s))
-    return nothing
-end
-
-
 Base.getproperty(s::Simulation, sym::Symbol) = @restrict Simulation
 
 
@@ -125,16 +118,6 @@ end
 function terminal(s::Simulation)
 
     if terminal(backend(s), evaluations(trs_counter(s)))
-
-        weave!(s, f_vals, fₖ(s))
-
-        weave!(s, ∇f_norms, ∇fₖ_norm(s))
-
-        weave!(s, Δ_vals, Δₖ(s))
-
-        weave!(s, p_norms, pₖ_norm(s))
-
-        weave!(s, ρ_vals, ρ(s))
 
         return true
     end
@@ -190,8 +173,6 @@ function accept_trial(s::Simulation)
 
         weave!(s, f_vals, fₖ(s))
 
-        weave!(s, ∇f_norms, ∇fₖ_norm(s))
-
         weave!(s, Δ_vals, Δₖ(s))
 
         weave!(s, p_norms, pₖ_norm(s))
@@ -235,6 +216,8 @@ function gHS(s::Simulation)
     off!(ghs_timer(s))
 
     increment!(ghs_counter(s))
+
+    weave!(s, ∇f_norms, ∇fₖ_norm(s))
 
     nothing
 end

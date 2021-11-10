@@ -188,14 +188,3 @@ Base.getproperty(d::Driver, s::Symbol) = @restrict Driver
 
 
 Base.propertynames(d::Driver) = ()
-
-
-function Base.show(io::IO, d::Driver)
-    println(io, "Driver:")
-    println(io, "----------------------------------------")
-    println(io, "    S_update:           $(S_update(d))")
-    println(io, "    QN_update:          $(QN_update(d))")
-    println(io, "    pflag:              $(pflag(d))")
-    show(options(d))
-    return nothing
-end

@@ -94,16 +94,6 @@ end
 
 #Base.show(io::IO, b::BlockOptBackend) = return nothing
 
-function Base.show(io::IO, b::BlockOptBackend)
-    println(io, "BlockOptBackend:")
-    println(io, "----------------------------------------")
-    for field ∈ fieldnames(BlockOptBackend)
-        println(io, "    $field:           $(show(getfield(b, field)))")
-    end
-    flush(io)
-    return nothing
-end
-
 
 # Accessors used in simulation.jl to weave! (TODO: Restrict this class as well)
 model(b::BlockOptBackend) = getfield(b, :model)
@@ -177,7 +167,7 @@ can observe other traced aspects (giving more state options).
 """
 function terminal(b::BlockOptBackend, k::Int)
 
-    if ∇fₖ_norm(b) ≤ ϵ_tol(b) || max_iterations(b) ≤ k
+    if ∇fₖ_norm(b) < ϵ_tol(b) || max_iterations(b) ≤ k
         return true
     end
 

@@ -82,16 +82,3 @@ Base.getproperty(o::DriverOptions, s::Symbol) = @restrict DriverOptions
 
 
 Base.propertynames(o::DriverOptions) = ()
-
-
-function Base.show(io::IO, o::DriverOptions)
-    println(io, "\n    DriverOptions:")
-    println(io, "    ------------------------------------")
-    println(io, "        samples:        $(samples(o))")
-    println(io, "        Δ_max:          $(Δ_max(o))")
-    println(io, "        δ_tol:          $(δ_tol(o))")
-    println(io, "        ϵ_tol:          $(ϵ_tol(o))")
-    println(io, "        max_iterations: $(max_iterations(o))")
-    flush(io)
-    return nothing
-end

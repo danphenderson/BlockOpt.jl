@@ -63,7 +63,7 @@ import BlockOpt: trace, backend, optimize!, optimize
 include("setup.jl")
 
 
-@testset "Utilities      (See File test/util.jl)   " begin 
+@testset verbose=true "Utilities      (See File: test/util.jl)  " begin 
     include("util.jl");
 end
 
@@ -73,7 +73,7 @@ function main()
 end
 
 
-@testset "Library        (See Directory: test/lib/)" begin
+@testset verbose=true "Library        (See Directory: test/lib/)" begin
     include("lib/model.jl")
 
     include("lib/options.jl")

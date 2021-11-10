@@ -111,18 +111,3 @@ Base.getproperty(m::Model, s::Symbol) = @restrict Model
 
 
 Base.propertynames(m::Model) = ()
-
-
-function Base.show(io::IO, m::Model)
-    print(io, "$(name(m)) Model:\n")
-    !isa(formula(m), Missing) && println(io, "    $(formula(m))")
-    x0 = initial_iterate(m)
-    println(io, "----------------------------------------")
-    println(io, "    objective:        $(objective(m))")
-    println(io, "    gradient:         $(gradient(m))")
-    println(io, "    initial iterate:  $(isa(x0, Missing) ? x0 : "[$(x0[begin])...$(x0[end])]")")
-    println(io, "    dimension:        $(dimension(m))")
-    println(io, "    directory:        $(directory(m))")
-    flush(io)
-    return nothing
-end

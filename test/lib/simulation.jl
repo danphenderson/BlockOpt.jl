@@ -29,13 +29,33 @@
 
         @test weave!(s, :f_vals, 0.0) ≈ [0.0]
 
-        @test weave!(s, :∇f_norms, 0.0) ≈ [0.0]
+        @test weave!(s, :∇f_norms, 1.0) ≈ [1.0]
 
-        @test weave!(s, :Δ_vals, 0.0) ≈ [0.0]
+        @test weave!(s, :Δ_vals, 2.0) ≈ [2.0]
 
-        @test weave!(s, :p_norms, 0.0) ≈ [0.0]
+        @test weave!(s, :p_norms, 3.0) ≈ [3.0]
 
-        @test weave!(s, :ρ_vals, 0.0) ≈ [0.0]
+        @test weave!(s, :ρ_vals, 4.0) ≈ [4.0]
+
+        @test pop!(f_vals(s)) ≈ 0.0
+        
+        @test pop!(∇f_norms(s)) ≈ 1.0
+        
+        @test pop!(Δ_vals(s)) ≈ 2.0
+       
+        @test pop!(p_norms(s)) ≈ 3.0
+        
+        @test pop!(ρ_vals(s)) ≈ 4.0
+
+        @test weave!(s, f_vals, 0.0) ≈ [0.0]
+
+        @test weave!(s, ∇f_norms, 1.0) ≈ [1.0]
+
+        @test weave!(s, Δ_vals, 2.0) ≈ [2.0]
+
+        @test weave!(s, p_norms, 3.0) ≈ [3.0]
+
+        @test weave!(s, ρ_vals, 4.0) ≈ [4.0]
 
         @test weave_level(s) ≡ weave_level(test_driver)
 
@@ -63,7 +83,7 @@
     end
 
      
-    @testset "edge cases" begin
+    @testset "edge case testing" begin
 
 
     end
@@ -89,7 +109,7 @@ end
 
     i = 0
 
-    while i < 4
+    while !terminal(s)
 
 
         build_trs(s)
@@ -111,14 +131,24 @@ end
 
         build_trial(s)
 
+
         successful_trial = accept_trial(s)
         
 
-        successful_trial && @testset "accept_trial subroutine" begin
+        @testset "accept_trial subroutine" begin
 
-            @test last(f_vals(s)) ≈ fₖ(s)
+            if successful_trial
 
-            true
+                @test last(Δ_vals(s)) ≈ Δₖ(s)
+
+                @test last(ρ_vals(s)) ≈ ρ(s)
+
+                @test last(p_norms(s)) ≈ pₖ_norm(s)
+            end
+
+            @test last(f_vals(s)) ≈ fₖ(s) # always holds 
+
+            @test last(∇f_norms(s)) ≈ ∇fₖ_norm(s) # always holds
         end
 
 
@@ -134,7 +164,11 @@ end
 
             elapsed = Δt(ghs_timer(s))
 
+            ∇f_norm = ∇fₖ_norm(s)
+
             gHS(s)
+
+            @test !(last(∇f_norms(s)) ≈ ∇f_norm)
 
             @test evaluations(ghs_counter(s)) ≡ cost + 1
 
@@ -150,6 +184,20 @@ end
         i += 1
     end
 
+    @test last(∇f_norms(s)) ≈ ∇fₖ_norm(s)
+
+    @test last(f_vals(s)) ≈ fₖ(s)
+
+    if max_iterations(backend(s)) > evaluations(trs_counter(s)) # implying convergence
+
+        @test last(Δ_vals(s)) ≈ Δₖ(s)
+
+        @test last(ρ_vals(s)) ≈ ρ(s)
+
+        @test last(p_nroms(s)) ≈ pₖ_norm(s)
+
+        @test ∇fₖ_norm(s) < ϵ_tol(backend(s))
+    end
 
     return nothing
 end

@@ -272,7 +272,11 @@
 
             b.∇fₖ_norm = ϵ_tol(b)
 
-            @test terminal(b, max_iterations(b) - 1) ≡ true  # convergence condition
+            @test terminal(b, max_iterations(b) - 1) ≡ false  # not good enough
+
+            b.∇fₖ_norm = ϵ_tol(b) - eps(Float64)
+
+            @test terminal(b, max_iterations(b) - 1) ≡ true  # convergence reached
         end
 
         @testset "terminal subroutine" begin
