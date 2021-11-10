@@ -1,7 +1,7 @@
 module BlockOpt
 
 import Statistics: mean
-using LinearAlgebra, TRS, Dates
+using LinearAlgebra, TRS, Dates, RecipesBase
 using ForwardDiff
 using Printf
 
@@ -22,5 +22,6 @@ include("lib/simulation.jl")
 
 include("lib/show.jl")
 
+include("lib/recipes.jl")
 
 end # module

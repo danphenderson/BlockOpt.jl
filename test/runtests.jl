@@ -1,4 +1,4 @@
-using Test, LinearAlgebra, ForwardDiff
+using Test, LinearAlgebra, ForwardDiff, RecipesBase
 
 import Statistics: mean
 
@@ -60,6 +60,10 @@ import BlockOpt: fₖ, ∇fₖ_norm, pₖ_norm, Δₖ, ρ, model, driver, termin
 import BlockOpt: trace, backend, optimize!, optimize
 
 
+# Recipes imports
+import BlockOpt: rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace, objtrace!, gradtrace, gradtrace!
+
+
 include("setup.jl")
 
 
@@ -73,20 +77,22 @@ end
 end
 
 
-@testset verbose=true "Options (See File: test/options.jl) " begin 
-    include("options.jl")
-end
+# @testset verbose=true "Options (See File: test/options.jl) " begin 
+#     include("options.jl")
+# end
 
 
-@testset verbose=true "Driver (See File: test/driver.jl)   " begin 
-    include("driver.jl") 
-end
+# @testset verbose=true "Driver (See File: test/driver.jl)   " begin 
+#     include("driver.jl") 
+# end
 
 
-@testset verbose=true "Library (See Directory: test/lib/)  " begin 
-    include("lib/trace.jl")
+# @testset verbose=true "Library (See Directory: test/lib/)  " begin 
+#     include("lib/trace.jl")
 
-    include("lib/backend.jl")
+#     include("lib/backend.jl")
 
-    include("lib/simulation.jl");
-end
+#     include("lib/simulation.jl")
+
+#     include("lib/recipes.jl")
+# end

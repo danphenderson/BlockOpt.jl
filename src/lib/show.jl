@@ -108,7 +108,7 @@ end
 # TODO: Consider adding assertion statements to show methods to catch bugs
 
 function Base.show(io::IO, s::Simulation)
-    pass = (terminal(s) ?  true : false)
+    pass = (∇fₖ_norm(s) ≤ ϵ_tol(backend(s)) ?  true : false)
     @printf io "\n%s" (pass ? "SUCCESS" : "FAIL")
     @printf io " %1.2e %s %1.2e"          ∇fₖ_norm(s) (pass ? "≤" : "≰") ϵ_tol(backend(s))
     @printf io " in %d steps\n"         evaluations(trs_counter(s))

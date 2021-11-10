@@ -1,4 +1,4 @@
-const NAME         = "LibTest"
+const NAME         = "TestDir"
 const test_model   = Model(NAME);
 const n            = 20
 const λs           = sort(n*rand(n))
