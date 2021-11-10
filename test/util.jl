@@ -19,7 +19,7 @@ end
 
     func(f::AbstractFoo) = @contract AbstractFoo :func
     
-    # func(T) where T<:AbstractFoo throws until T overloads func 
+    # testing that func(T) where T<:AbstractFoo throws until method T exists
     @test_throws ContractError func(Foo())
 
     func(f::Foo) = nothing

@@ -2,7 +2,7 @@ using Test, LinearAlgebra, ForwardDiff
 
 import Statistics: mean
 
-import Parameters: @unpack
+import Parameters: @unpack # Remove or implement memory manipulation tests
 
 # import Util Types
 import BlockOpt:  @lencheck, DimensionError,  @contract, ContractError,  @restrict, AccessError
@@ -63,23 +63,27 @@ import BlockOpt: trace, backend, optimize!, optimize
 include("setup.jl")
 
 
-@testset verbose=true "Utilities      (See File: test/util.jl)  " begin 
-    include("util.jl");
+@testset verbose=true "Utilities (See File: test/util.jl)  " begin 
+    include("util.jl")
 end
 
 
-function main()
-    return BlockOptBackend(test_model, test_driver)
+@testset verbose=true "Model (See File: test/model.jl)     " begin
+    include("model.jl")
 end
 
 
-@testset verbose=true "Library        (See Directory: test/lib/)" begin
-    include("lib/model.jl")
+@testset verbose=true "Options (See File: test/options.jl) " begin 
+    include("options.jl")
+end
 
-    include("lib/options.jl")
 
-    include("lib/driver.jl")
+@testset verbose=true "Driver (See File: test/driver.jl)   " begin 
+    include("driver.jl") 
+end
 
+
+@testset verbose=true "Library (See Directory: test/lib/)  " begin 
     include("lib/trace.jl")
 
     include("lib/backend.jl")

@@ -8,11 +8,11 @@ using Printf
 
 include("util.jl")
 
-include("lib/model.jl")
+include("model.jl")
 
-include("lib/options.jl")
+include("options.jl")
 
-include("lib/driver.jl")
+include("driver.jl")
 
 include("lib/trace.jl")
 
