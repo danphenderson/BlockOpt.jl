@@ -10,7 +10,7 @@ function log_display(v, name)
     if (m=minimum(v)) > 0.0
 
         return v
-        
+
     elseif m ≈ 0.0
 
         @warn "$name: shifted by $(eps(Float64)) to display on Log Scale"
@@ -50,6 +50,7 @@ end
 
     @series begin
         x = []
+
         labels = Matrix{String}(undef, 1, num_args)
 
         # Current idea is to accept trace, backend, simulation objects (may need to include model, driver in simulation.jl)
@@ -63,11 +64,13 @@ end
 
             #labels[1,i] = "\$ ~ f \\quad \\mathrm{$qn} ~ w=\\mathrm{$w} \\quad n=\\mathrm{$n}\$"
             
-            labels[1,i] = "\$~ f ~ w= $w ~ n=$n ~ $qn\$"
+            labels[1,i] = "\$~ f ~ w= $w ~ n=$n ~ $qn ~ $dir\$"
 
             push!(x, v)
         end
+
         label --> labels
+
         x
     end
 end
@@ -99,6 +102,7 @@ end
 
     @series begin
         x = []
+
         labels = Matrix{String}(undef, 1, num_args)
 
         for i ∈ 1:num_args
@@ -111,7 +115,9 @@ end
 
             push!(x, ∇f_norms(t))
         end
+
         label --> labels
+
         x
     end
 end

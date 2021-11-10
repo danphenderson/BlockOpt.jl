@@ -1,8 +1,5 @@
-using Test, LinearAlgebra, ForwardDiff, RecipesBase
+using Test, Statistics, LinearAlgebra, Parameters # Test deps
 
-import Statistics: mean
-
-import Parameters: @unpack # Remove or implement memory manipulation tests
 
 # import Util Types
 import BlockOpt:  @lencheck, DimensionError,  @contract, ContractError,  @restrict, AccessError
@@ -77,22 +74,22 @@ end
 end
 
 
-# @testset verbose=true "Options (See File: test/options.jl) " begin 
-#     include("options.jl")
-# end
+@testset verbose=true "Options (See File: test/options.jl) " begin 
+    include("options.jl")
+end
 
 
-# @testset verbose=true "Driver (See File: test/driver.jl)   " begin 
-#     include("driver.jl") 
-# end
+@testset verbose=true "Driver (See File: test/driver.jl)   " begin 
+    include("driver.jl") 
+end
 
 
-# @testset verbose=true "Library (See Directory: test/lib/)  " begin 
-#     include("lib/trace.jl")
+@testset verbose=true "Library (See Directory: test/lib/)  " begin 
+    include("lib/trace.jl")
 
-#     include("lib/backend.jl")
+    include("lib/backend.jl")
 
-#     include("lib/simulation.jl")
+    include("lib/simulation.jl")
 
-#     include("lib/recipes.jl")
-# end
+    include("lib/recipes.jl")
+end

@@ -1,4 +1,3 @@
-
 """
 Timer
 
@@ -249,7 +248,7 @@ for level in (:info, :debug, :warn, :error)
     @eval function $fn(trace::BlockOptTrace, args...)
         if log_level(trace) <= $upper_level_sym
             let io = io(trace)
-                println(io, trunc(now(), Dates.Second), $label)
+                println(io, trunc(now(), Second), $label)
                 for (idx, arg) in enumerate(args)
                     idx > 0 && show(io, arg)
                 end

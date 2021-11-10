@@ -101,7 +101,7 @@ end
 grad(m::Model, x) = grad!(m, similar(x), x)
 
 
-hessAD(model, x) = ForwardDiff.jacobian(gradient(model), similar(x), x)
+hessAD(model, x) = jacobian(gradient(model), similar(x), x)
 
 
 hess_sample(model, x, dx) = hessAD(model, x) * dx

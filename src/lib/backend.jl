@@ -274,9 +274,9 @@ end
 
 function gAD(b::BlockOptBackend, S) 
     
-    Sdual = ForwardDiff.Dual{Float64}.(b.xₖ,  eachcol(S)...)
+    Sdual = Dual{Float64}.(b.xₖ,  eachcol(S)...)
     
-    Ydual = ForwardDiff.Dual{Float64}.(similar(b.xₖ),  eachcol(S)...)
+    Ydual = Dual{Float64}.(similar(b.xₖ),  eachcol(S)...)
     
     Ydual = grad!(b, Ydual, Sdual)
     
