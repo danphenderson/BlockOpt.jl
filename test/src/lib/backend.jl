@@ -338,31 +338,64 @@ end
         @test b.hₖ ≈ hess_sample(test_model, b.xₖ, b.∇fₖ)
 
         @test b.Yₖ ≈ hess_sample(test_model, b.xₖ, b.Sₖ)
+
+        @test rank(b.Hₖ) ≡ dimension(b)
+
+        @test b.Hₖ ≈ b.Hₖ'
         
         @test b.Yₖ'*b.Sₖ ≈ b.Sₖ'*b.Yₖ
 
         @test b.Uₖ'*b.Vₖ ≈ b.Uₖ'*b.Vₖ
 
-        @test b.Hₖ ≈ b.Hₖ'
+        @test b.Sₖ' * ∇²f * b.Sₖ ≈ b.Sₖ' * b.Yₖ
+        
+        # @test b.Yₖ ≈ b.Hₖ * b.Sₖ # line 231 Y₀ = H₀ S₀ (typo - test condition below)
 
-        @test rank(b.Hₖ) ≡ dimension(b)
+        @test b.Yₖ ≈ inv(b.Hₖ) * b.Sₖ
+
+        @test b.Hₖ * b.Yₖ ≈ b.Sₖ
+
+        @test b.Uₖ ≈ [b.Sₖ  b.∇fₖ / b.∇fₖ_norm] 
+
+        @test b.Vₖ ≈ [b.Yₖ  b.hₖ / b.∇fₖ_norm ]
     end
 
     iterations = 0
 
     while !terminal(b, iterations)
 
-        iterations+=1
+        iterations += 1
 
 
         build_trs(b)
+
+
+        Hₖ⁻¹ = inv(b.Hₖ)
+
+
+        Mₖ = [b.∇fₖ/b.∇fₖ_norm  (b.Hₖ*b.∇fₖ) / b.∇fₖ_norm  b.Sₖ]
+
+
+        Qₖ = [b.hₖ/b.∇fₖ_norm  b.∇fₖ/b.∇fₖ_norm  b.Yₖ] 
+
+
+        @test Hₖ⁻¹ * b.∇fₖ ≈ b.hₖ # lhs col of 5.3
+
+
+        @test Hₖ⁻¹ * b.∇fₖ ≈ b.hₖ # middle col of 5.3
+
+
+        @test Hₖ⁻¹ * b.Sₖ ≈ b.Yₖ  # rhs col of 5.3
+
+
+        @test Hₖ⁻¹'* Mₖ  ≈  Qₖ     # equivalence of 5.3
 
 
         """
         Equation 5.1: ``pₖ = arg min model_p(p) : ||p|| < Δ,``    
         for p ∈ ℜⁿ; the standard n-dimensional trust-region subproblem.
         """
-        mp(p) = 0.5 * p' * b.Hₖ * p + b.∇fₖ'p
+        mp(p) = 0.5 * p' * Hₖ⁻¹ * p + b.∇fₖ'p
     
         
         """ 
@@ -387,23 +420,26 @@ end
 
             @test b.C ≈ b.Qₖ' * b.Hₖ^2 * b.Qₖ
 
-            Qₖ = [b.hₖ/b.∇fₖ_norm  b.∇fₖ/b.∇fₖ_norm  b.Yₖ]
-
-            # TODO: @test b.Qₖ preserves ls solution of Qₖ's null space 
-
-            @test b.Qₖ ≈ orth(Qₖ)
+            @test b.Qₖ ≈ orth(Qₖ) 
 
             @test b.Qₖ'b.Qₖ ≈ zeros(samples(b) + 1, samples(b) + 1) + I
+            @test cond(b.Qₖ) ≈ 1.0 # this is redundant
 
             @test mp(zeros(dimension(b))) ≈ 0.0
-
             @test mq(zeros(dimension(b))) ≈ 0.0
-
             @test ma(zeros(samples(b) + 1)) ≈ 0.0
 
             a = randn(2w + 1)
 
+            @test ma(a) ≈ mq(b.Qₖ * a)
+            
+            @test ma(a) ≈ mp(b.Hₖ * b.Qₖ * a) # line 186? p ≠ Mₖa
+            
             @test sqrt(a' * b.C * a) ≈ norm(b.Hₖ * b.Qₖ * a)
+            
+            @test norm(b.Hₖ * b.Qₖ * b.aₖ) ≤ b.Δₖ # typo-ish, see below:
+
+            # @test norm(b.Hₖ * Qₖ * b.aₖ) ≤ b.Δₖ # line 192 and 5.5 asserts this 
         end
 
 
@@ -418,13 +454,15 @@ end
 
             @test ma(b.aₖ) ≈ mq(b.qₖ)
 
-            # TODO: @test ma(b.aₖ) to mp(b.pₖ) 
+            @test ma(b.aₖ) ≈ mp(b.pₖ)
 
             @test ma(b.aₖ) ≤ 0.0       
 
-            @test b.∇fₖ' * b.pₖ < 0.0  
+            @test b.∇fₖ' * b.pₖ ≤ 0.0  # descent direction 
 
-            @test sqrt(b.aₖ' * b.C * b.aₖ) ≈ b.pₖ_norm
+            @test abs(sqrt(b.aₖ' * b.C * b.aₖ) - b.pₖ_norm) ≤ sqrt(eps(Float64))
+
+            @test abs(sqrt(b.aₖ' * b.C * b.aₖ) - norm(b.Hₖ * b.qₖ)) ≤ sqrt(eps(Float64))
         end
 
 
@@ -524,7 +562,7 @@ end
     
             @test b.Hₖ * b.Vₖ ≈ b.Uₖ
 
-            @test b.Hₖ * b.Yₖ ≈ b.Sₖ  
+            @test b.Hₖ * b.Yₖ ≈ b.Sₖ
 
             true
         end
