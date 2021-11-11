@@ -92,65 +92,46 @@ mutable struct BlockOptBackend
 end
 
 
-#Base.show(io::IO, b::BlockOptBackend) = return nothing
-
-
 # Accessors used in simulation.jl to weave! (TODO: Restrict this class as well)
 model(b::BlockOptBackend) = getfield(b, :model)
 
-
 driver(b::BlockOptBackend) = getfield(b, :driver)
-
 
 fₖ(b::BlockOptBackend) = getfield(b, :fₖ)
 
-
 ∇fₖ_norm(b::BlockOptBackend) = getfield(b, :∇fₖ_norm)
-
 
 pₖ_norm(b::BlockOptBackend) = getfield(b, :pₖ_norm)
 
-
 Δₖ(b::BlockOptBackend) = getfield(b, :Δₖ)
-
 
 ρ(b::BlockOptBackend) = getfield(b, :ρ)
 
 
-# Forward Needed Model Methods
+# Forwarded Model Methods
 obj(b::BlockOptBackend, x) = obj(model(b), x)
-
 
 grad(b::BlockOptBackend, x) = grad(model(b), x)
 
-
 grad!(b::BlockOptBackend, out, x) = grad!(model(b), out, x)
-
 
 dimension(b::BlockOptBackend) = dimension(model(b))
 
 
-# Forward Needed Driver/DriverOptions Methods
+# Forwarded Driver/DriverOptions Methods
 QN_update(b::BlockOptBackend) = QN_update(driver(b))
-
 
 S_update(b::BlockOptBackend) = S_update(driver(b))
 
-
 pflag(b::BlockOptBackend) = pflag(driver(b))
-
 
 samples(b::BlockOptBackend) = samples(driver(b))
 
-
 Δ_max(b::BlockOptBackend) = Δ_max(driver(b))
-
 
 δ_tol(b::BlockOptBackend) = δ_tol(driver(b))
 
-
 ϵ_tol(b::BlockOptBackend) = ϵ_tol(driver(b))
-
 
 max_iterations(b::BlockOptBackend) = max_iterations(driver(b))
 
@@ -172,15 +153,13 @@ function terminal(b::BlockOptBackend, k::Int)
         return true
     end
 
-    println("terminal backend ∇fₖ_norm ", ∇fₖ_norm(b))
-
     return false
 end
 
 
 function secantQN(b::BlockOptBackend)
 
-    b.Hₖ = QN_update(b)(b.Hₖ, grad(b, b.xₜ) - b.∇fₖ, b.pₖ, δ_tol(b))
+    b.Hₖ = QN_update(b)(b.Hₖ, b.pₖ, grad(b, b.xₜ) - b.∇fₖ, δ_tol(b))
 
     return nothing
 end
@@ -296,7 +275,6 @@ function gAD(b::BlockOptBackend, S)
 end
 
 
-
 function build_UV(b::BlockOptBackend)
     
     b.Uₖ = [b.Sₖ  b.∇fₖ/b.∇fₖ_norm] 
@@ -305,7 +283,6 @@ function build_UV(b::BlockOptBackend)
     
     return nothing
 end
-
 
     
 function gHS(b::BlockOptBackend)

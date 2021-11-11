@@ -30,7 +30,9 @@ end
 @recipe function f(result::ObjTrace)
     num_args = length(result.args)
 
-    y_lab = (num_args > 1 ? "\$ f \$" : formula(model(result.args[1])))
+    m = model(result.args[1])
+
+    y_lab = (isa(formula(m), Missing) || num_args > 1 ? "\$ f \$" : formula(m))
 
     xguide := "Iterates (gHS evaluations)"
 
@@ -82,7 +84,9 @@ end
 @recipe function f(result::GradTrace)
     num_args = length(result.args)
 
-    y_lab = (num_args > 1 ? "\$ ||\\nabla f|| \$" : "\\nabla($(formula(model(result.args[1]))))")
+    m = model(result.args[1])
+
+    y_lab = (isa(formula(m), Missing) || num_args > 1 ? "\$ f \$" : formula(m))
 
     xguide := "Iterates (gHS evaluations)"
 

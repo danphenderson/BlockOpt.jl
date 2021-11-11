@@ -23,7 +23,8 @@ import BlockOpt: samples, Δ_max, δ_tol, ϵ_tol, max_iterations, weave_level, l
 
 
 # Driver imports
-import BlockOpt: orth, pflag, QN_update, SR1, PSB, S_update, A, B, C, D, E, F
+import BlockOpt: orth, pflag, QN_update, SR1, PSB, S_update, S_update_a, S_update_b,
+S_update_c, S_update_d, S_update_e, S_update_f
 
 
 # Timer imports
@@ -61,7 +62,7 @@ import BlockOpt: trace, backend, optimize!, optimize
 import BlockOpt: rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace, objtrace!, gradtrace, gradtrace!
 
 
-include("src/setup.jl")
+include("setup.jl")
 
 
 @testset verbose=true "Utilities (See File: test/src/util.jl)  " begin

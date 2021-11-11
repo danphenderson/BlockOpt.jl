@@ -31,17 +31,19 @@ export samples, Δ_max, δ_tol, ϵ_tol, max_iterations, weave_level, log_level,
     LogLevel, INFO, DEBUG, WARN, ERROR, WeaveLevel, NONE, ALL
 
 # See driver.jl
-export driver, orth, pflag, QN_update, SR1, PSB, S_update, A, B, C, D, E, F
+export driver, orth, pflag, QN_update, SR1, PSB, S_update, S_update_a, S_update_a,
+    S_update_b, S_update_c, S_update_d, S_update_e
 
 # See trace.jl
-export Δt, evaluations, trs_timer, trs_counter, ghs_timer, ghs_counter, f_vals, 
+export trace, Δt, evaluations, trs_timer, trs_counter, ghs_timer, ghs_counter, f_vals, 
     ∇f_norms, Δ_vals, p_norms, ρ_vals
 
 # See simulation.jl
 export optimize
 
 # See recipes.jl
-export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace, objtrace!, gradtrace, gradtrace!
+export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace,
+    objtrace!, gradtrace, gradtrace!
 
 
 include("util.jl")

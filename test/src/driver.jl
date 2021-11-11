@@ -3,33 +3,33 @@
     Y = randn(n, 2w-1)
     p = randn(n)
 
-    # TODO: CRUCIAL ISSUE Y orth to S_new (update D)  
-    # LOOK AT NORMALIZATION
-    S_new = A(S, Y, p); @test S_new'*S_new ≈ I
+    S_new = S_update_a(S, Y, p);
     
-    S_new = B(S, Y, p);
+    @test S_new'*S_new ≈ I
+    
+    S_new = S_update_b(S, Y, p);
     
     @test S_new'*S_new ≈ I
 
     @test norm(S_new'*S) ≤ sqrt(eps(Float64)) # orthoganlity test
     
-    S_new = C(S, Y, p);
+    S_new = S_update_c(S, Y, p);
     
     @test S_new'*S_new ≈ I
 
     @test norm(S_new'*S) ≤ sqrt(eps(Float64)) # orthoganlity test
     
-    S_new = D(S, Y, p);
+    S_new = S_update_d(S, Y, p);
     
     @test S_new'*S_new ≈ I
     
-    S_new = E(S, Y, p);
+    S_new = S_update_e(S, Y, p);
     
     @test S_new'*S_new ≈ I
     
-    S_new = F(S, Y, p);
+    S_new = S_update_f(S, Y, p);
     
-    @test S_new'*S_new ≈ I
+    @test S_new'*S_new ≈ I;
 end
 
 
@@ -50,7 +50,7 @@ end
     
     Hnew = SR1(H, x, y, δ); @test Hnew*y ≈ x 
     
-    Hnew = PSB(H, x, y, δ); @test Hnew*y ≈ x 
+    Hnew = PSB(H, x, y, δ); @test Hnew*y ≈ x; 
 end
 
 

@@ -14,7 +14,7 @@
 
     @test isa(dimension(test_model), Missing)
 
-    @test isa(formula(test_model), Missing)
+    @test isa(formula(test_model), Missing);
 end
 
 
@@ -34,7 +34,7 @@ end
 
     @test initial_iterate!(test_model, x₀) ≡ x₀
 
-    @test formula!(test_model, LaTex) ≡ LaTex
+    @test formula!(test_model, LaTex) ≡ LaTex;
 end
 
 
@@ -58,5 +58,5 @@ end
 
     @test hessAD(test_model, x₀) ≈ ∇²f
 
-    @test hess_sample(test_model, x₀, ∇f₀) ≈ h₀
+    @test hess_sample(test_model, x₀, ∇f₀) ≈ h₀;
 end

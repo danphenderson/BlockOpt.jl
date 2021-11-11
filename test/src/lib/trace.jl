@@ -8,7 +8,7 @@
     @test increment!(counter)    ≡ 
           evaluations(counter) ≡ 1
 
-    restricted_type_test(counter)
+    restricted_type_test(counter);
 end
 
 
@@ -34,7 +34,7 @@ end
     @test evaluations(trs_counter(profile)) ≡
           evaluations(ghs_counter(profile)) ≡ 0
  
-    restricted_type_test(profile)
+    restricted_type_test(profile);
 end
 
 
@@ -61,7 +61,7 @@ end
 
     weave!(weaver, :ρ_vals, 0.0)
 
-    @test pop!(ρ_vals(weaver)) ≡ 0.0
+    @test pop!(ρ_vals(weaver)) ≡ 0.0;
 end
 
 

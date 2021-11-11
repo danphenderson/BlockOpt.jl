@@ -21,7 +21,7 @@ const w            = 3
 const N            = 2000
 const WEAVE_LEVEL  = ALL
 const LOG_LEVEL    = INFO
-const S_UPDATE     = C 
+const S_UPDATE     = S_update_c 
 const QN_UPDATE    = SR1
 const PFLAG        = false
 

@@ -1,10 +1,3 @@
-export DriverOptions
-export samples, Δ_max, δ_tol, ϵ_tol, max_iterations, weave_level, log_level
-export samples!, Δ_max!, δ_tol!, ϵ_tol!, max_iterations!, weave_level!, log_level! 
-export LogLevel, INFO, DEBUG, WARN, ERROR
-export WeaveLevel, NONE, ALL
-
-
 @enum LogLevel::Int INFO DEBUG WARN ERROR
 
 @enum WeaveLevel::Int NONE ALL
@@ -38,47 +31,34 @@ end
 
 samples(o::DriverOptions) = getfield(o, :samples)
 
-
 Δ_max(o::DriverOptions) = getfield(o, :Δ_max)
-
 
 δ_tol(o::DriverOptions) = getfield(o, :δ_tol)
 
-
 ϵ_tol(o::DriverOptions) = getfield(o, :ϵ_tol)
-
 
 max_iterations(o::DriverOptions) = getfield(o, :max_iterations)
 
-
 weave_level(o::DriverOptions) = getfield(o, :weave_level)
-
 
 log_level(o::DriverOptions) = getfield(o, :log_level)
 
-
 samples!(o::DriverOptions, s) = setfield!(o, :samples, s)
-
 
 Δ_max!(o::DriverOptions, Δ) = setfield!(o, :Δ_max, Δ)
 
-
 δ_tol!(o::DriverOptions, δ) = setfield!(o, :δ_tol, δ)
-
 
 ϵ_tol!(o::DriverOptions, ϵ) = setfield!(o, :ϵ_tol, ϵ)
 
-
 max_iterations!(o::DriverOptions, K) = setfield!(o, :max_iterations, K)
 
-
 weave_level!(o::DriverOptions, level::WeaveLevel) = setfield!(o, :weave_level, level)
-
 
 log_level!(o::DriverOptions, level::LogLevel) = setfield!(o, :log_level, level)
 
 
-Base.getproperty(o::DriverOptions, s::Symbol) = @restrict DriverOptions
 
+Base.getproperty(o::DriverOptions, s::Symbol) = @restrict DriverOptions
 
 Base.propertynames(o::DriverOptions) = ()

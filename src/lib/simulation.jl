@@ -13,7 +13,7 @@ struct Simulation
     backend::BlockOptBackend
 
     function Simulation(model::Model, driver::Driver)
-        # TODO: confrim valid inputs for model and driver 
+        # TODO: Handle ill-formed input
         new(BlockOptTrace(model, driver), BlockOptBackend(model, driver))
     end
 end
@@ -21,78 +21,55 @@ end
 
 trace(s::Simulation) = getfield(s, :trace)
 
-
 trs_timer(s::Simulation) = trs_timer(trace(s))
-
 
 trs_counter(s::Simulation) = trs_counter(trace(s))
 
-
 ghs_timer(s::Simulation) = ghs_timer(trace(s))
-
 
 ghs_counter(s::Simulation) = ghs_counter(trace(s))
 
-
 weave!(s::Simulation, field, val) = weave!(trace(s), field, val)
-
 
 weave_level(s::Simulation) = weave_level(trace(s))
 
-
-backend(s::Simulation) = getfield(s, :backend)
-
-
-fₖ(s::Simulation) = fₖ(backend(s)) 
-
-
-∇fₖ_norm(s::Simulation) = ∇fₖ_norm(backend(s)) 
-
-
-pₖ_norm(s::Simulation) = pₖ_norm(backend(s)) 
-
-
-Δₖ(s::Simulation) = Δₖ(backend(s))
-
-
-ρ(s::Simulation) = ρ(backend(s))
-
-
 f_vals(s::Simulation) = f_vals(trace(s)) 
-
 
 ∇f_norms(s::Simulation) = ∇f_norms(trace(s)) 
 
-
 p_norms(s::Simulation) = p_norms(trace(s)) 
-
 
 Δ_vals(s::Simulation) = Δ_vals(trace(s))
 
-
 ρ_vals(s::Simulation) = ρ_vals(trace(s))
-
 
 io(s::Simulation) = io(trace(s))
 
-
 log_level(s::Simulation) = log_level(trace(s))
-
 
 info!(s::Simulation, args...) = info!(trace(s), args...)
 
-
 debug!(s::Simulation, args...) = debug!(trace(s), args...)
 
-
 warn!(s::Simulation, args...) = warn!(trace(s), args...)
-
 
 error!(s::Simulation, args...) = error!(trace(s), args...)
 
 
-Base.getproperty(s::Simulation, sym::Symbol) = @restrict Simulation
+backend(s::Simulation) = getfield(s, :backend)
 
+fₖ(s::Simulation) = fₖ(backend(s)) 
+
+∇fₖ_norm(s::Simulation) = ∇fₖ_norm(backend(s)) 
+
+pₖ_norm(s::Simulation) = pₖ_norm(backend(s)) 
+
+Δₖ(s::Simulation) = Δₖ(backend(s))
+
+ρ(s::Simulation) = ρ(backend(s))
+
+
+Base.getproperty(s::Simulation, sym::Symbol) = @restrict Simulation
 
 Base.propertynames(s::Simulation) = ()
 
@@ -109,25 +86,23 @@ function initialize(s::Simulation)
 
     weave!(s, Δ_vals, Δₖ(s))
 
-    show(weaver(trace(s)))
-
     println()
 
     nothing
 end
 
 
-# TODO: add monitor for conditioning and underflow
-#       Use enum, subject to overhaul
+
 function terminal(s::Simulation)
+    # TODO: add monitor for conditioning and underflow
+    #       Use enum, to hold state.
 
     if terminal(backend(s), evaluations(trs_counter(s)))
 
         return true
+
     end
 
-    println("sim: trs_count ", evaluations(trs_counter(s)))
-    
     return false
 end
 
@@ -225,8 +200,6 @@ function gHS(s::Simulation)
 
     weave!(s, ∇f_norms, ∇fₖ_norm(s))
 
-    show(weaver(trace(s)))
-
     nothing
 end
 
@@ -240,6 +213,7 @@ end
 
 
 function optimize!(simulation::Simulation)
+
     initialize(simulation)
 
     build_trs(simulation) 
@@ -272,4 +246,5 @@ function optimize!(simulation::Simulation)
 end
 
 
-optimize(model::Model, driver::Driver) = (s = Simulation(model, driver); optimize!(s))
+optimize(model::Model, driver::Driver) = optimize!(Simulation(model, driver))
+

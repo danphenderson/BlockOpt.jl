@@ -33,7 +33,7 @@ end
     
     @test weave_level!(options, NONE) ≡ NONE
     
-    @test log_level!(options, ERROR) ≡ ERROR
+    @test log_level!(options, ERROR) ≡ ERROR;
 end
 
 
