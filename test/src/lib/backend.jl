@@ -475,7 +475,7 @@ end
     
             @test b.fₜ ≈ obj(b, b.xₜ)
     
-            model_reduction = ma(b.aₖ)
+            model_reduction = mq(b.qₖ)
     
             actual_reduction = b.fₜ - b.fₖ
     

@@ -92,9 +92,9 @@ obj(m::Model, x) = begin
 end
 
 
-grad!(m::Model, out, x) = begin
+function grad!(m::Model, out, x) 
     @lencheck dimension(m) out x
-    gradient(m)(out, x)
+    return gradient(m)(out, x)
 end
 
 

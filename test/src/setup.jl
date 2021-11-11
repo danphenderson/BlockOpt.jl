@@ -64,3 +64,18 @@ function rosenbrock_model(n::Int)
 
     return rosen_model
 end
+
+# function rosen(x)
+#    N = lastindex(x)
+#    return 100sum((x[i+1] - x[i]^2)^2 for i = 1:N-1) + sum((x[i] - 1)^2 for i = 1:N-1) 
+# end
+
+# function ∇rosen!(g, x)
+#     N = lastindex(x)
+#     g[1] = -2*(1 - x[1]) - 400*x[1]*(-x[1]^2 + x[2])
+#     for i in 2:N-1
+#         g[i] = -2*(1 - x[i]) + 200*(-x[i-1]^2 + x[i]) - 400*x[i]*(-x[i]^2 + x[1 + i])
+#     end
+#     g[N] = 200 * (x[N] - x[N-1]^2)
+#     return g
+# end

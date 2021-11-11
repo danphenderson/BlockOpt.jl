@@ -1,13 +1,14 @@
 module BlockOpt
 
+import Base: copy
 
 import LinearAlgebra: diagm, BLAS, Symmetric, mul!, norm, dot, issymmetric, rank, qr, I, pinv, eigvals
 
 import Statistics: mean
 
-import ForwardDiff: Dual, jacobian
+import ForwardDiff: ForwardDiff, Dual, jacobian
 
-import TRS: trs_small
+import TRS: trs_small, trs
 
 import RecipesBase: RecipesBase, @series, @recipe, @userplot
 

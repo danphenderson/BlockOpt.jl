@@ -1,14 +1,17 @@
 function array_string_view(data)
+    isa(data, Missing) && return data
+
     if length(data) == 1
-        return @sprintf "[%1.2e]\n" data[begin]
+        return @sprintf "[%.4f]" data[begin]
     elseif length(data) == 2
-        return @sprintf "[%1.2e, ..., %1.2e]\n" data[begin] data[end]
+        return @sprintf "[%.4f, ..., %.4f]" data[begin] data[end]
     elseif length(data) == 3 
-        return @sprintf "[%1.2e, ..., %1.2e, %1.2e]\n" data[begin] data[end-1] data[end]
+        return @sprintf "[%.4f, ..., %.4f, %.4f]" data[begin] data[end-1] data[end]
     elseif length(data) ≥ 4
-        return @sprintf "[%1.2e, ..., %1.2e, %1.2e, %1.2e]\n" data[begin] data[end-2] data[end-1] data[end]
+        return @sprintf "[%.4f, ..., %.4f, %.4f, %.4f]" data[begin] data[end-2] data[end-1] data[end]
     end   
-    return "" # data is empty
+
+    return data # data is empty
 end
 
 
@@ -20,80 +23,77 @@ function header_view(is_suptype::Bool, name)
 end
 
 
-# TODO: Add a print_field method, that handles offset - good enough
+# TODO: Add a print_field method, that handles offset
+
+# TODO: Add a pretty_print method to round floats
 
 
 function Base.show(io::IO, m::Model)
-    x0 = initial_iterate(m)
-    x0 = isa(x0, Missing) ? "$(x0)\n" : array_string_view(x0) 
-    @printf io "  Model: "
-    isa(formula(m), Missing) ? (@printf io "%s\n" formula(m)) : (@printf io "\n")
-    @printf io "  -------------------\n"
-    @printf io "    objective:       %s\n" "$(objective(m))"
-    @printf io "    gradient:        %s\n" "$(gradient(m))"
-    @printf io "    initial iterate: %s"    x0
-    @printf io "    dimension:       %d\n"  dimension(m)
-    @printf io "    directory:       %s\n"  directory(m)
-    @printf io "\n"
+    println(io,"  Model: ")
+    println(io, "  -------------------")
+    println(io, "    objective:         $(objective(m))")
+    println(io, "    gradient:          $(gradient(m))") 
+    println(io, "    initial iterate:   $(array_string_view(initial_iterate(m)))")    
+    println(io, "    dimension:         $(dimension(m))")  
+    println(io, "    directory:         $(directory(m))")
+    println(io, "    objective formula: $(formula(m))")  
     flush(io)
     return nothing
 end
 
 
 function Base.show(io::IO, o::DriverOptions)
-    @printf io "    Options:\n"
-    @printf io "      samples:        %d\n"    samples(o)
-    @printf io "      Δ_max:          %1.3e\n" Δ_max(o)
-    @printf io "      δ_tol:          %1.3e\n" δ_tol(o)
-    @printf io "      ϵ_tol:          %1.3e\n" ϵ_tol(o)
-    @printf io "      max_iterations: %d\n"    max_iterations(o)
+    println(io, "    Options:")
+    println(io, "      samples:        $(samples(o))")    
+    println(io, "      Δ_max:          $(Δ_max(o))") 
+    println(io, "      δ_tol:          $(δ_tol(o))")
+    println(io, "      ϵ_tol:          $(ϵ_tol(o))")
+    println(io, "      max_iterations: $(max_iterations(o))")
     flush(io)
     return nothing
 end
 
 
 function Base.show(io::IO, d::Driver)
-    @printf io "  Driver:\n"
-    @printf io "  -------------------\n"
-    @printf io "    S_update:  %s\n"  "$(S_update(d))"
-    @printf io "    QN_update: %s\n"  "$(QN_update(d))"
-    @printf io "    pflag:     %s\n"  "$(pflag(d))"
-    show(options(d))
-    @printf io "\n"
+    println(io, "  Driver:")
+    println(io, "  -------------------")
+    println(io, "    S_update:  $(S_update(d))")
+    println(io, "    QN_update: $(QN_update(d))")
+    println(io, "    pflag:     $(pflag(d))")
+    show(io, options(d))
     flush(io)
     return nothing
 end
 
 
 function Base.show(io::IO, w::Weaver)
-    @printf io "    Weaver:\n"
-    @printf io "      f_vals:   %s" array_string_view(f_vals(w))
-    @printf io "      ∇f_norms: %s" array_string_view(∇f_norms(w))
-    @printf io "      Δ_vals:   %s" array_string_view(Δ_vals(w))
-    @printf io "      p_norms:  %s" array_string_view(p_norms(w))
-    @printf io "      ρ_vals:   %s" array_string_view(ρ_vals(w))
+    println(io,"    Weaver:")
+    println(io,"      f_vals:   $(array_string_view(f_vals(w)))")
+    println(io,"      ∇f_norms: $(array_string_view(∇f_norms(w)))")
+    println(io,"      Δ_vals:   $(array_string_view(Δ_vals(w)))")
+    println(io,"      p_norms:  $(array_string_view(p_norms(w)))")
+    println(io,"      ρ_vals:   $(array_string_view(ρ_vals(w)))")
     flush(io)
     return nothing
 end
 
 
 function Base.show(io::IO, p::BlockOptProfile)
-    @printf io "    Profile:\n"
-    @printf io "      trs_counter: %d\n"    evaluations(trs_counter(p))
-    @printf io "      trs_timer:   %1.3e\n" Δt(trs_timer(p))
-    @printf io "      ghs_counter: %d\n"    evaluations(ghs_counter(p))
-    @printf io "      ghs_timer:   %1.3e\n" Δt(ghs_timer(p))
+    println(io,"    Profile:")
+    println(io,"      trs_counter: $(evaluations(trs_counter(p)))")
+    println(io,"      trs_timer:   $(Δt(trs_timer(p)))")
+    println(io,"      ghs_counter: $(evaluations(ghs_counter(p)))")
+    println(io,"      ghs_timer:   $(Δt(ghs_timer(p)))")
     flush(io)
     return nothing
 end
 
 
 function Base.show(io::IO, t::BlockOptTrace)
-    @printf io "  Trace:\n"
-    @printf io "  -------------------\n"
+    println(io,"  Trace:")
+    println(io,"  -------------------")
     show(io, weaver(t))
     show(io, profile(t))
-    @printf io "\n"
     flush(io)
     return nothing
 end
@@ -107,16 +107,18 @@ end
 
 # TODO: Consider adding assertion statements to show methods to catch bugs
 
+# IF SIMULATION TAKES NO STEPS ERRORS ARE THROWN 
 function Base.show(io::IO, s::Simulation)
     pass = (∇fₖ_norm(s) ≤ ϵ_tol(backend(s)) ?  true : false)
-    @printf io "\n%s" (pass ? "SUCCESS" : "FAIL")
-    @printf io " %1.2e %s %1.2e"          ∇fₖ_norm(s) (pass ? "≤" : "≰") ϵ_tol(backend(s))
-    @printf io " in %d steps\n"         evaluations(trs_counter(s))
-    @printf io "--------------------------------------\n"
-    @printf io "  Minimum f:      %1.2e\n" minimum(f_vals(s))
-    @printf io "  Minimum ||∇f||: %1.2e\n" minimum(∇f_norms(s))
-    @printf io "  Minimum Δ:      %1.2e\n" minimum(Δ_vals(s))
-    @printf io "  Minimum Step:   %1.2e\n\n" minimum(p_norms(s))
+    print(io,"$(pass ? "SUCCESS" : "FAIL")")
+    print(io,  " $(∇fₖ_norm(s)) $(pass ? "≤" : "≰") $(ϵ_tol(backend(s)))")
+    println(io," in $(evaluations(trs_counter(s))) steps")
+    println(io,"--------------------------------------")
+    println(io,"  Minimum f:      $(minimum(f_vals(s)))")
+    println(io,"  Minimum ||∇f||: $(minimum(∇f_norms(s)))")
+    println(io,"  Minimum Δ:      $(minimum(Δ_vals(s)))")
+    println(io,"  Minimum Step:   $(minimum(p_norms(s)))")
+    println(io,"")
     show(io, backend(s))
     show(io, trace(s))
     return nothing
@@ -124,9 +126,9 @@ end
 
 
 # function show_driver(io::IO, d::Driver)
-#     @printf io "\n%s %s Driver: n = %d, w = %d\n" d.name d.QN d.n d.w
-#     @printf io "-----------------------------------------------------------\n"
-#     @printf io "  Hessian Samples: %d\n" 2*d.w
-#     @printf io "  Terminal Conditions: ||∇fₖ|| < %1.2e or %d iterations\n\n" d.ϵ d.max_iter
+#     println(io,"\n%s %s Driver: n = %d, w = %d\n" d.name d.QN d.n d.w
+#     println(io,"-----------------------------------------------------------\n"
+#     println(io,"  Hessian Samples: %d\n" 2*d.w
+#     println(io,"  Terminal Conditions: ||∇fₖ|| < %1.2e or %d iterations\n\n" d.ϵ d.max_iter
 #     return nothing
 # end

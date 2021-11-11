@@ -109,6 +109,10 @@ function initialize(s::Simulation)
 
     weave!(s, Δ_vals, Δₖ(s))
 
+    show(weaver(trace(s)))
+
+    println()
+
     nothing
 end
 
@@ -121,6 +125,8 @@ function terminal(s::Simulation)
 
         return true
     end
+
+    println("sim: trs_count ", evaluations(trs_counter(s)))
     
     return false
 end
@@ -218,6 +224,8 @@ function gHS(s::Simulation)
     increment!(ghs_counter(s))
 
     weave!(s, ∇f_norms, ∇fₖ_norm(s))
+
+    show(weaver(trace(s)))
 
     nothing
 end

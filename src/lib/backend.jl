@@ -6,9 +6,9 @@ mutable struct BlockOptBackend
     xₖ::Vector{Float64}
 
     # following fields storage is initilized in construction
-    ∇fₖ::Vector{Float64}
-    hₖ::Vector{Float64}
-    pₖ::Vector{Float64}
+    ∇fₖ::Vector
+    hₖ::Vector
+    pₖ::Vector
     xₜ::Vector{Float64}
     fₖ::Float64
     fₜ::Float64
@@ -168,8 +168,11 @@ can observe other traced aspects (giving more state options).
 function terminal(b::BlockOptBackend, k::Int)
 
     if ∇fₖ_norm(b) < ϵ_tol(b) || max_iterations(b) ≤ k
+
         return true
     end
+
+    println("terminal backend ∇fₖ_norm ", ∇fₖ_norm(b))
 
     return false
 end
@@ -215,7 +218,7 @@ end
 
 function solve_trs(b::BlockOptBackend)
 
-    aₖ, _ = trs_small(b.P, b.b, b.Δₖ, b.C, compute_local=false)
+    aₖ, info = trs_small(b.P, b.b, b.Δₖ, b.C, compute_local=false)
 
     b.aₖ = aₖ[:, 1]
 
@@ -243,8 +246,8 @@ end
 
 function update_Δₖ(b::BlockOptBackend)
 
-    if 0.0 < b.ρ < 0.25
-    
+    if b.ρ < 0.25
+
         b.Δₖ = 0.25*b.Δₖ
     
     elseif b.ρ > 0.75 && b.pₖ_norm ≈ b.Δₖ
@@ -258,7 +261,6 @@ end
 
 
 function accept_trial(b::BlockOptBackend)
-
     if b.ρ > 0
 
         b.xₖ = b.xₜ
@@ -294,16 +296,18 @@ function gAD(b::BlockOptBackend, S)
 end
 
 
+
 function build_UV(b::BlockOptBackend)
     
-    b.Uₖ = [b.Sₖ b.∇fₖ / b.∇fₖ_norm] 
+    b.Uₖ = [b.Sₖ  b.∇fₖ/b.∇fₖ_norm] 
     
-    b.Vₖ = [b.Yₖ b.hₖ  / b.∇fₖ_norm]
+    b.Vₖ = [b.Yₖ  b.hₖ/b.∇fₖ_norm]
     
     return nothing
 end
 
 
+    
 function gHS(b::BlockOptBackend)
     
     w = b.w
