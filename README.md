@@ -1,7 +1,7 @@
 # BlockOpt.jl (Currently Under Development)
 | **Documentation** | **Build Status** |
 |:-----------------:|:----------------:|
-
+| ![Documentation]()    |![Build Status]() |
 
 
 Implements a Quasi-Newton Block update with a direct solve of the 
@@ -29,4 +29,4 @@ in a notebook enviroment.
 
 The TRS.jl package is an unregistered package requirement for BlockOpt.jl
 and it must be installed independetly and prior to installation of the BlockOpt
-package. 
+package.
