@@ -33,6 +33,7 @@ makedocs(
 # See "Hosting Documentation" and deploydocs() in the Documenter manual
 # for more information.
 deploydocs(
+    devbranch = "main",
     push_preview = true,
     repo = "github.com/danphenderson/BlockOpt.jl.git",
 )
