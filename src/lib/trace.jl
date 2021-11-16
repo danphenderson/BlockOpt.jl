@@ -4,14 +4,16 @@ Timer
 Holds a count that is incremented in units of 1. 
 """
 mutable struct EvaluationTimer
-    Δt
-    
-    function EvaluationTimer() new(0.0) end
+    Δt::Any
+
+    function EvaluationTimer()
+        new(0.0)
+    end
 end
 
 Δt(t::EvaluationTimer) = getfield(t, :Δt)
 
-on!(t::EvaluationTimer) = setfield!(t, :Δt,  Δt(t) - time())
+on!(t::EvaluationTimer) = setfield!(t, :Δt, Δt(t) - time())
 
 off!(t::EvaluationTimer) = setfield!(t, :Δt, time() + Δt(t))
 
@@ -28,12 +30,14 @@ Holds a count that is incremented in units of 1.
 mutable struct EvaluationCounter
     evaluations::Int
 
-    function EvaluationCounter() new(0) end
+    function EvaluationCounter()
+        new(0)
+    end
 end
 
 evaluations(c::EvaluationCounter) = getfield(c, :evaluations)
 
-increment!(c::EvaluationCounter, units=1) = begin
+increment!(c::EvaluationCounter, units = 1) = begin
     units > 0 && setfield!(c, :evaluations, evaluations(c) + units)
     return evaluations(c)
 end
@@ -97,7 +101,7 @@ struct Weaver
     weave_level::WeaveLevel
 
     # weave stuff
-    function Weaver(weave_level::WeaveLevel=ALL)
+    function Weaver(weave_level::WeaveLevel = ALL)
         return new(
             Vector{Float64}(),
             Vector{Float64}(),
@@ -122,7 +126,7 @@ p_norms(w::Weaver) = getfield(w, :p_norms)
 
 weave!(w::Weaver, field::Symbol, val::Float64) = append!(getfield(w, field), val)
 
-weave!(w::Weaver, accessor::Function, val::Float64) = append!(accessor(w), val) 
+weave!(w::Weaver, accessor::Function, val::Float64) = append!(accessor(w), val)
 
 weave_level(w::Weaver) = getfield(w, :weave_level)
 
@@ -147,12 +151,13 @@ struct BlockOptTrace
     io::IO
 
     function BlockOptTrace(model, driver)
-        new(model,
+        new(
+            model,
             driver,
             BlockOptProfile(),
             Weaver(weave_level(driver)),
             log_level(driver),
-            open(joinpath(directory(model), "trace.log"), "w+"),  
+            open(joinpath(directory(model), "trace.log"), "w+"),
         )
     end
 end
@@ -222,7 +227,7 @@ for level in (:info, :debug, :warn, :error)
                     idx > 0 && show(io, arg)
                     println(io)
                 end
-                println(io,"")
+                println(io, "")
                 flush(io)
             end
         end

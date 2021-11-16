@@ -2,39 +2,38 @@
     counter = EvaluationCounter()
 
     @test evaluations(counter) ≡ 0
-    
+
     @test increment!(counter, -1) ≡ 0
 
-    @test increment!(counter)    ≡ 
-          evaluations(counter) ≡ 1
+    @test increment!(counter) ≡ evaluations(counter) ≡ 1
 
-    restricted_type_test(counter);
+    restricted_type_test(counter)
 end
 
 
 @testset "Timer" begin
     timer = EvaluationTimer()
-        
+
     @test Δt(timer) ≡ 0.0
 
-    on!(timer); sleep(0.5); off!(timer)
+    on!(timer)
+    sleep(0.5)
+    off!(timer)
 
     @test Δt(timer) > 0.5
 
-    restricted_type_test(timer);
+    restricted_type_test(timer)
 end
 
 
 @testset "Profile" begin
     profile = BlockOptProfile()
 
-    @test Δt(trs_timer(profile)) ≡
-          Δt(ghs_timer(profile)) ≡ 0.0
-   
-    @test evaluations(trs_counter(profile)) ≡
-          evaluations(ghs_counter(profile)) ≡ 0
- 
-    restricted_type_test(profile);
+    @test Δt(trs_timer(profile)) ≡ Δt(ghs_timer(profile)) ≡ 0.0
+
+    @test evaluations(trs_counter(profile)) ≡ evaluations(ghs_counter(profile)) ≡ 0
+
+    restricted_type_test(profile)
 end
 
 
@@ -61,7 +60,7 @@ end
 
     weave!(weaver, :ρ_vals, 0.0)
 
-    @test pop!(ρ_vals(weaver)) ≡ 0.0;
+    @test pop!(ρ_vals(weaver)) ≡ 0.0
 end
 
 
@@ -87,28 +86,33 @@ end
 
         @test isa(weaver(test_trace), Weaver)
 
-        @test map(isempty, (f_vals(test_trace),
-                            ∇f_norms(test_trace),
-                            Δ_vals(test_trace), 
-                            p_norms(test_trace),
-                            ρ_vals(test_trace))) ≡ (true, true, true, true, true)
-       
+        @test map(
+            isempty,
+            (
+                f_vals(test_trace),
+                ∇f_norms(test_trace),
+                Δ_vals(test_trace),
+                p_norms(test_trace),
+                ρ_vals(test_trace),
+            ),
+        ) ≡ (true, true, true, true, true)
+
 
         @test weave_level(test_trace) ≡ weave_level(test_driver)
 
         @test log_level(test_trace) ≡ log_level(test_driver)
 
         @test isfile(io(test_trace))
-    
+
         restricted_type_test(test_trace)
     end
 
 
 
     @testset "generated logging function test" begin
-        
+
         # TODO: Visual confrimation suggests working as expected
-        
+
     end
 
 end

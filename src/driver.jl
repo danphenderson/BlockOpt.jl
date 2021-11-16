@@ -8,7 +8,7 @@ Random set of orthonormal sample directions.
 
 See: Equation ``(6.1a)``.
 """
-function S_update_a(Sₖ, Yₖ, pₖ) 
+function S_update_a(Sₖ, Yₖ, pₖ)
     return orth(randn(eltype(Sₖ), size(Sₖ)...))
 end
 
@@ -20,9 +20,9 @@ Random set of sample directions orthogonal to the pervious sample space given by
 
 See: Equation ``(6.1b)``.
 """
-function S_update_b(Sₖ, Yₖ, pₖ) 
+function S_update_b(Sₖ, Yₖ, pₖ)
     M = randn(eltype(Sₖ), size(Sₖ)...)
-    return orth(M - Sₖ*(Sₖ' * M))
+    return orth(M - Sₖ * (Sₖ' * M))
 end
 
 
@@ -35,7 +35,7 @@ Hessian eigenvalues.
 See: Equation ``(6.1c)``.
 """
 function S_update_c(Sₖ, Yₖ, pₖ)
-    return orth(Yₖ - Sₖ*(Sₖ'*Yₖ))
+    return orth(Yₖ - Sₖ * (Sₖ' * Yₖ))
 end
 
 
@@ -48,7 +48,7 @@ choosen step.
 See: Equation ``(6.1d)``.
 """
 function S_update_d(Sₖ, Yₖ, pₖ)
-    return orth([ orth(randn(eltype(Sₖ), size(Sₖ, 1), size(Sₖ, 2)-1)) pₖ ])
+    return orth([orth(randn(eltype(Sₖ), size(Sₖ, 1), size(Sₖ, 2) - 1)) pₖ])
 end
 
 
@@ -60,9 +60,9 @@ choosen step.
 
 See: Equation ``(6.1e)``.
 """
-function S_update_e(Sₖ, Yₖ, pₖ) 
-    M = randn(size(Sₖ, 1), size(Sₖ, 2)-1)
-    return orth([orth(M - Sₖ*(Sₖ'*M)) pₖ])
+function S_update_e(Sₖ, Yₖ, pₖ)
+    M = randn(size(Sₖ, 1), size(Sₖ, 2) - 1)
+    return orth([orth(M - Sₖ * (Sₖ' * M)) pₖ])
 end
 
 
@@ -75,7 +75,7 @@ choosen step.
 See: Equation ``(6.1f)``.
 """
 function S_update_f(Sₖ, Yₖ, pₖ)
-    return orth([ orth(Yₖ[:, begin:end-1] - Sₖ*(Sₖ' * Yₖ[:, begin:end-1])) pₖ ])
+    return orth([orth(Yₖ[:, begin:end-1] - Sₖ * (Sₖ' * Yₖ[:, begin:end-1])) pₖ])
 end
 
 
@@ -88,14 +88,19 @@ relative tolerance.
 
 See: ``Algorithm 4.2.``
 """
-function SR1(H::AbstractArray{<:Real}, U::AbstractArray{<:Real}, V::AbstractArray{<:Real}, δ::Float64)
-    U_minus_HV = U - H*V
+function SR1(
+    H::AbstractArray{<:Real},
+    U::AbstractArray{<:Real},
+    V::AbstractArray{<:Real},
+    δ::Float64,
+)
+    U_minus_HV = U - H * V
 
     if size(U, 2) == 1
-        return Symmetric(H + ((U_minus_HV)*(U_minus_HV)')/((U_minus_HV)'*V))
+        return Symmetric(H + ((U_minus_HV) * (U_minus_HV)') / ((U_minus_HV)' * V))
     end
 
-    return Symmetric(H + U_minus_HV *  pinv(U_minus_HV'*V, rtol=δ) *  U_minus_HV')
+    return Symmetric(H + U_minus_HV * pinv(U_minus_HV' * V, rtol = δ) * U_minus_HV')
 end
 
 
@@ -107,14 +112,19 @@ where δ is the Moore-Penrose psuedoinverse relative tolerance.
 
 See: ``Algorithm 4.3.``
 """
-function PSB(H::AbstractArray{<:Real}, U::AbstractArray{<:Real}, V::AbstractArray{<:Real}, δ::Float64)
+function PSB(
+    H::AbstractArray{<:Real},
+    U::AbstractArray{<:Real},
+    V::AbstractArray{<:Real},
+    δ::Float64,
+)
     if size(V, 2) == 1
-        T₁ = 1/(V'*V)
-    else 
-        T₁ = pinv(V'*V, rtol=δ)
+        T₁ = 1 / (V' * V)
+    else
+        T₁ = pinv(V' * V, rtol = δ)
     end
 
-    T₂ = V*T₁*(U - H*V)'
+    T₂ = V * T₁ * (U - H * V)'
     return Symmetric(H + T₂ + T₂' - T₂ * V * T₁ * V')
 end
 
@@ -132,7 +142,12 @@ struct Driver
     pflag::Bool
     options::DriverOptions
 
-    function Driver(;S_update=S_update_c, QN_update=SR1, pflag=false, options=DriverOptions())
+    function Driver(;
+        S_update = S_update_c,
+        QN_update = SR1,
+        pflag = false,
+        options = DriverOptions(),
+    )
         # TODO: Confrim S_update and QN_update inputs are valid
         #       Maybe parse symbol and compare to set of strings?
         new(S_update, QN_update, pflag, options)
@@ -198,7 +213,7 @@ samples!(d::Driver, samples) = samples!(options(d), samples)
 ϵ_tol!(d::Driver, ϵ_tol) = ϵ_tol!(options(d), ϵ_tol)
 
 
-max_iterations(d::Driver) =  max_iterations(options(d))
+max_iterations(d::Driver) = max_iterations(options(d))
 
 
 max_iterations!(d::Driver, m) = max_iterations!(options(d), m)
@@ -213,7 +228,7 @@ weave_level!(d::Driver, level) = weave_level!(options(d), level)
 log_level(d::Driver) = log_level(options(d))
 
 
-log_level!(d::Driver, level) =  log_level!(options(d), level)
+log_level!(d::Driver, level) = log_level!(options(d), level)
 
 
 Base.getproperty(d::Driver, s::Symbol) = @restrict Driver
