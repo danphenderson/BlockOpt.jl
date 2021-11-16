@@ -1,4 +1,0 @@
-# Entry Point
-```@docs
-optimize
-```

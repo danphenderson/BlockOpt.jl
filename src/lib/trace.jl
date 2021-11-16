@@ -133,10 +133,10 @@ Base.propertynames(w::Weaver) = ()
 
 
 """
-BlockOptTrace
+    BlockOptTrace
 
 Composite type responsible for logging, generating Weave 
-reports, and storing a Profile of a simulation.
+reports, and storing a Profile of the simulation.
 """
 struct BlockOptTrace
     model::Model
@@ -220,6 +220,7 @@ for level in (:info, :debug, :warn, :error)
                 println(io, trunc(now(), Second), $label)
                 for (idx, arg) in enumerate(args)
                     idx > 0 && show(io, arg)
+                    println(io)
                 end
                 println(io,"")
                 flush(io)

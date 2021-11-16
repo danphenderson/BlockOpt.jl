@@ -20,20 +20,26 @@ end
 
     options = DriverOptions()
 
-    # Mutating option fields 
-    @test Δ_max!(options, 0.0) ≡ 0.0
+    # Mutating option fields only if positive 
+    @test !(Δ_max!(options, 0.0) ≡ 0.0)
     
-    @test δ_tol!(options, 0.0) ≡ 0.0
+    @test !(δ_tol!(options, 0.0) ≡ 0.0)
     
-    @test ϵ_tol!(options, 0.0) ≡ 0.0
+    @test !(ϵ_tol!(options, 0.0) ≡ 0.0)
     
-    @test samples!(options, 0) ≡ 0
+    @test !(samples!(options, 0) ≡ 0)
+
+    @test !(samples!(options, 1) ≡ 1)
+
+    @test Δ_max!(options, 1.0) ≡ 1.0
     
-    @test max_iterations!(options, 0) ≡ 0
+    @test δ_tol!(options, 1.0) ≡ 1.0
+    
+    @test ϵ_tol!(options, 1.0) ≡ 1.0
+    
+    @test samples!(options, 2) ≡ 2
     
     @test weave_level!(options, NONE) ≡ NONE
     
     @test log_level!(options, ERROR) ≡ ERROR;
 end
-
-

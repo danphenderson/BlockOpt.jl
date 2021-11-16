@@ -11,23 +11,21 @@ makedocs(
     ),
     modules = [BlockOpt],
     checkdocs = :exports,
-    pages = [ 
+    pages = [
+
         "Introduction" => "index.md",
+        
+        "Overview" => "overview/design.md",
 
-        "Architecture" => [
-            "architecture/info.md",
-            "architecture/interface.md",
-        ],
-
-        "Reference" => [
-            "reference/model.md",
-            "reference/driver.md",
+        "Manual" => [
+            "manual/model.md",
+            "manual/driver.md",
+            "manual/options.md",
         ],
 
         "Tutorials" => [
-            "tutorials/info.md",
-            "tutorials/reference.md"
-        ],
+            "tutorials/simple.md",
+        ]
     ],
 )
 

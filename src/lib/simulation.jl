@@ -1,12 +1,8 @@
-export optimize
-export PSB, SR1
-export S_update_a, S_update_b, S_update_c, S_update_d, S_update_e, S_update_f
-
-
 """
-Simulation(model::Model, driver::Driver)
+    Simulation
 
-Enty point and exit point of an iteration.
+Enty point and exit point of an iteration, and it composes the trace and
+backend behavior.
 """
 struct Simulation
     trace::BlockOptTrace
@@ -86,7 +82,7 @@ function initialize(s::Simulation)
 
     weave!(s, Δ_vals, Δₖ(s))
 
-    println()
+    info!(s, "Simulating:", s)
 
     nothing
 end
@@ -94,13 +90,8 @@ end
 
 
 function terminal(s::Simulation)
-    # TODO: add monitor for conditioning and underflow
-    #       Use enum, to hold state.
-
     if terminal(backend(s), evaluations(trs_counter(s)))
-
         return true
-
     end
 
     return false
@@ -246,5 +237,5 @@ function optimize!(simulation::Simulation)
 end
 
 
-optimize(model::Model, driver::Driver) = optimize!(Simulation(model, driver))
+
 

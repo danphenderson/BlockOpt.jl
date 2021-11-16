@@ -31,15 +31,15 @@ export samples, Δ_max, δ_tol, ϵ_tol, max_iterations, weave_level, log_level,
     LogLevel, INFO, DEBUG, WARN, ERROR, WeaveLevel, NONE, ALL
 
 # See driver.jl
-export driver, orth, pflag, QN_update, SR1, PSB, S_update, S_update_a, S_update_a,
-    S_update_b, S_update_c, S_update_d, S_update_e
+export driver, orth, pflag, QN_update, SR1, PSB, S_update, S_update_a,
+    S_update_b, S_update_c, S_update_d, S_update_e, S_update_f
 
 # See trace.jl
 export trace, Δt, evaluations, trs_timer, trs_counter, ghs_timer, ghs_counter, f_vals, 
     ∇f_norms, Δ_vals, p_norms, ρ_vals
 
 # See simulation.jl
-export optimize
+export optimize, info!, debug!, warn!, error!
 
 # See recipes.jl
 export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace,
@@ -48,19 +48,49 @@ export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, ob
 
 include("util.jl")
 
+
 include("model.jl")
+
 
 include("options.jl")
 
+
 include("driver.jl")
+
 
 include("lib/trace.jl")
 
+
 include("lib/backend.jl")
+
 
 include("lib/simulation.jl")
 
+
+"""
+    optimize(model::Model, driver::Driver)
+
+
+An entry-point into the minimization iteration with the given `model` subject to the specified `driver`.
+"""
+optimize(model::Model, driver::Driver) = optimize!(Simulation(model, driver))
+
+
+"""
+    optimize(model::Model, driver::Driver)
+
+
+Attempts to determine the unconstrained minimum of `f` via a first-order method with the initial iterate
+given by `x₀`. The gradient ∇f! must be specified as an inplace operation.
+"""
+optimize(f::Function, ∇f!::Function, x₀::AbstractArray) = optimize(
+            Model("Missing"; objective=f, gradient=∇f!, initial_iterate=x₀), 
+            Driver(),
+        ) 
+
+
 include("lib/show.jl")
+
 
 include("lib/recipes.jl")
 

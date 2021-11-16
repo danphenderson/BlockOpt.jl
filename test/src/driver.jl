@@ -85,17 +85,17 @@ end
 @testset "testing behavior" begin
 
     # Mutating test_options from test_driver - test update in test_options
-    Δ_max!(test_driver, 0.0)
-    @test Δ_max(test_options) ≡ 0.0
+    Δ_max!(test_driver, 1.0)
+    @test Δ_max(test_options) ≡ 1.0
     
-    δ_tol!(test_driver, 0.0)
-    @test δ_tol(test_options) ≡ 0.0
+    δ_tol!(test_driver, 1.0)
+    @test δ_tol(test_options) ≡ 1.0
     
-    ϵ_tol!(test_driver, 0.0)
-    @test ϵ_tol(test_options) ≡ 0.0
+    ϵ_tol!(test_driver, 1.0)
+    @test ϵ_tol(test_options) ≡ 1.0
     
-    samples!(test_driver, 0)
-    @test samples(test_options) ≡ 0
+    samples!(test_driver, 2)
+    @test samples(test_options) ≡ 2
     
     max_iterations!(test_driver, 0)
     @test max_iterations(test_options) ≡ 0

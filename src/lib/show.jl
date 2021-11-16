@@ -2,13 +2,13 @@ function array_string_view(data)
     isa(data, Missing) && return data
 
     if length(data) == 1
-        return @sprintf "[%.4f]" data[begin]
+        return @sprintf "[%f]" data[begin]
     elseif length(data) == 2
-        return @sprintf "[%.4f, ..., %.4f]" data[begin] data[end]
+        return @sprintf "[%f, ..., %f]" data[begin] data[end]
     elseif length(data) == 3 
-        return @sprintf "[%.4f, ..., %.4f, %.4f]" data[begin] data[end-1] data[end]
+        return @sprintf "[%f, ..., %f, %f]" data[begin] data[end-1] data[end]
     elseif length(data) ≥ 4
-        return @sprintf "[%.4f, ..., %.4f, %.4f, %.4f]" data[begin] data[end-2] data[end-1] data[end]
+        return @sprintf "[%f, ..., %f, %f, %f]" data[begin] data[end-2] data[end-1] data[end]
     end   
 
     return data # data is empty
@@ -102,25 +102,32 @@ end
 function Base.show(io::IO, b::BlockOptBackend)
     show(io, model(b))
     show(io, driver(b))
+    flush(io)
     return nothing
 end
 
-# TODO: Consider adding assertion statements to show methods to catch bugs
-
-# IF SIMULATION TAKES NO STEPS ERRORS ARE THROWN 
+ 
 function Base.show(io::IO, s::Simulation)
-    pass = (∇fₖ_norm(s) ≤ ϵ_tol(backend(s)) ?  true : false)
-    print(io,"$(pass ? "SUCCESS" : "FAIL")")
-    print(io,  " $(∇fₖ_norm(s)) $(pass ? "≤" : "≰") $(ϵ_tol(backend(s)))")
-    println(io," in $(evaluations(trs_counter(s))) steps")
-    println(io,"--------------------------------------")
-    println(io,"  Minimum f:      $(minimum(f_vals(s)))")
-    println(io,"  Minimum ||∇f||: $(minimum(∇f_norms(s)))")
-    println(io,"  Minimum Δ:      $(minimum(Δ_vals(s)))")
-    println(io,"  Minimum Step:   $(minimum(p_norms(s)))")
-    println(io,"")
-    show(io, backend(s))
-    show(io, trace(s))
+    if evaluations(trs_counter(s)) == 0
+        # initial simulation display
+        show(io, model(trace(s)))
+        show(io, driver(trace(s)))
+    else
+        # display after simulation complete
+        pass = (∇fₖ_norm(s) ≤ ϵ_tol(backend(s)) ?  true : false)
+        print(io,"$(pass ? "SUCCESS" : "FAIL")")
+        print(io,  " $(∇fₖ_norm(s)) $(pass ? "≤" : "≰") $(ϵ_tol(backend(s)))")
+        println(io," in $(evaluations(trs_counter(s))) steps")
+        println(io,"--------------------------------------")
+        println(io,"  Minimum f:      $(minimum(f_vals(s)))")
+        println(io,"  Minimum ||∇f||: $(minimum(∇f_norms(s)))")
+        println(io,"  Minimum Δ:      $(minimum(Δ_vals(s)))")
+        println(io,"  Minimum Step:   $(minimum(p_norms(s)))")
+        println(io,"")
+        show(io, backend(s))
+        show(io, trace(s))
+    end
+    flush(io)
     return nothing
 end
 

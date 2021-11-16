@@ -2,6 +2,8 @@ orth(S::AbstractArray{<:Real}) = Matrix(qr(S).Q)
 
 
 """
+    S_update_a
+
 Random set of orthonormal sample directions. 
 
 See: Equation ``(6.1a)``.
@@ -10,7 +12,10 @@ function S_update_a(Sₖ, Yₖ, pₖ)
     return orth(randn(eltype(Sₖ), size(Sₖ)...))
 end
 
+
 """
+    S_update_b
+
 Random set of sample directions orthogonal to the pervious sample space given by input Sₖ.
 
 See: Equation ``(6.1b)``.
@@ -20,7 +25,10 @@ function S_update_b(Sₖ, Yₖ, pₖ)
     return orth(M - Sₖ*(Sₖ' * M))
 end
 
+
 """
+    S_update_c
+
 Attempts to guide algorithm to accurately resolve eigen-space associated with the larger
 Hessian eigenvalues.
 
@@ -30,7 +38,10 @@ function S_update_c(Sₖ, Yₖ, pₖ)
     return orth(Yₖ - Sₖ*(Sₖ'*Yₖ))
 end
 
+
 """
+    S_update_d
+
 Variant of ``(6.1a)`` that includes approximate curvature information along the previously
 choosen step. 
 
@@ -40,7 +51,10 @@ function S_update_d(Sₖ, Yₖ, pₖ)
     return orth([ orth(randn(eltype(Sₖ), size(Sₖ, 1), size(Sₖ, 2)-1)) pₖ ])
 end
 
+
 """
+    S_update_e
+
 Variant of ``(6.1b)`` that includes approximate curvature information along the previously
 choosen step. 
 
@@ -51,7 +65,10 @@ function S_update_e(Sₖ, Yₖ, pₖ)
     return orth([orth(M - Sₖ*(Sₖ'*M)) pₖ])
 end
 
+
 """
+    S_update_f
+
 Variant of ``(6.1c)`` that includes approximate curvature information along the previously
 choosen step. 
 
@@ -63,7 +80,7 @@ end
 
 
 """
-blockSR1
+    SR1
 
 Returns the algebraically mininimal SR1 inverse Quasi-Newton block update satisfying the
 inverse multi-secant condition ``H ⋅ V = U ``, where δ is the Moore-Penrose psuedoinverse
@@ -81,8 +98,9 @@ function SR1(H::AbstractArray{<:Real}, U::AbstractArray{<:Real}, V::AbstractArra
     return Symmetric(H + U_minus_HV *  pinv(U_minus_HV'*V, rtol=δ) *  U_minus_HV')
 end
 
+
 """
-blockPSB
+    PSB
 
 Powell-Symmetric-Broyden generalized Quasi-Newton block update,
 where δ is the Moore-Penrose psuedoinverse relative tolerance. 
@@ -102,7 +120,11 @@ end
 
 
 """
-Driver
+    Driver
+
+Specifies the driving parameters of a `Simulation` instance.
+A driver is assigned an immutable `S_update`, `QN_update`, and `pflag` upon
+construction.
 """
 struct Driver
     S_update::Function
@@ -118,11 +140,35 @@ struct Driver
 end
 
 
+"""
+    S_update(d::Driver)
+
+The supplemental sample direction update formula of Driver `d`.
+
+See: `S_update`, `S_update_a`, `S_update_b`, `S_update_c`, `S_update_d`, `S_update_e`, `S_update_f`
+"""
 S_update(d::Driver) = getfield(d, :S_update)
 
+
+"""
+    QN_update(d::Driver)
+
+The QN update formula of Driver `d`.
+
+See: `SR1`, `PSB`
+"""
 QN_update(d::Driver) = getfield(d, :QN_update)
 
+
+"""
+    pflag(d::Driver)
+
+The preliminary secant QN update flag of driver `D`
+
+See: SR1, PSB
+"""
 pflag(d::Driver) = getfield(d, :pflag)
+
 
 options(d::Driver) = getfield(d, :options)
 
@@ -130,33 +176,47 @@ options(d::Driver) = getfield(d, :options)
 # Inhereted/Forwarded DriverOptions Methods
 samples(d::Driver) = samples(options(d))
 
+
 samples!(d::Driver, samples) = samples!(options(d), samples)
+
 
 Δ_max(d::Driver) = Δ_max(options(d))
 
+
 Δ_max!(d::Driver, Δ_max) = Δ_max!(options(d), Δ_max)
+
 
 δ_tol(d::Driver) = δ_tol(options(d))
 
+
 δ_tol!(d::Driver, δ_tol) = δ_tol!(options(d), δ_tol)
+
 
 ϵ_tol(d::Driver) = ϵ_tol(options(d))
 
+
 ϵ_tol!(d::Driver, ϵ_tol) = ϵ_tol!(options(d), ϵ_tol)
+
 
 max_iterations(d::Driver) =  max_iterations(options(d))
 
+
 max_iterations!(d::Driver, m) = max_iterations!(options(d), m)
+
 
 weave_level(d::Driver) = weave_level(options(d))
 
+
 weave_level!(d::Driver, level) = weave_level!(options(d), level)
 
+
 log_level(d::Driver) = log_level(options(d))
+
 
 log_level!(d::Driver, level) =  log_level!(options(d), level)
 
 
 Base.getproperty(d::Driver, s::Symbol) = @restrict Driver
+
 
 Base.propertynames(d::Driver) = ()
