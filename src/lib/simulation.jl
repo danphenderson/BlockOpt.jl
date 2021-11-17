@@ -1,8 +1,9 @@
 """
-    Simulation
+Simulation
 
-Enty point and exit point of an iteration, and it composes the trace and
-backend behavior.
+Enty point and exit point of an iteration. A simulation composes a iterations trace and
+backend iteration of Algorithm ``7.1 ``.  An instance of a simulation is returned from an
+`optimize` call. 
 """
 struct Simulation
     trace::BlockOptTrace
@@ -17,29 +18,91 @@ end
 
 trace(s::Simulation) = getfield(s, :trace)
 
+
+"""
+trs_timer(s::Simulation)
+
+The elapsed time simulation `s` has spent in `trs_solve(s)`.
+"""
 trs_timer(s::Simulation) = trs_timer(trace(s))
 
+
+"""
+trs_counter(s::Simulation)
+
+The count of trust region subproblem subsolves of simulation `s`.
+"""
 trs_counter(s::Simulation) = trs_counter(trace(s))
 
+"""
+ghs_timer(s::Simulation)
+
+The elapsed time simulation `s` has spent in `gHS(s)`.
+"""
 ghs_timer(s::Simulation) = ghs_timer(trace(s))
 
+"""
+ghs_counter(s::Simulation)
+
+The number of `gHS` evaluations of simulation `s`.
+"""
 ghs_counter(s::Simulation) = ghs_counter(trace(s))
 
 weave!(s::Simulation, field, val) = weave!(trace(s), field, val)
 
 weave_level(s::Simulation) = weave_level(trace(s))
 
+"""
+f_vals(s::Simulation)
+
+A vector storing objective values ``f(xₖ)`` for each iterate xₖ.
+
+`f_vals` gets updated at each accepted step.
+"""
 f_vals(s::Simulation) = f_vals(trace(s)) 
 
+"""
+∇f_norms(s::Simulation)
+
+A vector storing normed gradient values ``||∇f(xₖ)||₂`` for each iterate xₖ.
+
+`∇f_norms` gets updated at each accepted step.
+"""
 ∇f_norms(s::Simulation) = ∇f_norms(trace(s)) 
 
+"""
+p_norms(s::Simulation)
+
+A vector storing the distance of each step ``||pₖ||₂``. 
+
+`p_norms` gets updated at each accepted step.
+"""
 p_norms(s::Simulation) = p_norms(trace(s)) 
 
+
+"""
+Δ_vals(s::Simulation)
+
+A vector storing the trust-region radius passed to `trs_small` of TRS.jl,
+during each succussful trust-region subproblem solve. 
+
+`Δ_vals` gets updated at each accepted step.
+"""
 Δ_vals(s::Simulation) = Δ_vals(trace(s))
 
+"""
+ρ_vals(s::Simulation)
+
+A vector storing the ratio of actual reduction to model reduction of
+each successful step.
+ 
+`ρ_vals` gets updated at each accepted step.
+"""
 ρ_vals(s::Simulation) = ρ_vals(trace(s))
 
+
 io(s::Simulation) = io(trace(s))
+
 
 log_level(s::Simulation) = log_level(trace(s))
 

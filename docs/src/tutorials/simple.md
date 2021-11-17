@@ -14,8 +14,6 @@ We consider finding an unconstrained minimum of the [generalized rosenbrock](htt
 f(x) = \sum_{i=1}^{N-1} \left[100(x_{i+1}^2 - x_i^2)^2 + (1 - x_i)^2\right].
 ```
 
-rosen_formula = "\$\\sum_{i=1}^{N-1} \\left[100(x_{i+1}^2 - x_i^2)^2 + (1 - x_i)^2\\right]\$"
-
 Translating the objective function into julia code below.
 
 ```julia-repl

@@ -6,7 +6,7 @@ orth(S::AbstractArray{<:Real}) = Matrix(qr(S).Q)
 
 Random set of orthonormal sample directions. 
 
-See: Equation ``(6.1a)``.
+See: Equation ``(6.1.a)``.
 """
 function S_update_a(Sₖ, Yₖ, pₖ) 
     return orth(randn(eltype(Sₖ), size(Sₖ)...))
@@ -18,7 +18,7 @@ end
 
 Random set of sample directions orthogonal to the pervious sample space given by input Sₖ.
 
-See: Equation ``(6.1b)``.
+See: Equation ``(6.1.b)``.
 """
 function S_update_b(Sₖ, Yₖ, pₖ) 
     M = randn(eltype(Sₖ), size(Sₖ)...)
@@ -32,7 +32,7 @@ end
 Attempts to guide algorithm to accurately resolve eigen-space associated with the larger
 Hessian eigenvalues.
 
-See: Equation ``(6.1c)``.
+See: Equation ``(6.1.c)``.
 """
 function S_update_c(Sₖ, Yₖ, pₖ)
     return orth(Yₖ - Sₖ*(Sₖ'*Yₖ))
@@ -45,7 +45,7 @@ end
 Variant of ``(6.1a)`` that includes approximate curvature information along the previously
 choosen step. 
 
-See: Equation ``(6.1d)``.
+See: Equation ``(6.1.d)``.
 """
 function S_update_d(Sₖ, Yₖ, pₖ)
     return orth([ orth(randn(eltype(Sₖ), size(Sₖ, 1), size(Sₖ, 2)-1)) pₖ ])
@@ -58,7 +58,7 @@ end
 Variant of ``(6.1b)`` that includes approximate curvature information along the previously
 choosen step. 
 
-See: Equation ``(6.1e)``.
+See: Equation ``(6.1.e)``.
 """
 function S_update_e(Sₖ, Yₖ, pₖ) 
     M = randn(size(Sₖ, 1), size(Sₖ, 2)-1)
@@ -72,7 +72,7 @@ end
 Variant of ``(6.1c)`` that includes approximate curvature information along the previously
 choosen step. 
 
-See: Equation ``(6.1f)``.
+See: Equation ``(6.1.f)``.
 """
 function S_update_f(Sₖ, Yₖ, pₖ)
     return orth([ orth(Yₖ[:, begin:end-1] - Sₖ*(Sₖ' * Yₖ[:, begin:end-1])) pₖ ])
@@ -86,7 +86,7 @@ Returns the algebraically mininimal SR1 inverse Quasi-Newton block update satisf
 inverse multi-secant condition ``H ⋅ V = U ``, where δ is the Moore-Penrose psuedoinverse
 relative tolerance. 
 
-See: ``Algorithm 4.2.``
+See: Algorithm ``4.2.``
 """
 function SR1(H::AbstractArray{<:Real}, U::AbstractArray{<:Real}, V::AbstractArray{<:Real}, δ::Float64)
     U_minus_HV = U - H*V
@@ -105,7 +105,7 @@ end
 Powell-Symmetric-Broyden generalized Quasi-Newton block update,
 where δ is the Moore-Penrose psuedoinverse relative tolerance. 
 
-See: ``Algorithm 4.3.``
+See: Algorithm ``4.3.``
 """
 function PSB(H::AbstractArray{<:Real}, U::AbstractArray{<:Real}, V::AbstractArray{<:Real}, δ::Float64)
     if size(V, 2) == 1
@@ -163,9 +163,9 @@ QN_update(d::Driver) = getfield(d, :QN_update)
 """
     pflag(d::Driver)
 
-The preliminary secant QN update flag of driver `D`
+The preliminary secant QN update flag of driver `D`.
 
-See: SR1, PSB
+See: `SR1`, `PSB`
 """
 pflag(d::Driver) = getfield(d, :pflag)
 

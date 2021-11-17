@@ -14,8 +14,8 @@ represents a _has-a_ relationship.
  
 ![](../assets/design.svg)
 
-Here, the blue shaded types behavior is exported to be interfaced with the user. The red boxs  
-hold the iteration information, and any iteration observations, of `Algorithm 7.1`.
+Here, the blue shaded types are exposed to the user. The red boxes  
+holds `Algorithm 7.1`'s iteration information and all observations.
 
 
 The immutable `Driver` _has-a_ mutable `DriverOptions`, which effictively delegates the 
@@ -50,4 +50,5 @@ The entry-point occurs when a user makes a function call to `optimize`.
 
 ### Exit Point: `optimize` return. 
 Upon an `optimize` call a `Simulation` instance `s` is created and passed to
-the fallback method `optimize!(s)` which returns `s` at a terminal state.
+the fallback method `optimize!(s)`. The exit-point occurs when `optimize!` returns 
+simulation `s` at a terminal state. 

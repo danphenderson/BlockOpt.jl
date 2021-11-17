@@ -1,13 +1,18 @@
 ```@meta
 CurrentModule = BlockOpt
 DocTestSetup = quote
-import BlockOpt: model, name, obj, grad!, grad, objective, gradient, initial_iterate, formula,
+import BlockOpt: Model, name, obj, grad!, grad, objective, gradient, initial_iterate, formula,
     dimension, directory, objective!, gradient!, initial_iterate!, formula!,
     hess_sample, hessAD
 end
 ```
 
-# Model Interface
+# Model
+```@docs
+Model
+```
+
+## Interface
 ```@docs
 name
 objective
@@ -16,7 +21,7 @@ initial_iterate
 formula
 dimension
 directory
-objective!****
+objective!
 gradient!
 initial_iterate!
 formula!
