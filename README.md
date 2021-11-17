@@ -26,7 +26,7 @@ using Pkg
 Pkg.add(url="https://github.com/danphenderson/TRS.jl")
 Pkg.add(url="https://github.com/danphenderson/BlockOpt.jl")
 ```
-`BlockOpt.jl` installs using the Julia package manager [Pkg.jl](https://pkgdocs.julialang.org/v1/).
+BlockOpt installs using the Julia package manager [Pkg.jl](https://pkgdocs.julialang.org/v1/).
 
 The [TRS package](https://github.com/oxfordcontrol/TRS.jl) is an unregistered package 
 requirement for BlockOpt.jl. There is an open pull-request to merge the 
