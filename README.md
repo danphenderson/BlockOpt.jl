@@ -1,8 +1,9 @@
 # BlockOpt.jl (Currently Under Development)
-| **Documentation** | **Build Status** |
-|:-----------------:|:----------------:|
-| ![Documentation]()    |![Build Status]() |
+| **Documentation** | 
+|:-----------------:|
+| [![][docs-stable-img]][https://danphenderson.github.io/BlockOpt.jl/stable] |
 
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 
 Implements a Quasi-Newton Block update with a direct solve of the 
 trust-region subproblem to determine the unconstrained minimum of a 
