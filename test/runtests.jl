@@ -95,9 +95,7 @@ end
 
     include("src/lib/backend.jl")
 
-    include("src/lib/simulation.jl")
+    include("src/simulation.jl")
 
     include("src/lib/recipes.jl")
 end
-
-rm(directory(test_model))

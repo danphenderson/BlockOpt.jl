@@ -69,14 +69,18 @@ end
 
 trs_timer(p::BlockOptProfile) = getfield(p, :trs_timer)
 
+
 trs_counter(p::BlockOptProfile) = getfield(p, :trs_counter)
 
+
 ghs_timer(p::BlockOptProfile) = getfield(p, :ghs_timer)
+
 
 ghs_counter(p::BlockOptProfile) = getfield(p, :ghs_counter)
 
 
 Base.getproperty(p::BlockOptProfile, s::Symbol) = @restrict BlockOptProfile
+
 
 Base.propertynames(p::BlockOptProfile) = ()
 

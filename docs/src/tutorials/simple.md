@@ -307,7 +307,7 @@ SUCCESS 9.927950264884106e-6 ≤ 1.0e-5 in 5590 steps
       ghs_timer:   0.7890379428863525
 ```
 
-Allowing for $1000$ iterations yeilds first-order neccessary convergence within
+Allowing for $10000$ iterations yeilds first-order neccessary convergence within
 the specified tolerance, given by an `ϵ_tol(psb_default)` call. See the `Options` section
 of the manual for more information on specifying simulation configurations. 
 
@@ -317,7 +317,7 @@ Let us assign the variable `s_psb_default` and `s_default` to denote the simulat
 the `psb_defualt` and `default` drivers.
 
 ```julia-repl
-julia> s_psb_default = optimize(m, psb_defualt);
+julia> s_psb_default = optimize(m, psb_default);
 julia> s_default = optimize(m, default);
 ```
 
@@ -325,7 +325,7 @@ Now we compare the trace of `f_vals` over the iteration.
 
 ```julia-repl
 julia> using Plots;     # to install: using Pkg; Pkg.add("Plots")
-julia> objtrace(s_psb_defualt, s_defualt)
+julia> objtrace(s_psb_default, s_default)
 ```
 
 **TODO** Add photo

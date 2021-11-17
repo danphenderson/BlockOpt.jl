@@ -19,6 +19,12 @@ end
 trace(s::Simulation) = getfield(s, :trace)
 
 
+model(s::Simulation) = model(trace(s))
+
+
+driver(s::Simulation) = driver(trace(s))
+
+
 """
     trs_timer
 
@@ -34,12 +40,14 @@ The count of trust region subproblem subsolves of simulation `s`.
 """
 trs_counter(s::Simulation) = trs_counter(trace(s))
 
+
 """
     ghs_timer
 
 The elapsed time simulation `s` has spent in `gHS(s)`.
 """
 ghs_timer(s::Simulation) = ghs_timer(trace(s))
+
 
 """
     ghs_counter
@@ -89,6 +97,7 @@ during each succussful trust-region subproblem solve.
 `Δ_vals` gets updated at each accepted step.
 """
 Δ_vals(s::Simulation) = Δ_vals(trace(s))
+
 
 """
     ρ_vals

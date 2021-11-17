@@ -2,9 +2,9 @@
 
 | **Documentation** | 
 |:-----------------:|
-| [![][docs-stable-img]](https://danphenderson.github.io/BlockOpt.jl/dev/) |
+| [![][docs-dev-img]](https://danphenderson.github.io/BlockOpt.jl/dev/) |
 
-[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
 
 See the [documentation](https://danphenderson.github.io/BlockOpt.jl/dev/) to learn more 
 about the `BlockOpt` package.
@@ -29,8 +29,8 @@ Pkg.add(url="https://github.com/danphenderson/BlockOpt.jl")
 ```
 using the Julia package manager [Pkg.jl](https://pkgdocs.julialang.org/v1/).
 
-The [TRS package](https://github.com/oxfordcontrol/TRS.jl) is an unregistered package 
-requirement for BlockOpt.jl. There is an open pull-request to merge the 
-[forked branch](https://github.com/danphenderson/TRS.jl) of TRS.jl used in this packages
-trust-region subproblem solve. The pull request focuses on updating the master branch to the latest 
-evolution of the Julia package management system.
+The [TRS package](https://github.com/oxfordcontrol/TRS.jl) hasn't been updated to install with
+the BlockOpt.jl supported julia releases (versions > `v1.3.0`). The TRS package was developed in an earlier
+release of Julia. The BlockOpt trust-region subproblem solve uses `trs_small` from a version of TRS which has been
+updated to the latest Pkg.jl requirements. There is an open pull-request to merge the
+[forked branch](https://github.com/danphenderson/TRS.jl) of TRS.jl used in BlockOpt.jl.
