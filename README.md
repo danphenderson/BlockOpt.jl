@@ -1,7 +1,7 @@
 # BlockOpt.jl (Currently Under Development)
 | **Documentation** | 
 |:-----------------:|
-| [![][docs-stable-img]](https://danphenderson.github.io/BlockOpt.jl/dev/) |
+| [![](docs-stable-img)](https://danphenderson.github.io/BlockOpt.jl/dev/) |
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 
@@ -13,6 +13,7 @@ into a standard update of an indefinte inverse Hessian approximation.
 
 ## Installation
 The BlockOpt package can be installed by running
+
 ```
 add https://github.com/danphenderson/TRS.jl
 add https://github.com/danphenderson/BlockOpt.jl
