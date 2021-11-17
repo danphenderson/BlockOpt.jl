@@ -1,4 +1,5 @@
-# BlockOpt.jl (Currently Under Development)
+# BlockOpt.jl
+
 | **Documentation** | 
 |:-----------------:|
 | [![][docs-stable-img]](https://danphenderson.github.io/BlockOpt.jl/dev/) |
