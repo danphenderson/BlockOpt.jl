@@ -6,7 +6,7 @@
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 
-See the [documentation](https://danphenderson.github.io/BlockOpt.jl/dev/) to learn more  
+See the [documentation](https://danphenderson.github.io/BlockOpt.jl/dev/) to learn more 
 about the `BlockOpt` package.
 
 ## Installation
