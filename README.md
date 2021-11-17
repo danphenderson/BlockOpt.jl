@@ -17,7 +17,7 @@ pkg> add https://github.com/danphenderson/TRS.jl
 pkg> add https://github.com/danphenderson/BlockOpt.jl # backspace after returns user to julia prompt 
 ```
 
-in the [Julia's Pkg REPL mode].(https://docs.julialang.org/en/v1/stdlib/Pkg/index.html#Getting-Started-1).
+in the [Julia's Pkg REPL mode](https://docs.julialang.org/en/v1/stdlib/Pkg/index.html#Getting-Started-1).
 
 
 In a notebook environment
