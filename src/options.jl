@@ -7,7 +7,7 @@
 """
     DriverOptions
 
-Specifies Driving parameters of a `Simulation` instance.
+Specifies Driving parameters used in a `Simulation` instance.
 """
 mutable struct DriverOptions
     samples::Int

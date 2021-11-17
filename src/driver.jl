@@ -124,7 +124,9 @@ Driver
 
 Specifies the driving parameters of a `Simulation` instance.
 A driver is assigned an immutable `S_update`, `QN_update`, and `pflag` upon
-construction.
+construction, either by keyword arguments or fallback to the default values.
+
+See `S_update`, `QN_update`, and `pflag` for more on keyword argument options.
 """
 struct Driver
     S_update::Function
@@ -141,31 +143,31 @@ end
 
 
 """
-    S_update
+    S_update(d::Driver) 
 
 The supplemental sample direction update formula of Driver `d`.
 
-See: `S_update`, `S_update_a`, `S_update_b`, `S_update_c`, `S_update_d`, `S_update_e`, `S_update_f`
+Options: `S_update`, `S_update_a`, `S_update_b`, `S_update_c`, `S_update_d`, `S_update_e`, `S_update_f`
 """
 S_update(d::Driver) = getfield(d, :S_update)
 
 
 """
-    QN_update
+    QN_update(d::Driver)
 
 The QN update formula of Driver `d`.
 
-See: `SR1`, `PSB`
+Options: `SR1`, `PSB`
 """
 QN_update(d::Driver) = getfield(d, :QN_update)
 
 
 """
-    pflag
+    pflag(d::Driver)
 
-The preliminary secant QN update flag of driver `D`.
+The preliminary secant QN update flag of driver `d` wraping a boolean.
 
-See: `SR1`, `PSB`
+Options `true`, `false`
 """
 pflag(d::Driver) = getfield(d, :pflag)
 

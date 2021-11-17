@@ -16,6 +16,9 @@ import Printf: @sprintf, @printf
 
 import Dates: Second, now
 
+export optimize
+
+
 # Types
 export Model, Driver
 
@@ -40,10 +43,6 @@ export driver, orth, pflag, QN_update, SR1, PSB, S_update, S_update_a,
 # See trace.jl
 export trace, Δt, evaluations, trs_timer, trs_counter, ghs_timer, ghs_counter, f_vals, 
     ∇f_norms, Δ_vals, p_norms, ρ_vals
-
-
-# See simulation.jl
-export optimize, info!, debug!, warn!, error!
 
 
 # See recipes.jl

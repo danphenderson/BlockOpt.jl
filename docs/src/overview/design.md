@@ -15,7 +15,7 @@ represents a _has-a_ relationship.
 ![](../assets/design.svg)
 
 Here, the blue shaded types are exposed to the user. The red boxes  
-holds `Algorithm 7.1`'s iteration information and all observations.
+hold `Algorithm 7.1`'s routine and all observations collected throughout the iteration.
 
 
 The immutable `Driver` _has-a_ mutable `DriverOptions`, which effictively delegates the 
@@ -24,7 +24,7 @@ and `Driver` instances are passed to the `Simulation` type. Then the `Simulation
 entry-point and exit-point of the iteration. Last, a `Trace` records `Backend` information throughout
 the iteration and a Simulation controls the observations information flow.
 
-## Optimize 
+## `optimize` 
 ```@docs
 optimize
 ```

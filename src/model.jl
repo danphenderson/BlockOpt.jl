@@ -4,7 +4,9 @@ Model
 Specifies the unconstrianed minimization of a smooth objective function.
 A model is minimally constructed with a `name` and may be incrementally loaded.
 Once a model is loaded, the objective, and gradient function may no longer be modified.
-A model creates a directory, which stores logged information throughout an instances life.
+A model creates a directory storing logged information throughout a model instances life.
+The directory can be found relative to your current working directory with the name associated
+with the model.
 """
 mutable struct Model
     name::String
@@ -44,7 +46,7 @@ end
 """
     name(m::Model)
 
-The name of model `m`.
+The name associated with model `m` as given to `m`'s constructor.
 """
 name(m::Model) = getfield(m, :name)
 
@@ -53,6 +55,8 @@ name(m::Model) = getfield(m, :name)
     objective(m::Model)
 
 The objective function of model `m`, having an unassigned default value of `missing`.
+
+See `objective!` to load a model's objective.
 """
 objective(m::Model) = getfield(m, :objective)
 
@@ -61,6 +65,8 @@ objective(m::Model) = getfield(m, :objective)
     gradient(m::Model)
 
 The gradient function of model `m`, having an unassigned default value of `missing`.
+
+See `gradient!` to load a `m`'s gradient.
 """
 gradient(m::Model) = getfield(m, :gradient)
 
@@ -69,6 +75,8 @@ gradient(m::Model) = getfield(m, :gradient)
     initial_iterate(m::Model)
 
 The initial iterate of model `m`, having an unassigned default value of `missing`.
+
+See `initial_iterate!` to load `m`'s starting location.
 """
 initial_iterate(m::Model) = getfield(m, :initial_iterate)
 
@@ -77,6 +85,8 @@ initial_iterate(m::Model) = getfield(m, :initial_iterate)
     formula(m::Model)
 
 The formula of model `m`, having an unassigned default value of `missing`.
+
+See `formula!` to set `m`'s formula.
 """
 formula(m::Model) = getfield(m, :formula)
 
@@ -162,15 +172,15 @@ end
 """
     formula!(m::Model, f)
 
-Assign model `m` an escaped ``\\LaTex`` string, for example 
+Assign model `m` an escaped ``\\LaTeX`` string. The formula is used in logging
+visuals related to model `m`.
 
+## Example
 ```julia
-dot_formila = "\$ f(x) = x⋅x \$" 
-
-formula!(out, dot_formila)
+julia> dot_formila = "\$ f(x) = x⋅x \$"; 
+julia> formula!(m, dot_formila);
 ```
-
-assigns the euclidean squared distance as the models objective function formula.
+Here, the euclidean squared distance formula now represent's `m`'s objective formula.
 """
 formula!(m::Model, formula) = setfield!(m, :formula, formula)
 
@@ -229,8 +239,9 @@ end
 """
     hess_sample(m::Model, x, dx)
 
-The Hessian vector-product of model `m`'s objective function at the point `x` 
-with the vector `dx.`
+The hessian vector-product of model `m`'s objective function at the point `x` 
+with the vector `dx.` The `gHS` routine uses a more effiecient scheme to compute
+the hessian samples by means of ForwardDiff's `Dual` numbers.
 """
 hess_sample(m::Model, x, dx) = begin
     isa(gradient(m), Missing) && return missing

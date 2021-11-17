@@ -8,11 +8,13 @@ end
 ```
 
 # Model
+
 ```@docs
 Model
 ```
 
 ## Interface
+
 ```@docs
 name
 objective

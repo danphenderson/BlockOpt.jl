@@ -1,23 +1,71 @@
 export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace, objtrace!, gradtrace, gradtrace!
 
 
-# TODO: Currently working with trace, make this work for all lib objects.
-# TODO: Check input types, make dir and name seperate in model, add names. 
-
-
 function log_display(v, name)
-
     if (m=minimum(v)) > 0.0
         return v
     elseif m ≈ 0.0
         @warn "$name: shifted by $(eps(Float64)) to display on Log Scale"
         return v .+ eps(Float64)
     end
-
     @warn "$name: shifted by $m to display on Log Scale"
-    
     return v .+ m
 end
+
+
+"""
+    objtrace
+
+Provide any number of terminal simulations as arguments and `objtrace` displays
+a plot of each arguments objective function values at each succussful iterate.
+
+To add a simulation to the current `objtrace` plot use `objtrace!`.
+"""
+function objtrace end 
+
+
+"""
+    gradtrace
+
+Provide any number of terminal simulations as arguments and `gradtrace` displays
+a plot of each arguments normed gradient values at each succussful iterate.
+
+To add a simulation to the current `gradtrace` plot use `gradtrace!`.
+"""
+function gradtrace end
+
+
+"""
+    radiustrace
+
+Provide any number of terminal simulations as arguments and `radiustrace` displays
+a plot of each arguments trust region subproblem radius values at each succussful iteration.
+
+To add a simulation to the current `radiustrace` plot use `radiustrace!`.
+"""
+function radiustrace end
+
+
+"""
+    steptrace
+
+Provide any number of terminal simulations as arguments and `steptrace` displays
+a plot of each arguments step measure at each succussful iteration.
+
+To add a simulation to the current `steptrace` plot use `steptrace!`.
+"""
+function steptrace end
+
+
+"""
+    rhotrace
+
+Provide any number of terminal simulations as arguments and `rhotrace` displays
+a plot of each arguments ρ ratio at each successful iteration.
+
+To add a simulation to the current `rhotrace` plot use `rhotrace!`.
+"""
+function rhotrace end
 
 
 @userplot ObjTrace
