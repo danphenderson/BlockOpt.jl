@@ -5,7 +5,7 @@ DocTestSetup = quote
 end
 ```
 
-## Design
+# Design
 
 The `BlockOpt` interface is constructed through a _delegation_ design pattern,
 leveraging the behavior of existing types by wrapping them in new types. The figure
@@ -22,22 +22,7 @@ The immutable `Driver` _has-a_ mutable `DriverOptions`, which effictively delega
 simulation options to the `Driver` via forwarded/inherted functionality. A user-loaded `Model`
 and `Driver` instances are passed to the `Simulation` type. Then the `Simulation` controls the
 entry-point and exit-point of the iteration. Last, a `Trace` records `Backend` information throughout
-the iteration and a Simulation controls the observations information flow. 
-
-
-## Exported Types
-```@docs
-DriverOptions
-Driver
-Model
-```
-
-## Internal Types
-```@docs
-Simulation
-BlockOptBackend
-BlockOptTrace
-```
+the iteration and a Simulation controls the observations information flow.
 
 ## Optimize 
 ```@docs
