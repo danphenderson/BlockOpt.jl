@@ -1,5 +1,5 @@
 """
-    Simulation
+Simulation
 
 Enty point and exit point of an iteration. A simulation composes a iterations trace and
 backend iteration of Algorithm 7.1.  An instance of a simulation is returned from an

@@ -311,4 +311,32 @@ Allowing for $1000$ iterations yeilds first-order neccessary convergence within
 the specified tolerance, given by an `ϵ_tol(psb_default)` call. See the `Options` section
 of the manual for more information on specifying simulation configurations. 
 
+## Analyzing Simulation
 
+Let us assign the variable `s_psb_default` and `s_default` to denote the simulations configured with 
+the `psb_defualt` and `default` drivers.
+
+```julia-repl
+julia> s_psb_default = optimize(m, psb_defualt);
+julia> s_default = optimize(m, default);
+```
+
+Now we compare the trace of `f_vals` over the iteration.
+
+```julia-repl
+julia> using Plots;     # to install: using Pkg; Pkg.add("Plots")
+julia> objtrace(s_psb_defualt, s_defualt)
+```
+
+**TODO** Add photo
+
+We proceed by adding gradients to the existing plot.
+
+```julia-repl
+julia> gradtrace!(s_psb_defualt, s_defualt)
+```
+
+**TODO** Add photo
+
+
+See: `rhotrace`, `steptrace`, `radiustrace` and their corresponding `!` versions.

@@ -1,6 +1,6 @@
 
 """
-    BlockOptBackend
+BlockOptBackend
 
 
 Performs the iteration of Algorithm 7.1 after being initiated by

@@ -133,7 +133,7 @@ Base.propertynames(w::Weaver) = ()
 
 
 """
-    BlockOptTrace
+BlockOptTrace
 
 Composite type responsible for logging, generating Weave 
 reports, and storing a Profile of the simulation.

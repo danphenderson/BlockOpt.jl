@@ -12,13 +12,9 @@ makedocs(
     modules = [BlockOpt],
     pages = [
 
-        "Introduction" => [
-            "index.md"
-        ],
+        "Introduction" => "index.md",
         
-        "Overview" => [
-            "overview/design.md"
-        ],
+        "Overview" => "overview/design.md",
 
         "Manual" => [
             "manual/model.md",

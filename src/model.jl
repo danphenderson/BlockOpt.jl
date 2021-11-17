@@ -1,5 +1,5 @@
 """
-    Model
+Model
 
 Specifies the unconstrianed minimization of a smooth objective function.
 A model is minimally constructed with a `name` and may be incrementally loaded.

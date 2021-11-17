@@ -99,3 +99,5 @@ end
 
     include("src/lib/recipes.jl")
 end
+
+rm(directory(test_model))

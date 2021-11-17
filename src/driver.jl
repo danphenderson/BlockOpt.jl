@@ -120,7 +120,7 @@ end
 
 
 """
-    Driver
+Driver
 
 Specifies the driving parameters of a `Simulation` instance.
 A driver is assigned an immutable `S_update`, `QN_update`, and `pflag` upon
