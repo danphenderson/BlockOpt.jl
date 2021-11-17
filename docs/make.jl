@@ -10,7 +10,6 @@ makedocs(
         collapselevel = 1,
     ),
     modules = [BlockOpt],
-    checkdocs = :exports,
     pages = [
 
         "Introduction" => "index.md",
@@ -29,9 +28,6 @@ makedocs(
     ],
 )
 
-# Documenter can also automatically deploy documentation to gh-pages.
-# See "Hosting Documentation" and deploydocs() in the Documenter manual
-# for more information.
 deploydocs(
     devbranch = "main",
     push_preview = true,
