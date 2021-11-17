@@ -1,7 +1,7 @@
 # BlockOpt.jl (Currently Under Development)
 | **Documentation** | 
 |:-----------------:|
-| ![docs-stable-img](https://danphenderson.github.io/BlockOpt.jl/dev/) |
+| [![][docs-stable-img]](https://danphenderson.github.io/BlockOpt.jl/dev/) |
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 
