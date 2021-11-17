@@ -33,4 +33,4 @@ The [TRS package](https://github.com/oxfordcontrol/TRS.jl) is an unregistered pa
 requirement for BlockOpt.jl. There is an open pull-request to merge the 
 [forked branch](https://github.com/danphenderson/TRS.jl) of TRS.jl used in this packages
 trust-region subproblem solve. The pull request focuses on updating the master branch to the latest 
-evolution of the Julia package management system. 
+evolution of the Julia package management system.

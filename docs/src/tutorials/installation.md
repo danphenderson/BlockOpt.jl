@@ -1,4 +1,4 @@
-## Installation
+# Installation
 The BlockOpt package installs as
 
 ```julia-repl
