@@ -214,7 +214,7 @@ end
 
 
 """
-hessAD(m::Model, x)
+    hessAD(m::Model, x)
 
 The dense Hessian matrix of model `m`'s objective function at the point `x`.
 The computation uses `ForwardDiff.jacobian` forward-mode AD function on the model's 

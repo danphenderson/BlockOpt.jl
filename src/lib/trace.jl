@@ -1,5 +1,5 @@
 """
-Timer
+    Timer
 
 Holds a count that is incremented in units of 1. 
 """
@@ -21,7 +21,7 @@ Base.propertynames(t::EvaluationTimer) = ()
 
 
 """
-EvaluationCounter
+    EvaluationCounter
 
 Holds a count that is incremented in units of 1. 
 """
@@ -45,7 +45,7 @@ Base.propertynames(t::EvaluationCounter) = ()
 
 
 """
-BlockOptProfile
+    BlockOptProfile
 
 Holds a count of the trust region subproblem solves and gHS evaluations.
 
@@ -82,7 +82,7 @@ Base.propertynames(p::BlockOptProfile) = ()
 
 
 """
-Weaver
+    Weaver
 
 Interfaces with Weave.jl package, to construct `.html`
 report containing iteration trace plots. 
