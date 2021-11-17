@@ -23,6 +23,7 @@ makedocs(
         ],
 
         "Tutorials" => [
+            "tutorials/installation.md",
             "tutorials/simple.md",
         ]
     ],

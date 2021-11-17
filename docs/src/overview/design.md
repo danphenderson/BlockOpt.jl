@@ -51,6 +51,3 @@ The entry-point occurs when a user makes a function call to `optimize`.
 ### Exit Point: `optimize` return. 
 Upon an `optimize` call a `Simulation` instance `s` is created and passed to
 the fallback method `optimize!(s)` which returns `s` at a terminal state.
-
-
-
