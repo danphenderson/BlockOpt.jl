@@ -14,11 +14,9 @@ Driver
 
 ## Interface
 
-A `Driver` instance contains a reference to a mutable
-`DriverOptions` instance. 
-Consequently, the delegation design pattern at play allows us to forward the
-`DriverOptions` interface to the `Driver`.
-In addition to the listed methods, see `Options` interface section.
+The delegation design pattern at play allows us to forward the `DriverOptions`
+interface to the `Driver`. In addition to the documented methods, see the
+`Options` interface section.
 
 ```@docs
 QN_update(d::Driver)

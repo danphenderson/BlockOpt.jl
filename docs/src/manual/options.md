@@ -15,11 +15,13 @@ DriverOptions
 ## Interface
 
 The `DriverOptrions` type is best thought of as the mutable protion of a `Driver` instance.
-The methods below are simple fallbacks of the forwarded `Driver` methods.
+The methods below are forwarded to the `Driver`, which has a `DriverOptions` instance. 
 
 !!! note 
     It is possible to pass a `DriverOptions` instance as the `options` keyword argument
-    to a `Driver` constructor.
+    to the `Driver` constructor.
+
+    This is useful when constructing mutiple drivers with the same set of options. 
 
 ```@docs
 samples(o::DriverOptions)
@@ -27,8 +29,6 @@ samples(o::DriverOptions)
 δ_tol(o::DriverOptions)
 ϵ_tol(o::DriverOptions)
 max_iterations(o::DriverOptions)
-weave_level(o::DriverOptions)
-log_level(o::DriverOptions)
 samples!
 Δ_max!
 δ_tol!

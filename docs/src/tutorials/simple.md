@@ -10,14 +10,14 @@ end
 # Simple Use Case
 
 Consider the [generalized rosenbrock](https://en.wikipedia.org/wiki/Rosenbrock_function)
-as an objective function which is
+as our objective function
 
 
 ```math
 f(x) = \sum_{i=1}^{N-1} \left[100(x_{i+1}^2 - x_i^2)^2 + (1 - x_i)^2\right].
 ```
 
-We can translate the objective function into julia code as shown below.
+We manually translate the formula above into Julia shown below.
 
 
 ```julia-repl
@@ -27,7 +27,7 @@ julia> function rosen(x)
        end
 ```
 
-Differentiating the objective function and translating to julia code.
+Differentiating the objective function and performing a Julia translation below.
 
 ```julia-repl
 julia> function ∇rosen!(g, x)
@@ -52,14 +52,14 @@ for being a local minimum of ``f``, i.e.
 ```
 
 
-Consider dimension ``n=100`` and we randomly assign `x₀` to be a point in the
+Consider dimension ``n=100,`` and we randomly assign `x₀` to be a point in the
 ``100``-dimensional hypercube.
 
 ```julia-repl
 julia> x₀ = randn(100);
 ```
 
-The entry point of scheme ``7.1`` occurs below on.
+The entry point of scheme ``7.1`` occurs below.
 
 ```julia-repl
 julia> optimize(rosen, ∇rosen!, x₀)
@@ -104,8 +104,8 @@ SUCCESS 8.070336658758971e-7 ≤ 1.0e-5 in 528 steps
       ghs_timer:   0.07087516784667969
 ```
 
-Here, the output is showing a `Simulation` instance in it's terminal state, which
-happens to be a success!
+Here, the output shows a `Simulation` instance in a terminal state, which happens to be a success!
+
 
 
 ## Constructing a Model
@@ -148,12 +148,13 @@ julia> m
     objective formula: missing
 ```
 
-The model is now loaded to a `final` state meaning that the objective and gradient function
-can no longer be modified. 
+The model is now loaded to a `final` state, implying that the objective
+and gradient function may no longer be modified.  
 
 
-We may optionally set a formula for the objective function of model `m`. The formula
-is used in the trace plots which may be generated from the simulation.
+We optionally chose to set a formula for the objective function of model `m`.
+The formula will be displayed when plotting simulations of the `m`.
+
 
 ```julia-repl
 julia> rosen_formula = "\$\\sum_{i=1}^{N-1} \\left[100(x_{i+1}^2 - x_i^2)^2 + (1 - x_i)^2\\right]\$";
@@ -172,19 +173,18 @@ julia> m
     objective formula: loaded
 ```
 
-Our model `m` is fully constructed. Observe the directory path above, it was
-created in your present working directory using the name given to the model constructor.
+Our model `m` is entirely constructed. Observe the directory path above;
+it was created in the current working directory using the name given to the model constructor.
 
 See the `Model` section of Manual for more information.
 
 
 ## Constructing a Driver
-The goal of creating a model is to record simulation information over multiples trials,
-where each trial incorporates the second-order hessian information into a step's QN
-update in a unique manner. Each trial is driven by a unique set of parameters, which
-are represented in a `Driver` instance. 
+The goal of creating a model is to record simulation information over multiple trials,
+where each trial uniquely incorporates the second-order hessian information into a steps QN
+update as dictated by the simulation driver.
 
-A default drive is constructed below with the passing of an empty argument list.
+A default driver is constructed with an empty argument list.
 
 ```julia-repl
 julia> default_driver = Driver() # default parameters and options
@@ -201,7 +201,9 @@ julia> default_driver = Driver() # default parameters and options
       max_iterations: 2000
 ```
 
-The `default_driver` is created in all `optimize` that don't specify a Driver.
+The `default_driver` is created in all `optimize` calls that don't specify a Driver.  
+
+
 Below we pass `PSB` as argument for the `QN_update` keyword.
 
 
@@ -220,14 +222,15 @@ julia> psb_driver = Driver(QN_update = PSB)
       max_iterations: 2000
 ```
 
-See `pflag` and `S_update` for information on the other keyword arguments.
+See `pflag`, `S_update`, and `Options` manual section for information on the three other keyword arguments.
 
 
 ## Configurations
 
-By passing a model to `optimize` with a number of unique drivers, we can gain
-insight into the effects of driver configurations. We saw above how `m`
-performed with the default driver configuration, now we run it with the `PSB` update.
+By passing a model to `optimize` with several unique drivers, we gain
+insight into the effects of each driver configuration.
+We saw above how `m` performed with the default driver configuration;
+now, we run it with the `PSB` QN update
 
 
 ``` julia-repl
@@ -273,10 +276,11 @@ FAIL 3.566862431214296 ≰ 1.0e-5 in 2000 steps
       ghs_timer:   0.4726881980895996
 ```
 
-Here, the simulation failed to reach a successfull terminal state and instead reached
-the maximum number of allowed iterations. It is expected that the `PSB` update requires
-more iterations than the default `SR1` update. Letting this guide us, we increase the
-`max_iterations` of the `psb_driver` to larger value.
+Here, the simulation failed to reach a successful terminal state and
+instead reached the maximum allowed iterations. We expect that the `PSB`
+update requires more iterations than the default `SR1` update. Letting
+this guide us, we increase the `max_iterations` of the `psb_driver`
+to a larger value.
 
 ```julia-repl
 julia> max_iterations!(psb_driver, 10000)
@@ -346,7 +350,7 @@ julia> s2 = optimize(m, d2);
 We have configured drivers `d1` and `d2` to use updates (6.1.a) and (6.1.d).
 
 
-Next we create the objective function trace plot with the Julia `Plots` package.
+Next, we create the objective function trace plot with the Julia `Plots` package.
 The plotted data may be accessed using `f_vals(s1) and f_vals(s2)`.
 
 ```julia-repl
@@ -357,7 +361,7 @@ julia> objtrace(s1, s2)
 ![](../assets/objtrace_simple_case.png)
 
 
-The normed gradient data at each successful iterate is accessed through `∇f_norms(s1)` and
+The normed gradient data at each successful iterate may be accessed through `∇f_norms(s1)` and
 `∇f_norms(s2)`.
 
 ```julia-repl
@@ -380,9 +384,9 @@ julia> weave(s1, s2);
 ```
 
 The model directory of `s1` now contains a [trace.html report](../assets/trace.html) which can
-be viewed in your browser.
+be viewed in the browser.
 
 
-[Here](../assets/trace-2.html) is another report comparing the generalized rosenbrock simulations driven
+[Here](../assets/trace-2.html) is another report comparing the generalized Rosenbrock simulations driven
 by the $6$ different sample direction update configurations.
 

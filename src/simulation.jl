@@ -1,9 +1,8 @@
 """
 Simulation
 
-Enty point and exit point of an iteration. A simulation composes a iterations trace and
-backend iteration of Algorithm 7.1.  An instance of a simulation is returned from an
-`optimize` call. 
+A simulation composes the observed trace and the backend solve of Algorithm 7.1.
+A simulation instance is returned from an `optimize` call. 
 """
 struct Simulation
     trace::BlockOptTrace
@@ -28,7 +27,7 @@ driver(s::Simulation) = driver(trace(s))
 """
     trs_timer(s::Simulation)
 
-The elapsed time simulation `s` has spent in `trs_solve(s)`.
+The elapsed time simulation `s` has been in `trs_solve(s)`.
 """
 trs_timer(s::Simulation) = trs_timer(trace(s))
 
@@ -36,7 +35,7 @@ trs_timer(s::Simulation) = trs_timer(trace(s))
 """
     trs_counter(s::Simulation)
 
-The count of trust region subproblem subsolves of simulation `s`.
+The count of trust-region subproblem solves for simulation `s`.
 """
 trs_counter(s::Simulation) = trs_counter(trace(s))
 
@@ -44,7 +43,7 @@ trs_counter(s::Simulation) = trs_counter(trace(s))
 """
     ghs_timer(s::Simulation)
 
-The elapsed time simulation `s` has spent in `gHS(s)`.
+The elapsed time simulation `s` has been in `gHS(s)`.
 """
 ghs_timer(s::Simulation) = ghs_timer(trace(s))
 
@@ -52,7 +51,7 @@ ghs_timer(s::Simulation) = ghs_timer(trace(s))
 """
     ghs_counter(s::Simulation)
 
-The number of `gHS` evaluations of simulation `s`.
+The count of `gHS` evaluations for simulation `s`.
 """
 ghs_counter(s::Simulation) = ghs_counter(trace(s))
 
@@ -66,21 +65,24 @@ weave_level(s::Simulation) = weave_level(trace(s))
 """
     f_vals(s::Simulation)
 
-A vector storing objective values ``f(xₖ)`` for each iterate ``xₖ``.
+A vector holding objective values ``f(xₖ)`` for each successful iterate ``xₖ``
+of simulation `s`.
 """
 f_vals(s::Simulation) = f_vals(trace(s))
 
 """
     ∇f_norms(s::Simulation)
 
-A vector storing normed gradient values ``||∇f(xₖ)||₂`` for each iterate ``xₖ``.
+A vector holding normed gradient values ``||∇f(xₖ)||₂`` for each successful iterate ``xₖ``
+of simulation `s`.
 """
 ∇f_norms(s::Simulation) = ∇f_norms(trace(s))
 
 """
     p_norms(s::Simulation)
 
-A vector storing the distance of each successful step ``||pₖ||₂``. 
+A vector holding distance ``||pₖ||₂` of each successful step ``pₖ``
+of simulation `s`.
 """
 p_norms(s::Simulation) = p_norms(trace(s))
 
@@ -88,8 +90,8 @@ p_norms(s::Simulation) = p_norms(trace(s))
 """
     Δ_vals(s::Simulation)
 
-A vector storing the trust-region radius passed to `trs_small` of TRS.jl,
-during each succussful trust-region subproblem solve. 
+A vector holding the trust-region radius passed to `trs_small` in TRS.jl
+during each successful step of simulation `s`.
 """
 Δ_vals(s::Simulation) = Δ_vals(trace(s))
 
@@ -98,7 +100,7 @@ during each succussful trust-region subproblem solve.
     ρ_vals(s::Simulation)
 
 A vector storing the ratio of actual reduction to model reduction of
-each successful step.
+each successful step of simulation `s`.
 """
 ρ_vals(s::Simulation) = ρ_vals(trace(s))
 
@@ -234,7 +236,7 @@ end
 """
     build_trial(s::Simulation)
 
-Build trial iterate, evaluate the objective at trial location, and compute ``ρ``.
+Build trial iterate, evaluate the objective at the trial location, and compute ``ρ``.
 """
 function build_trial(s::Simulation)
 
@@ -260,7 +262,7 @@ end
 """
     accept_trial(s::Simulation)
 
-Observes the value of ``ρ``, accepts positive values and updates ``xₖ`` & ``fₖ``.
+Observe the value of ``ρ``, accept positive values, and then update ``xₖ, fₖ``.
 """
 function accept_trial(s::Simulation)
 
@@ -284,7 +286,7 @@ end
 """
     pflag(s::Simulation)
 
-The preliminary secant update flag of the driver of `s`, default is fale.
+The preliminary secant update flag of the Driver of `s` the default value is false.
 """
 function pflag(s::Simulation)
     return pflag(backend(s))
@@ -294,7 +296,9 @@ end
 """
     secantQN(s::Simulation)
 
-Performs the standard secant update for `s`'s inverse hessian approximation ``Hₖ``.
+Performs the standard secant update for `s`'s inverse Hessian approximation ``Hₖ``.
+
+The QN formula used is given by the Driver of `s`.
 """
 function secantQN(s::Simulation)
 
@@ -343,7 +347,9 @@ end
 """
     blockQN(s::Simulation)
 
-Performs a block update with multiple descent directions for `s`'s inverse hessian approximation ``Hₖ``.
+Performs a block update for `s`'s inverse Hessian approximation ``Hₖ``.
+
+The QN formula used is given by the Driver of `s`.
 """
 function blockQN(s::Simulation)
 
@@ -383,7 +389,7 @@ function optimize!(simulation::Simulation)
         update_Δₖ(simulation)
     end
 
-    info!(simulation, "  Terminating:", trace(simulation))
+    info!(simulation, "Terminating:", trace(simulation))
 
     return simulation
 end

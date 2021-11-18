@@ -1,12 +1,14 @@
 """
 Model
 
-Specifies the unconstrianed minimization of a smooth objective function.
-A model is minimally constructed with a `name` and may be incrementally loaded.
-Once a model is loaded, the objective, and gradient function may no longer be modified.
-A model creates a directory storing logged information throughout a model instances life.
-The directory can be found relative to your current working directory with the name associated
-with the model.
+Specifies the unconstrained program for minimizing a smooth objective function.
+
+A model is constructed with a `name` and may be incrementally loaded.
+Once a model is loaded, the model becomes final, meaning the objective and gradient
+function may no longer be modified. A model creates a directory storing logged 
+information throughout the model life. The model's directory is found relative
+to the user's current working directory, identified by the models name used as
+the relative portion of the directory path.
 """
 mutable struct Model
     name::String
@@ -47,7 +49,7 @@ end
 """
     name(m::Model)
 
-The name associated with model `m` as given to `m`'s constructor.
+Access the name associated with model `m`, as assigned during the construction of `m`.  
 """
 name(m::Model) = getfield(m, :name)
 
@@ -76,6 +78,7 @@ gradient(m::Model) = getfield(m, :gradient)
     initial_iterate(m::Model)
 
 The initial iterate of model `m`, having an unassigned default value of `missing`.
+Setting the initial iterate of a model assigns the model a dimension.
 
 See `initial_iterate!` to load `m`'s starting location.
 """
@@ -95,7 +98,9 @@ formula(m::Model) = getfield(m, :formula)
 """
     dimension(m::Model)
 
-The dimension of model `m`, which is `missing` so long as the initial iterate isn't specified.
+The dimension of model `m` which is set by specifying an initial iterate.
+
+See: initial_iterate!
 """
 dimension(m::Model) = getfield(m, :dimension)
 
@@ -103,7 +108,7 @@ dimension(m::Model) = getfield(m, :dimension)
 """
     directory(m::Model)
 
-The directory path of model `m`, with the relative portion given by the name of `m`.
+The directory path of model `m` holding information related to `m`.
 """
 directory(m::Model) = getfield(m, :directory)
 
@@ -113,7 +118,7 @@ directory(m::Model) = getfield(m, :directory)
 
 The final status of model `m`, occuring when the model's gradient
 and objective function are no longer missing. A finalized model may no 
-longer modify it's previously defined gradient or objective. 
+longer modify it's previously defined gradient or objective.
 """
 final(m::Model) = getfield(m, :final)
 
@@ -123,7 +128,7 @@ final(m::Model) = getfield(m, :final)
 
 Assign model `m` the objective function `f`.
     
-If the model is final, the call simply returns without modifying the model.
+If the model is final, the `objective!` call simply returns without modifying the model.
 """
 objective!(m::Model, f) = !final(m) && begin
 
@@ -145,7 +150,7 @@ Assign model `m` the in-place gradient function `∇f!`, of the form
 where `∇f(x)` is the steepest descent direction at `x` in stored the place
 of the inputed buffer `out`.
     
-If the model is final, the call simply returns without modifying the model.
+If the model is final, the `gradient!` call simply returns without modifying the model.
 """
 gradient!(m::Model, ∇f!) =
     !final(m) && begin
@@ -160,8 +165,7 @@ gradient!(m::Model, ∇f!) =
 """
     initial_iterate!(m::Model, x0)
 
-Assign model `m` an initial starting location, ideally a resonable guess
-of a minima for the models objective function.
+Assign model `m` an initial iterate.
 """
 initial_iterate!(m::Model, x0) = begin
 
@@ -174,8 +178,8 @@ end
 """
     formula!(m::Model, f)
 
-Assign model `m` an escaped ``\\LaTeX`` string. The formula is used in logging
-visuals related to model `m`.
+Assign model `m` an escaped ``\\LaTeX`` string represint `m`'s objective function.
+The formula is used to create visual plots showing a simulation trace of `m`.
 
 ## Example
 ```julia
@@ -190,7 +194,7 @@ formula!(m::Model, formula) = setfield!(m, :formula, formula)
 """
     obj(m::Model, x)
 
-Evaluates the objective function of model `m` at `x`.
+Evaluate the objective function of model `m` at `x`.
 """
 obj(m::Model, x) = begin
     isa(dimension(m), Missing) && return missing
@@ -202,8 +206,8 @@ end
 """
     grad!(m::Model, out, x)
 
-Evaluates the in-place gradient function of model `m` at `x`, storing the steepest descent
-direction in the place of input buffer `out`.
+Evaluate the in-place gradient function of model `m` at `x`, storing the steepest descent
+direction in the place of the passed input buffer `out`.
 """
 grad!(m::Model, out, x) = begin
     isa(gradient(m), Missing) && return missing
@@ -216,7 +220,7 @@ end
     grad(m::Model, x)
 
 Evaluates the gradient function of model `m` at `x`, allocating similar storage
-for the output as given by the input.
+for the output as given by the input `x`.
 """
 grad(m::Model, x) = begin
     isa(gradient(m), Missing) && return missing
@@ -229,7 +233,7 @@ end
     hessAD(m::Model, x)
 
 The dense Hessian matrix of model `m`'s objective function at the point `x`.
-The computation uses `ForwardDiff.jacobian` forward-mode AD function on the model's 
+The computation uses the `ForwardDiff.jacobian` forward-mode AD routine on the model's 
 gradient function.
 """
 hessAD(m::Model, x) = begin
@@ -243,7 +247,7 @@ end
 
 The hessian vector-product of model `m`'s objective function at the point `x` 
 with the vector `dx.` The `gHS` routine uses a more effiecient scheme to compute
-the hessian samples by means of ForwardDiff's `Dual` numbers.
+the hessian samples with ForwardDiff's `Dual` numbers.
 """
 hess_sample(m::Model, x, dx) = begin
     isa(gradient(m), Missing) && return missing

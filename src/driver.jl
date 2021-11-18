@@ -16,7 +16,7 @@ end
 """
     S_update_b
 
-Random set of sample directions orthogonal to the pervious sample space given by input Sₖ.
+Random set of sample directions orthogonal to the previous sample space given by input Sₖ.
 
 See: Equation (6.1.b).
 """
@@ -29,8 +29,8 @@ end
 """
     S_update_c
 
-Attempts to guide algorithm to accurately resolve eigen-space associated with the larger
-Hessian eigenvalues.
+Attempts to guide the algorithm in accurately resolving the eigenspace associated with the
+larger Hessian eigenvalues.
 
 See: Equation (6.1.c).
 """
@@ -42,8 +42,8 @@ end
 """
     S_update_d
 
-Variant of (6.1.a) that includes approximate curvature information along the previously
-choosen step. 
+A variant of (6.1.a) that includes approximate curvature information along the previously
+chosen step. 
 
 See: Equation (6.1.d).
 """
@@ -55,8 +55,8 @@ end
 """
     S_update_e
 
-Variant of (6.1b) that includes approximate curvature information along the previously
-choosen step. 
+A variant of (6.1.b) that includes approximate curvature information along the previously
+chosen step. 
 
 See: Equation (6.1.e).
 """
@@ -69,8 +69,8 @@ end
 """
     S_update_f
 
-Variant of (6.1c) that includes approximate curvature information along the previously
-choosen step. 
+A variant of (6.1c) that includes approximate curvature information along the previously
+chosen step. 
 
 See: Equation (6.1.f).
 """
@@ -82,9 +82,8 @@ end
 """
     SR1
 
-Returns the algebraically mininimal SR1 inverse Quasi-Newton block update satisfying the
-inverse multi-secant condition ``H ⋅ V = U ``, where δ is the Moore-Penrose psuedoinverse
-relative tolerance. 
+Returns the algebraically minimal SR1 inverse Quasi-Newton block update,
+where ``δ`` is the Moore-Penrose pseudoinverse relative tolerance used in `pinv`. 
 
 See: Algorithm ``4.2.``
 """
@@ -108,7 +107,7 @@ end
     PSB
 
 Powell-Symmetric-Broyden generalized Quasi-Newton block update,
-where ``δ`` is the Moore-Penrose psuedoinverse relative tolerance. 
+where ``δ`` is the Moore-Penrose pseudoinverse relative tolerance used in `pinv`. 
 
 See: Algorithm ``4.3.``
 """
@@ -132,11 +131,13 @@ end
 """
 Driver
 
-Specifies the driving parameters of a `Simulation` instance.
-A driver is assigned an immutable `S_update`, `QN_update`, and `pflag` upon
-construction, either by keyword arguments or fallback to the default values.
+An immutable structure specifying a simulation's preliminary secant update flag (`pflag`),
+the ``Sₖ₊₁`` update formula, and the Quasi-Newton update formula used. If keyword arguments
+aren't provided to a drivers construction, then default `S_update`, `pflag`, and `QN_updates`
+are assigned. A Driver contains a mutable `DriverOptions` instance, which allows for forwarding
+of the options interface to the Driver interface.
 
-See `S_update`, `QN_update`, and `pflag` for more on keyword argument options.
+See `S_update`, `QN_update`, and `pflag` for more on keyword arguments.
 """
 struct Driver
     S_update::Function
@@ -162,7 +163,7 @@ end
 
 The supplemental sample direction update formula of Driver `d`.
 
-Options: `S_update`, `S_update_a`, `S_update_b`, `S_update_c`, `S_update_d`, `S_update_e`, `S_update_f`
+Values: `S_update_a`, `S_update_b`, `S_update_c`, `S_update_d`, `S_update_e`, `S_update_f`
 """
 S_update(d::Driver) = getfield(d, :S_update)
 
@@ -172,7 +173,7 @@ S_update(d::Driver) = getfield(d, :S_update)
 
 The QN update formula of Driver `d`.
 
-Options: `SR1`, `PSB`
+Values: `SR1`, `PSB`
 """
 QN_update(d::Driver) = getfield(d, :QN_update)
 

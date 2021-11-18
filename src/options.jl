@@ -7,7 +7,7 @@
 """
     DriverOptions
 
-Specifies Driving parameters used in a `Simulation` instance.
+Specifies simulation options.
 """
 mutable struct DriverOptions
     samples::Int
@@ -35,7 +35,8 @@ end
 """
     samples(o::DriverOptions)
 
-The number of hessian samples taken at each succussful step in a simulation. 
+The number of hessian samples taken at each successful step in a simulation.
+The returned value corresponds to ``2w``.
 """
 samples(o::DriverOptions) = getfield(o, :samples)
 
@@ -43,7 +44,7 @@ samples(o::DriverOptions) = getfield(o, :samples)
 """
     Δ_max(o::DriverOptions)
 
-The maximum trust-region radius of a driven simulation.
+The maximum trust-region radius allowed in simulation.
 """
 Δ_max(o::DriverOptions) = getfield(o, :Δ_max)
 
@@ -59,7 +60,8 @@ The relative tolerance passed to `pinv` while performing a block QN update.
 """
     ϵ_tol(o::DriverOptions)
 
-The absolute convergence tolerance, occuring at ``xₖ`` such that ``||∇f(xₖ)|| ≤ ϵ``.
+The absolute convergence tolerance of a successful simulation,
+occuring at iterate ``xₖ`` when ``||∇f(xₖ)|| ≤ ϵ``.
 """
 ϵ_tol(o::DriverOptions) = getfield(o, :ϵ_tol)
 
@@ -83,7 +85,7 @@ weave_level(o::DriverOptions) = getfield(o, :weave_level)
 """
     log_level(o::DriverOptions)
 
-Returns the current logging level of a simulation
+Returns the current logging level of a simulation.
 """
 log_level(o::DriverOptions) = getfield(o, :log_level)
 
@@ -91,8 +93,9 @@ log_level(o::DriverOptions) = getfield(o, :log_level)
 """
     samples!(o::DriverOptions, s)
 
-Set the number of hessian samples collected during each succussful step
-to some even natrual `s` where ``s = 2w``.
+Set the number of hessian samples collected during each successful step
+to some even natural number. The set value corresponds to ``2w`` in the
+article.
 """
 samples!(o::DriverOptions, s) = begin
     mod(s, 2) ≡ 0 && s > 0 && setfield!(o, :samples, s)
