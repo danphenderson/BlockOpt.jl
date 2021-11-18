@@ -11,22 +11,15 @@ makedocs(
     ),
     modules = [BlockOpt],
     pages = [
-
         "Introduction" => "index.md",
-        
         "Overview" => "overview/design.md",
-
         "Manual" => [
             "manual/model.md",
             "manual/driver.md",
             "manual/options.md",
-            "manual/simulation.md"
+            "manual/simulation.md",
         ],
-
-        "Tutorials" => [
-            "tutorials/installation.md",
-            "tutorials/simple.md",
-        ]
+        "Tutorials" => ["tutorials/installation.md", "tutorials/simple.md"],
     ],
 )
 

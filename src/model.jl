@@ -10,24 +10,25 @@ with the model.
 """
 mutable struct Model
     name::String
-    objective::Union{Function, Missing}
-    gradient::Union{Function, Missing}
-    initial_iterate::Union{AbstractArray, Missing} 
-    formula::Union{String, Missing}
-    
-    dimension::Union{Int, Missing}
+    objective::Union{Function,Missing}
+    gradient::Union{Function,Missing}
+    initial_iterate::Union{AbstractArray,Missing}
+    formula::Union{String,Missing}
+
+    dimension::Union{Int,Missing}
     directory::String
     final::Bool
 
-    function Model(name::String;
+    function Model(
+        name::String;
         objective = missing,
-        gradient = missing, 
+        gradient = missing,
         initial_iterate = missing,
         formula = missing,
     )
         dimension = isa(initial_iterate, Missing) ? missing : length(initial_iterate)
         directory = mkpath(joinpath(pwd(), name))
-        final     = !isa(objective, Missing) && !isa(gradient, Missing)
+        final = !isa(objective, Missing) && !isa(gradient, Missing)
 
         new(
             name,
@@ -39,7 +40,7 @@ mutable struct Model
             directory,
             final,
         )
-    end 
+    end
 end
 
 
@@ -128,7 +129,7 @@ objective!(m::Model, f) = !final(m) && begin
 
     setfield!(m, :final, !isa(gradient(m), Missing))
 
-    setfield!(m, :objective, f) 
+    setfield!(m, :objective, f)
 end
 
 
@@ -146,12 +147,13 @@ of the inputed buffer `out`.
     
 If the model is final, the call simply returns without modifying the model.
 """
-gradient!(m::Model, ∇f!) = !final(m) && begin
+gradient!(m::Model, ∇f!) =
+    !final(m) && begin
 
-    setfield!(m, :final, !isa(objective(m), Missing))
+        setfield!(m, :final, !isa(objective(m), Missing))
 
-    setfield!(m, :gradient, ∇f!)
-end
+        setfield!(m, :gradient, ∇f!)
+    end
 
 
 
@@ -190,10 +192,10 @@ formula!(m::Model, formula) = setfield!(m, :formula, formula)
 
 Evaluates the objective function of model `m` at `x`.
 """
-obj(m::Model, x) = begin 
+obj(m::Model, x) = begin
     isa(dimension(m), Missing) && return missing
     @lencheck dimension(m) x
-    objective(m)(x) 
+    objective(m)(x)
 end
 
 
@@ -204,7 +206,7 @@ Evaluates the in-place gradient function of model `m` at `x`, storing the steepe
 direction in the place of input buffer `out`.
 """
 grad!(m::Model, out, x) = begin
-    isa(gradient(m), Missing) && return missing 
+    isa(gradient(m), Missing) && return missing
     @lencheck dimension(m) out x
     return gradient(m)(out, x)
 end
