@@ -335,7 +335,7 @@ end
 
             v = log_display(ρ_vals(s), id)
 
-            labels[1,i] = "\$ \\rho_k ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            labels[1,i] = "\$ \\rho ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
