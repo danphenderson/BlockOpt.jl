@@ -3,7 +3,7 @@
     @testset "Constructor" begin
         b = BlockOptBackend(test_model, test_driver)
 
-        
+
         @testset "inhereted model methods" begin
 
             @test model(b) ≡ test_model
@@ -17,80 +17,85 @@
             @test grad!(b, similar(b.xₖ), b.xₖ) ≈ grad!(test_model, similar(b.xₖ), b.xₖ)
 
             @test grad(b, b.xₖ) ≈ grad(test_model, b.xₖ)
-            
-            @test dimension(b) ≡ dimension(test_model);
+
+            @test dimension(b) ≡ dimension(test_model)
         end
 
-       
+
         @testset "inhereted driver methods" begin
 
             @test driver(b) ≡ test_driver
 
-            @test b.w ≡ Int(samples(test_driver)/2)
+            @test b.w ≡ Int(samples(test_driver) / 2)
 
             @test QN_update(b) ≡ QN_update(test_driver)
-        
-            @test S_update(b)  ≡ S_update(test_driver)
-            
+
+            @test S_update(b) ≡ S_update(test_driver)
+
             @test pflag(b) ≡ pflag(test_driver)
-            
+
             @test samples(b) ≡ samples(test_driver)
-             
+
             @test Δ_max(b) ≡ Δ_max(test_driver)
-            
+
             @test δ_tol(b) ≡ δ_tol(test_driver)
-            
+
             @test ϵ_tol(b) ≡ ϵ_tol(test_driver)
 
-            @test max_iterations(b) ≡ max_iterations(test_driver);
+            @test max_iterations(b) ≡ max_iterations(test_driver)
         end
 
 
         @testset "backend accessors" begin
 
-            @test fₖ(b) ≡ ∇fₖ_norm(b) ≡ pₖ_norm(b) ≡ Δₖ(b) ≡ ρ(b) ≡ 0.0 
-           
+            @test fₖ(b) ≡ ∇fₖ_norm(b) ≡ pₖ_norm(b) ≡ Δₖ(b) ≡ ρ(b) ≡ 0.0
+
             b.fₖ = 1.0
 
-            @test fₖ(b) ≡ 1.0; b.fₖ = 0.0
+            @test fₖ(b) ≡ 1.0
+            b.fₖ = 0.0
 
             b.∇fₖ_norm = 1.0
 
-            @test ∇fₖ_norm(b) ≡ 1.0; b.∇fₖ_norm = 0.0
+            @test ∇fₖ_norm(b) ≡ 1.0
+            b.∇fₖ_norm = 0.0
 
             b.pₖ_norm = 1.0
 
-            @test pₖ_norm(b) ≡ 1.0; b.pₖ_norm = 0.0
+            @test pₖ_norm(b) ≡ 1.0
+            b.pₖ_norm = 0.0
 
             b.Δₖ = 1.0
 
-            @test Δₖ(b) ≡ 1.0; b.Δₖ = 0.0
+            @test Δₖ(b) ≡ 1.0
+            b.Δₖ = 0.0
 
             b.ρ = 1.0
 
-            @test ρ(b) ≡ 1.0; b.ρ = 0.0;
+            @test ρ(b) ≡ 1.0
+            b.ρ = 0.0
         end
 
 
         @testset "initialization of fields" begin
 
-            @test size(b.C) ≡ size(b.P) ≡ (samples(b)+1, samples(b)+1) 
-            
+            @test size(b.C) ≡ size(b.P) ≡ (samples(b) + 1, samples(b) + 1)
+
             @test size(b.b) ≡ size(b.aₖ) ≡ (samples(b) + 1,)
-            
-            @test size(b.Qₖ) ≡ (dimension(b), samples(b) + 1)   
-            
-            @test size(b.xₖ) ≡  size(b.∇fₖ) ≡ size(b.hₖ) ≡ (dimension(b),)
+
+            @test size(b.Qₖ) ≡ (dimension(b), samples(b) + 1)
+
+            @test size(b.xₖ) ≡ size(b.∇fₖ) ≡ size(b.hₖ) ≡ (dimension(b),)
 
             @test size(b.pₖ) ≡ size(b.qₖ) ≡ size(b.xₜ) ≡ (dimension(b),)
-            
+
             @test size(b.Sₖ) ≡ size(b.Yₖ) ≡ (dimension(b), samples(b) - 1)
-            
+
             @test size(b.Uₖ) ≡ size(b.Vₖ) ≡ (dimension(b), samples(b))
 
             @test size(b.Hₖ) ≡ (dimension(b), dimension(b))
-            
-            @test map(issymmetric, (b.C, b.P, b.Hₖ)) ≡ (true, true, true);
+
+            @test map(issymmetric, (b.C, b.P, b.Hₖ)) ≡ (true, true, true)
         end
     end
 
@@ -236,7 +241,7 @@
     #     # no memory manipulation
     #     @testset "terminal subroutine" begin
     #         @unpack xₖ, ∇fₖ, hₖ, pₖ, xₜ, fₖ, fₜ, ρ, Δₖ, ∇fₖ_norm, pₖ_norm, Sₖ, Yₖ, Uₖ, Vₖ, Hₖ, Qₖ, P, b, C, aₖ, qₖ = b
-           
+
     #         terminal(b, 0)
 
     #         @test xₖ, ∇fₖ, hₖ, pₖ, xₜ, fₖ, fₜ, ρ, Δₖ, ∇fₖ_norm, pₖ_norm, Sₖ, Yₖ, Uₖ, Vₖ, Hₖ, Qₖ, P, b, C, aₖ, qₖ ≈
@@ -248,7 +253,7 @@
     #     # no memory manipulation
     #     @testset "pflag subroutine" begin
     #         @unpack xₖ, ∇fₖ, hₖ, pₖ, xₜ, fₖ, fₜ, ρ, Δₖ, ∇fₖ_norm, pₖ_norm, Sₖ, Yₖ, Uₖ, Vₖ, Hₖ, Qₖ, P, b, C, aₖ, qₖ = b
-            
+
     #         update_Δₖ(b)
 
     #         @test xₖ, ∇fₖ, hₖ, pₖ, xₜ, fₖ, fₜ, ρ, Δₖ, ∇fₖ_norm, pₖ_norm, Sₖ, Yₖ, Uₖ, Vₖ, Hₖ, Qₖ, P, b, C, aₖ, qₖ ≈
@@ -261,10 +266,10 @@
     @testset "Edge cases" begin
 
         @testset "terminal subroutine" begin
-             
+
             b = BlockOptBackend(test_model, test_driver)
 
-            b.∇fₖ_norm = ϵ_tol(b) + 1.0 
+            b.∇fₖ_norm = ϵ_tol(b) + 1.0
 
             @test terminal(b, max_iterations(b) - 1) ≡ false # terminal iteration
 
@@ -282,12 +287,15 @@
         @testset "terminal subroutine" begin
 
             b = BlockOptBackend(test_model, test_driver)
-            
+
             # TODO: Return b and pipeline above operations. 
-            initialize(b); build_trs(b); solve_trs(b); build_trial(b); 
+            initialize(b)
+            build_trs(b)
+            solve_trs(b)
+            build_trial(b)
 
             b.ρ = 0.0
-            
+
             @test !accept_trial(b) && !(b.xₖ ≈ b.xₜ) && !(b.fₖ ≈ b.fₜ)
 
             b.ρ = 1.0
@@ -299,22 +307,30 @@
         @testset "update_Δₖ subroutine" begin
 
             b = BlockOptBackend(test_model, test_driver)
-    
-            b.ρ = 0.0; b.pₖ_norm = b.Δₖ = 1.0  # test for shrinking Δ
-    
-            update_Δₖ(b);  @test b.Δₖ ≈ 0.25     
-    
-            b.ρ = 0.25; b.pₖ_norm = b.Δₖ = 1.0 # inclusive lower bound of ρ for keeping Δ
-    
-            update_Δₖ(b);  @test b.Δₖ ≈ 1.0      
-            
-            b.ρ = 0.75; b.pₖ_norm = b.Δₖ = 1.0 # non-inclusive lower bound of ρ for increasing Δ
-            
-            update_Δₖ(b);  @test b.Δₖ ≈ 1.0
-    
-            b.ρ = b.pₖ_norm = 0.9; b.Δₖ = 1.0  # increasing Δ boundary requirement
-    
-            update_Δₖ(b);  @test b.Δₖ ≈ 1.0;
+
+            b.ρ = 0.0
+            b.pₖ_norm = b.Δₖ = 1.0  # test for shrinking Δ
+
+            update_Δₖ(b)
+            @test b.Δₖ ≈ 0.25
+
+            b.ρ = 0.25
+            b.pₖ_norm = b.Δₖ = 1.0 # inclusive lower bound of ρ for keeping Δ
+
+            update_Δₖ(b)
+            @test b.Δₖ ≈ 1.0
+
+            b.ρ = 0.75
+            b.pₖ_norm = b.Δₖ = 1.0 # non-inclusive lower bound of ρ for increasing Δ
+
+            update_Δₖ(b)
+            @test b.Δₖ ≈ 1.0
+
+            b.ρ = b.pₖ_norm = 0.9
+            b.Δₖ = 1.0  # increasing Δ boundary requirement
+
+            update_Δₖ(b)
+            @test b.Δₖ ≈ 1.0
         end
     end
 end
@@ -342,22 +358,22 @@ function backend_behavior_test(driver)
         @test rank(b.Hₖ) ≡ dimension(b)
 
         @test b.Hₖ ≈ b.Hₖ'
-        
-        @test b.Yₖ'*b.Sₖ ≈ b.Sₖ'*b.Yₖ
 
-        @test b.Uₖ'*b.Vₖ ≈ b.Uₖ'*b.Vₖ
+        @test b.Yₖ' * b.Sₖ ≈ b.Sₖ' * b.Yₖ
+
+        @test b.Uₖ' * b.Vₖ ≈ b.Uₖ' * b.Vₖ
 
         @test b.Sₖ' * ∇²f * b.Sₖ ≈ b.Sₖ' * b.Yₖ
-        
+
         # @test b.Yₖ ≈ b.Hₖ * b.Sₖ # line 231 Y₀ = H₀ S₀ (typo - test condition below)
 
         @test b.Yₖ ≈ inv(b.Hₖ) * b.Sₖ
 
         @test b.Hₖ * b.Yₖ ≈ b.Sₖ
 
-        @test b.Uₖ ≈ [b.Sₖ  b.∇fₖ / b.∇fₖ_norm] 
+        @test b.Uₖ ≈ [b.Sₖ b.∇fₖ / b.∇fₖ_norm]
 
-        @test b.Vₖ ≈ [b.Yₖ  b.hₖ / b.∇fₖ_norm ];
+        @test b.Vₖ ≈ [b.Yₖ b.hₖ / b.∇fₖ_norm]
     end
 
 
@@ -370,9 +386,9 @@ function backend_behavior_test(driver)
 
         build_trs(b)
 
-        Mₖ = [b.∇fₖ/b.∇fₖ_norm  (b.Hₖ*b.∇fₖ) / b.∇fₖ_norm  b.Sₖ]
+        Mₖ = [b.∇fₖ / b.∇fₖ_norm (b.Hₖ * b.∇fₖ) / b.∇fₖ_norm b.Sₖ]
 
-        Qₖ = [b.hₖ/b.∇fₖ_norm  b.∇fₖ/b.∇fₖ_norm  b.Yₖ] 
+        Qₖ = [b.hₖ / b.∇fₖ_norm b.∇fₖ / b.∇fₖ_norm b.Yₖ]
 
         Hₖ⁻¹ = inv(b.Hₖ)
 
@@ -397,15 +413,15 @@ function backend_behavior_test(driver)
         for p ∈ ℜⁿ; the standard n-dimensional trust-region subproblem.
         """
         mp(p) = 0.5 * p' * Hₖ⁻¹ * p + b.∇fₖ'p
-    
-        
+
+
         """ 
         Equation 5.2: ``qₖ = arg min model_q(q) : ||q|| < Δ,``
         for q ∈ ℜⁿ; when Hₖ is full rank, pₖ = Hₖqₖ.
         """
         mq(q) = 0.5 * q' * b.Hₖ * q + (b.Hₖ * b.∇fₖ)'q
-    
-    
+
+
         """
         Equation 5.3: ``aₖ = arg min model_a(a) : ||Hₖ Qₖ aₖ|| < Δ,``  
         for a ∈ ℜ²ʷ⁺¹; solve to obtain step pₖ = HₖQₖaₖ and
@@ -421,24 +437,24 @@ function backend_behavior_test(driver)
 
             @test b.C ≈ b.Qₖ' * b.Hₖ^2 * b.Qₖ
 
-            @test b.Qₖ ≈ orth(Qₖ) 
+            @test b.Qₖ ≈ orth(Qₖ)
 
             @test b.Qₖ'b.Qₖ ≈ zeros(samples(b) + 1, samples(b) + 1) + I
-            
+
             @test cond(b.Qₖ) ≈ 1.0 # this is redundant
 
             @test mp(zeros(dimension(b))) ≈ 0.0
-            
+
             @test mq(zeros(dimension(b))) ≈ 0.0
-            
+
             @test ma(zeros(samples(b) + 1)) ≈ 0.0
 
             a = randn(2w + 1)
 
             @test ma(a) ≈ mq(b.Qₖ * a)
-            
+
             @test ma(a) ≈ mp(b.Hₖ * b.Qₖ * a) # line 186? p ≠ Mₖa
-            
+
             @test sqrt(a' * b.C * a) ≈ norm(b.Hₖ * b.Qₖ * a)
         end
 
@@ -456,32 +472,32 @@ function backend_behavior_test(driver)
 
             @test ma(b.aₖ) ≈ mp(b.pₖ)
 
-            @test ma(b.aₖ) ≤ 0.0       
+            @test ma(b.aₖ) ≤ 0.0
 
             @test b.∇fₖ' * b.pₖ ≤ 0.0  # descent direction 
 
             @test abs(sqrt(b.aₖ' * b.C * b.aₖ) - b.pₖ_norm) ≤ sqrt(eps(Float64))
 
-            @test abs(sqrt(b.aₖ' * b.C * b.aₖ) - norm(b.Hₖ * b.qₖ)) ≤ sqrt(eps(Float64));
+            @test abs(sqrt(b.aₖ' * b.C * b.aₖ) - norm(b.Hₖ * b.qₖ)) ≤ sqrt(eps(Float64))
         end
 
 
         build_trial(b)
-    
+
 
         @testset "build_trial subroutine" begin
-    
+
             @test b.xₜ ≈ b.xₖ + b.pₖ
-    
+
             @test b.fₜ ≈ obj(b, b.xₜ)
-    
+
             model_reduction = mq(b.qₖ)
-    
+
             actual_reduction = b.fₜ - b.fₖ
-    
+
             @test model_reduction ≤ 0.0
-    
-            @test b.ρ ≈ actual_reduction / model_reduction;
+
+            @test b.ρ ≈ actual_reduction / model_reduction
         end
 
 
@@ -497,16 +513,16 @@ function backend_behavior_test(driver)
         successful_trial && pflag(b) && @testset "secantQN subroutine" begin
 
             sₖ = b.pₖ
-    
+
             yₖ = grad(b, b.xₜ) - b.∇fₖ
-    
+
             @test sₖ' * yₖ > 0.0    # curvature condition 
-    
+
             secantQN(b)
-    
+
             @test rank(b.Hₖ) ≡ n
-    
-            @test b.Hₖ*yₖ ≈ sₖ;
+
+            @test b.Hₖ * yₖ ≈ sₖ
         end
 
 
@@ -516,33 +532,33 @@ function backend_behavior_test(driver)
 
             update_Sₖ(b)
 
-            @test b.Sₖ'*b.Sₖ ≈ I
+            @test b.Sₖ' * b.Sₖ ≈ I
 
             S_update(b) ≡ S_update_b && @test norm(b.Sₖ' * Sₖ) ≤ sqrt(eps(Float64))
 
-            S_update(b) ≡ S_update_c && @test norm(b.Sₖ' * Sₖ) ≤ sqrt(eps(Float64));
+            S_update(b) ≡ S_update_c && @test norm(b.Sₖ' * Sₖ) ≤ sqrt(eps(Float64))
         end
 
 
         successful_trial && @testset "gHS subroutine" begin
 
             gHS(b)
-    
+
             @test b.∇fₖ ≈ grad(b, b.xₜ)
-    
+
             @test b.∇fₖ_norm ≈ norm(grad(b, b.xₜ))
-    
+
             @test b.hₖ ≈ hess_sample(test_model, b.xₖ, b.∇fₖ)
-    
+
             @test b.Yₖ ≈ hess_sample(test_model, b.xₖ, b.Sₖ)
-            
-            @test b.Yₖ'*b.Sₖ ≈ b.Sₖ'*b.Yₖ
 
-            @test b.Uₖ ≈ [b.Sₖ  b.∇fₖ / b.∇fₖ_norm] 
+            @test b.Yₖ' * b.Sₖ ≈ b.Sₖ' * b.Yₖ
 
-            @test b.Vₖ ≈ [b.Yₖ  b.hₖ / b.∇fₖ_norm]
-    
-            @test b.Uₖ'*b.Vₖ ≈ b.Uₖ'*b.Vₖ;
+            @test b.Uₖ ≈ [b.Sₖ b.∇fₖ / b.∇fₖ_norm]
+
+            @test b.Vₖ ≈ [b.Yₖ b.hₖ / b.∇fₖ_norm]
+
+            @test b.Uₖ' * b.Vₖ ≈ b.Uₖ' * b.Vₖ
         end
 
 
@@ -551,21 +567,21 @@ function backend_behavior_test(driver)
             blockQN(b)
 
             @test rank(b.Hₖ) ≡ n
-    
+
             @test b.Hₖ ≈ b.Hₖ'
 
             # The tests below fail occosionally, but it is not expected that
             # it will hold in terminal phase.
 
             # @test b.Hₖ * b.hₖ ≈ b.∇fₖ
-    
+
             # @test b.Hₖ * b.Vₖ ≈ b.Uₖ
 
             # @test b.Hₖ * b.Yₖ ≈ b.Sₖ
         end
 
         update_Δₖ(b)
-        
+
     end
 
     @test b.∇fₖ_norm ≤ ϵ_tol(driver)
@@ -575,51 +591,51 @@ end
 
 @testset "Backend Behavior Tests:" begin
 
-    backend_behavior_test(Driver(S_update=S_update_a))
-    
-    backend_behavior_test(Driver(S_update=S_update_b))
-    
-    backend_behavior_test(Driver(S_update=S_update_c))
-    
-    backend_behavior_test(Driver(S_update=S_update_d))
-    
-    backend_behavior_test(Driver(S_update=S_update_e))
-    
-    backend_behavior_test(Driver(S_update=S_update_f))    
-    
-    backend_behavior_test(Driver(pflag=true, S_update=S_update_a))
+    backend_behavior_test(Driver(S_update = S_update_a))
 
-    backend_behavior_test(Driver(pflag=true, S_update=S_update_b))
+    backend_behavior_test(Driver(S_update = S_update_b))
 
-    backend_behavior_test(Driver(pflag=true, S_update=S_update_c))
+    backend_behavior_test(Driver(S_update = S_update_c))
 
-    backend_behavior_test(Driver(pflag=true, S_update=S_update_d))
+    backend_behavior_test(Driver(S_update = S_update_d))
 
-    backend_behavior_test(Driver(pflag=true, S_update=S_update_e))
+    backend_behavior_test(Driver(S_update = S_update_e))
 
-    backend_behavior_test(Driver(pflag=true, S_update=S_update_f))
+    backend_behavior_test(Driver(S_update = S_update_f))
 
-    backend_behavior_test(Driver(QN_update=PSB, S_update=S_update_a))
-    
-    backend_behavior_test(Driver(QN_update=PSB, S_update=S_update_b))
-    
-    backend_behavior_test(Driver(QN_update=PSB, S_update=S_update_c))
-    
-    backend_behavior_test(Driver(QN_update=PSB, S_update=S_update_d))
-    
-    backend_behavior_test(Driver(QN_update=PSB, S_update=S_update_e))
-    
-    backend_behavior_test(Driver(QN_update=PSB, S_update=S_update_f))    
-    
-    backend_behavior_test(Driver(QN_update=PSB, pflag=true, S_update=S_update_a))
+    backend_behavior_test(Driver(pflag = true, S_update = S_update_a))
 
-    backend_behavior_test(Driver(QN_update=PSB, pflag=true, S_update=S_update_b))
+    backend_behavior_test(Driver(pflag = true, S_update = S_update_b))
 
-    backend_behavior_test(Driver(QN_update=PSB, pflag=true, S_update=S_update_c))
+    backend_behavior_test(Driver(pflag = true, S_update = S_update_c))
 
-    backend_behavior_test(Driver(QN_update=PSB, pflag=true, S_update=S_update_d))
+    backend_behavior_test(Driver(pflag = true, S_update = S_update_d))
 
-    backend_behavior_test(Driver(QN_update=PSB, pflag=true, S_update=S_update_e))
+    backend_behavior_test(Driver(pflag = true, S_update = S_update_e))
 
-    backend_behavior_test(Driver(QN_update=PSB, pflag=true, S_update=S_update_f))
+    backend_behavior_test(Driver(pflag = true, S_update = S_update_f))
+
+    backend_behavior_test(Driver(QN_update = PSB, S_update = S_update_a))
+
+    backend_behavior_test(Driver(QN_update = PSB, S_update = S_update_b))
+
+    backend_behavior_test(Driver(QN_update = PSB, S_update = S_update_c))
+
+    backend_behavior_test(Driver(QN_update = PSB, S_update = S_update_d))
+
+    backend_behavior_test(Driver(QN_update = PSB, S_update = S_update_e))
+
+    backend_behavior_test(Driver(QN_update = PSB, S_update = S_update_f))
+
+    backend_behavior_test(Driver(QN_update = PSB, pflag = true, S_update = S_update_a))
+
+    backend_behavior_test(Driver(QN_update = PSB, pflag = true, S_update = S_update_b))
+
+    backend_behavior_test(Driver(QN_update = PSB, pflag = true, S_update = S_update_c))
+
+    backend_behavior_test(Driver(QN_update = PSB, pflag = true, S_update = S_update_d))
+
+    backend_behavior_test(Driver(QN_update = PSB, pflag = true, S_update = S_update_e))
+
+    backend_behavior_test(Driver(QN_update = PSB, pflag = true, S_update = S_update_f))
 end

@@ -8,16 +8,16 @@
     ## From NLPModels.jl
 """
 struct DimensionError <: Exception
-  name::Union{Symbol, String}
-  dim_expected::Int
-  dim_found::Int
+    name::Union{Symbol,String}
+    dim_expected::Int
+    dim_found::Int
 end
 
 
 function Base.showerror(io::IO, e::DimensionError)
     print(
-      io,
-      "DimensionError: Input $(e.name) should have length $(e.dim_expected) not $(e.dim_found)",
+        io,
+        "DimensionError: Input $(e.name) should have length $(e.dim_expected) not $(e.dim_found)",
     )
 end
 
@@ -30,16 +30,16 @@ end
     Check that arrays `x`, `y`, `z`, etc. have a prescribed length `n`.
 """
 macro lencheck(l, vars...)
-  exprs = Expr[]
-  for var in vars
-    varname = string(var)
-    push!(exprs, :(
-      if length($(esc(var))) != $(esc(l))
-        throw(DimensionError($varname, $(esc(l)), length($(esc(var)))))
-      end
-    ))
-  end
-  Expr(:block, exprs...)
+    exprs = Expr[]
+    for var in vars
+        varname = string(var)
+        push!(exprs, :(
+            if length($(esc(var))) != $(esc(l))
+                throw(DimensionError($varname, $(esc(l)), length($(esc(var)))))
+            end
+        ))
+    end
+    Expr(:block, exprs...)
 end
 
 
@@ -57,8 +57,8 @@ end
 
 function Base.showerror(io::IO, e::ContractError)
     print(
-      io,
-      "ContractError: $(e.behavior) is a requirement of $(e.abstract_type) contract!",
+        io,
+        "ContractError: $(e.behavior) is a requirement of $(e.abstract_type) contract!",
     )
 end
 
@@ -84,10 +84,7 @@ end
 
 
 function Base.showerror(io::IO, e::AccessError)
-    print(
-      io,
-      "AccessError: $(e.type) restricts field access",
-    )
+    print(io, "AccessError: $(e.type) restricts field access")
 end
 
 

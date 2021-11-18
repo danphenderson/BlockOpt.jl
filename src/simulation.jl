@@ -68,21 +68,21 @@ weave_level(s::Simulation) = weave_level(trace(s))
 
 A vector storing objective values ``f(xₖ)`` for each iterate ``xₖ``.
 """
-f_vals(s::Simulation) = f_vals(trace(s)) 
+f_vals(s::Simulation) = f_vals(trace(s))
 
 """
     ∇f_norms(s::Simulation)
 
 A vector storing normed gradient values ``||∇f(xₖ)||₂`` for each iterate ``xₖ``.
 """
-∇f_norms(s::Simulation) = ∇f_norms(trace(s)) 
+∇f_norms(s::Simulation) = ∇f_norms(trace(s))
 
 """
     p_norms(s::Simulation)
 
 A vector storing the distance of each successful step ``||pₖ||₂``. 
 """
-p_norms(s::Simulation) = p_norms(trace(s)) 
+p_norms(s::Simulation) = p_norms(trace(s))
 
 
 """
@@ -111,9 +111,11 @@ Generates a Weave.jl report of the simulation args.
 function weave(args::Simulation...)
     println(pwd())
     Weave.weave(
-        "src/lib/trace.jmd"; 
-        args=args, 
-        out_path=mkpath(joinpath(directory(model(first(args))), "trace_$(trunc(now(), Minute))"))
+        "src/lib/trace.jmd";
+        args = args,
+        out_path = mkpath(
+            joinpath(directory(model(first(args))), "trace_$(trunc(now(), Minute))"),
+        ),
     )
 end
 
@@ -139,13 +141,13 @@ error!(s::Simulation, args...) = error!(trace(s), args...)
 backend(s::Simulation) = getfield(s, :backend)
 
 
-fₖ(s::Simulation) = fₖ(backend(s)) 
+fₖ(s::Simulation) = fₖ(backend(s))
 
 
-∇fₖ_norm(s::Simulation) = ∇fₖ_norm(backend(s)) 
+∇fₖ_norm(s::Simulation) = ∇fₖ_norm(backend(s))
 
 
-pₖ_norm(s::Simulation) = pₖ_norm(backend(s)) 
+pₖ_norm(s::Simulation) = pₖ_norm(backend(s))
 
 
 Δₖ(s::Simulation) = Δₖ(backend(s))
@@ -355,7 +357,7 @@ function optimize!(simulation::Simulation)
 
     initialize(simulation)
 
-    build_trs(simulation) 
+    build_trs(simulation)
 
     while !terminal(simulation)
 
@@ -366,7 +368,7 @@ function optimize!(simulation::Simulation)
         if accept_trial(simulation)
 
             if pflag(simulation)
-                secantQN(simulation) 
+                secantQN(simulation)
             end
 
             update_Sₖ(simulation)
@@ -385,7 +387,3 @@ function optimize!(simulation::Simulation)
 
     return simulation
 end
-
-
-
-

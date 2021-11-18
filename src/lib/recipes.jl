@@ -1,8 +1,17 @@
-export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace, objtrace!, gradtrace, gradtrace!
+export rhotrace,
+    rhotrace!,
+    steptrace,
+    steptrace!,
+    radiustrace,
+    radiustrace!,
+    objtrace,
+    objtrace!,
+    gradtrace,
+    gradtrace!
 
 
 function log_display(v, name)
-    if (m=minimum(v)) > 0.0
+    if (m = minimum(v)) > 0.0
         return v
     elseif m ≈ 0.0
         @warn "$name: shifted by $(eps(Float64)) to display on Log Scale"
@@ -21,7 +30,7 @@ a plot of each arguments objective function values at each succussful iterate.
 
 To add a simulation to the current `objtrace` plot use `objtrace!`.
 """
-function objtrace end 
+function objtrace end
 
 
 """
@@ -80,17 +89,17 @@ function rhotrace end
 
     xguide := "Iterates (gHS evaluations)"
 
-    yguide := y_lab 
+    yguide := y_lab
 
     yguidefontsize := 7
 
     xguidefontsize := 7
 
-    title  --> "Objective Trace"
+    title --> "Objective Trace"
 
     titlefontsize --> 11
 
-    yaxis  --> :log
+    yaxis --> :log
 
     legend --> :bottomright
 
@@ -103,20 +112,23 @@ function rhotrace end
         for i ∈ 1:num_args
 
             s = result.args[i]
-            
+
             qn_update = string(QN_update(driver(s)))
-            
-            s_update = "6.1."*string(S_update(driver(s)))[end]
-            
+
+            s_update = "6.1." * string(S_update(driver(s)))[end]
+
             two_w = samples(driver(s))
-            
-            dim =  dimension(model(s))
-            
+
+            dim = dimension(model(s))
+
             id = name(model(s))
 
             v = log_display(f_vals(s), id)
-            
-            labels[1,i] = "\$ f \\quad \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+
+            labels[
+                1,
+                i,
+            ] = "\$ f \\quad \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -144,11 +156,11 @@ end
 
     xguidefontsize := 7
 
-    title  --> "Normed Gradient Trace"
+    title --> "Normed Gradient Trace"
 
     titlefontsize --> 11
 
-    yaxis  --> :log
+    yaxis --> :log
 
     legend --> :bottomright
     @series begin
@@ -159,20 +171,23 @@ end
         for i ∈ 1:num_args
 
             s = result.args[i]
-            
+
             qn_update = string(QN_update(driver(s)))
-            
-            s_update = "6.1."*string(S_update(driver(s)))[end]
-            
+
+            s_update = "6.1." * string(S_update(driver(s)))[end]
+
             two_w = samples(driver(s))
-            
-            dim =  dimension(model(s))
-            
+
+            dim = dimension(model(s))
+
             id = name(model(s))
 
             v = log_display(∇f_norms(s), id)
-            
-            labels[1,i] = "\$ ||\\nabla f|| ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+
+            labels[
+                1,
+                i,
+            ] = "\$ ||\\nabla f|| ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -197,36 +212,39 @@ end
 
     xguidefontsize := 7
 
-    title  --> "Trust-Region Subproblem Radius Trace"
+    title --> "Trust-Region Subproblem Radius Trace"
 
     titlefontsize --> 11
 
-    yaxis  --> :log
+    yaxis --> :log
 
     legend --> :bottomright
-    
+
     @series begin
         x = []
-        
+
         labels = Matrix{String}(undef, 1, length(result.args))
 
         for i ∈ 1:length(result.args)
 
             s = result.args[i]
-            
+
             qn_update = string(QN_update(driver(s)))
-            
-            s_update = "6.1."*string(S_update(driver(s)))[end]
-            
+
+            s_update = "6.1." * string(S_update(driver(s)))[end]
+
             two_w = samples(driver(s))
-            
-            dim =  dimension(model(s))
-            
+
+            dim = dimension(model(s))
+
             id = name(model(s))
 
             v = log_display(Δ_vals(s), id)
 
-            labels[1,i] = "\$ \\Delta_k ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            labels[
+                1,
+                i,
+            ] = "\$ \\Delta_k ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -251,42 +269,45 @@ end
 
     xguidefontsize := 7
 
-    title  --> "Step Distance Trace"
+    title --> "Step Distance Trace"
 
     titlefontsize --> 11
 
-    yaxis  --> :log
+    yaxis --> :log
 
     legend --> :bottomright
-    
+
     @series begin
         x = []
-        
+
         labels = Matrix{String}(undef, 1, length(result.args))
 
         for i ∈ 1:length(result.args)
 
             s = result.args[i]
-            
+
             qn_update = string(QN_update(driver(s)))
-            
-            s_update = "6.1."*string(S_update(driver(s)))[end]
-            
+
+            s_update = "6.1." * string(S_update(driver(s)))[end]
+
             two_w = samples(driver(s))
-            
-            dim =  dimension(model(s))
-            
+
+            dim = dimension(model(s))
+
             id = name(model(s))
 
             v = log_display(p_norms(s), id)
 
-            labels[1,i] = "\$ ||p_k|| ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            labels[
+                1,
+                i,
+            ] = "\$ ||p_k|| ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
 
         label --> labels
-        
+
         x
     end
 
@@ -306,11 +327,11 @@ end
 
     xguidefontsize := 7
 
-    title  --> "Actual Reduction to Model Reduction Ratio Trace"
+    title --> "Actual Reduction to Model Reduction Ratio Trace"
 
     titlefontsize --> 11
 
-    yaxis  --> :log
+    yaxis --> :log
 
     legend --> :bottomright
 
@@ -322,20 +343,23 @@ end
         for i ∈ 1:length(result.args)
 
             s = result.args[i]
-            
+
             qn_update = string(QN_update(driver(s)))
-            
-            s_update = "6.1."*string(S_update(driver(s)))[end]
-            
+
+            s_update = "6.1." * string(S_update(driver(s)))[end]
+
             two_w = samples(driver(s))
-            
-            dim =  dimension(model(s))
-            
+
+            dim = dimension(model(s))
+
             id = name(model(s))
 
             v = log_display(ρ_vals(s), id)
 
-            labels[1,i] = "\$ \\rho ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            labels[
+                1,
+                i,
+            ] = "\$ \\rho ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end

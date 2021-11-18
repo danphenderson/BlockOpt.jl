@@ -6,7 +6,7 @@ BlockOptBackend
 Performs the iteration of Algorithm 7.1 after being initiated by
 a `Simulation` instance.
 """
-mutable struct BlockOptBackend 
+mutable struct BlockOptBackend
     model::Model
     driver::Driver
     n::Int
@@ -28,19 +28,19 @@ mutable struct BlockOptBackend
     Yₖ::Matrix{Float64}
     Uₖ::Matrix{Float64}
     Vₖ::Matrix{Float64}
-    Hₖ::Symmetric{Float64, Matrix{Float64}}
+    Hₖ::Symmetric{Float64,Matrix{Float64}}
     Qₖ::Matrix{Float64}
-    P::Symmetric{Float64, Matrix{Float64}}
+    P::Symmetric{Float64,Matrix{Float64}}
     b::Vector{Float64}
-    C::Symmetric{Float64, Matrix{Float64}}
+    C::Symmetric{Float64,Matrix{Float64}}
     aₖ::Vector{Float64}
     qₖ::Vector{Float64}
-    
+
 
     function BlockOptBackend(m, d)
         # TODO: the driver & model must be locked from modifications
         # during simulation, or copy data. Look into a julia Mutex
-        n, w = dimension(m), Int(samples(d)/2)
+        n, w = dimension(m), Int(samples(d) / 2)
 
         xₖ = copy(initial_iterate(m))
 
@@ -49,7 +49,7 @@ mutable struct BlockOptBackend
         fₖ = fₜ = ρ = Δₖ = ∇fₖ_norm = pₖ_norm = 0.0
 
         Sₖ = orth(randn(n, 2w - 1))
- 
+
         Yₖ = similar(Sₖ)
 
         Uₖ = zeros(n, 2w)
@@ -58,11 +58,11 @@ mutable struct BlockOptBackend
 
         Hₖ = Symmetric(zeros(n, n) + I)
 
-        Qₖ = zeros(n, 2w+1)
+        Qₖ = zeros(n, 2w + 1)
 
-        P = Symmetric(zeros(2w+1 , 2w+1))
+        P = Symmetric(zeros(2w + 1, 2w + 1))
 
-        b = zeros(2w+1)
+        b = zeros(2w + 1)
 
         C = similar(P)
 
@@ -85,7 +85,7 @@ mutable struct BlockOptBackend
             ∇fₖ_norm,
             pₖ_norm,
             Sₖ,
-            Yₖ, 
+            Yₖ,
             Uₖ,
             Vₖ,
             Hₖ,
@@ -191,13 +191,13 @@ end
 
 function build_trs(b::BlockOptBackend)
 
-    b.Qₖ = orth([b.hₖ/b.∇fₖ_norm  b.∇fₖ/b.∇fₖ_norm  b.Yₖ])
+    b.Qₖ = orth([b.hₖ / b.∇fₖ_norm b.∇fₖ / b.∇fₖ_norm b.Yₖ])
 
-    b.P = Symmetric(b.Qₖ'*b.Hₖ*b.Qₖ)
+    b.P = Symmetric(b.Qₖ' * b.Hₖ * b.Qₖ)
 
-    b.b = b.Qₖ'*b.Hₖ*b.∇fₖ
+    b.b = b.Qₖ' * b.Hₖ * b.∇fₖ
 
-    b.C = Symmetric(b.Qₖ'*b.Hₖ*b.Hₖ*b.Qₖ)
+    b.C = Symmetric(b.Qₖ' * b.Hₖ * b.Hₖ * b.Qₖ)
 
     return nothing
 end
@@ -205,13 +205,13 @@ end
 
 function solve_trs(b::BlockOptBackend)
 
-    aₖ, info = trs_small(b.P, b.b, b.Δₖ, b.C, compute_local=false)
+    aₖ, info = trs_small(b.P, b.b, b.Δₖ, b.C, compute_local = false)
 
     b.aₖ = aₖ[:, 1]
 
-    b.qₖ = b.Qₖ*b.aₖ
+    b.qₖ = b.Qₖ * b.aₖ
 
-    b.pₖ = b.Hₖ*b.qₖ
+    b.pₖ = b.Hₖ * b.qₖ
 
     b.pₖ_norm = norm(b.pₖ)
 
@@ -225,7 +225,7 @@ function build_trial(b::BlockOptBackend)
 
     b.fₜ = obj(b, b.xₜ)
 
-    b.ρ = (b.fₖ - b.fₜ)/(0 - (0.5*dot(b.qₖ, b.Hₖ, b.qₖ) + (b.Hₖ * b.∇fₖ)' * b.qₖ))
+    b.ρ = (b.fₖ - b.fₜ) / (0 - (0.5 * dot(b.qₖ, b.Hₖ, b.qₖ) + (b.Hₖ * b.∇fₖ)' * b.qₖ))
 
     return nothing
 end
@@ -235,12 +235,12 @@ function update_Δₖ(b::BlockOptBackend)
 
     if b.ρ < 0.25
 
-        b.Δₖ = 0.25*b.Δₖ
-    
+        b.Δₖ = 0.25 * b.Δₖ
+
     elseif b.ρ > 0.75 && b.pₖ_norm ≈ b.Δₖ
-    
-        b.Δₖ = min(2*b.Δₖ, Δ_max(b))
-    
+
+        b.Δₖ = min(2 * b.Δₖ, Δ_max(b))
+
     end
 
     return nothing
@@ -257,71 +257,71 @@ function accept_trial(b::BlockOptBackend)
         return true
     end
 
-    return false 
+    return false
 end
 
 
-function gAD(b::BlockOptBackend, S) 
-    
-    Sdual = Dual{Float64}.(b.xₖ,  eachcol(S)...)
-    
-    Ydual = Dual{Float64}.(similar(b.xₖ),  eachcol(S)...)
-    
+function gAD(b::BlockOptBackend, S)
+
+    Sdual = Dual{Float64}.(b.xₖ, eachcol(S)...)
+
+    Ydual = Dual{Float64}.(similar(b.xₖ), eachcol(S)...)
+
     Ydual = grad!(b, Ydual, Sdual)
-    
+
     g = similar(b.xₖ)
-    
+
     Y = similar(S)
-    
-    @views for i in 1:length(g)
-        g[i]    = Ydual[i].value
-    
+
+    @views for i = 1:length(g)
+        g[i] = Ydual[i].value
+
         Y[i, :] = Ydual[i].partials[:]
     end
-    
+
     return g, Y
 end
 
 
 function build_UV(b::BlockOptBackend)
-    
-    b.Uₖ = [b.Sₖ  b.∇fₖ/b.∇fₖ_norm] 
-    
-    b.Vₖ = [b.Yₖ  b.hₖ/b.∇fₖ_norm]
-    
+
+    b.Uₖ = [b.Sₖ b.∇fₖ / b.∇fₖ_norm]
+
+    b.Vₖ = [b.Yₖ b.hₖ / b.∇fₖ_norm]
+
     return nothing
 end
 
-    
+
 function gHS(b::BlockOptBackend)
-    
+
     w = b.w
-    
+
     g, Y₁ = gAD(b, b.Sₖ[:, 1:w])
-    
+
     _, Y₂ = gAD(b, [b.Sₖ[:, w+1:end] g])
-    
+
     b.∇fₖ_norm, b.∇fₖ, b.hₖ, b.Yₖ = norm(g), g, Y₂[:, end], [Y₁ Y₂[:, 1:end-1]]
-    
+
     build_UV(b)
-    
+
     return nothing
 end
 
 
 function initialize(b::BlockOptBackend)
-    
+
     b.fₖ = obj(b, b.xₖ)
-    
+
     gHS(b)
-    
+
     α = mean(eigvals(b.Sₖ' * b.Yₖ))
-    
-    b.Δₖ = min(1.1*b.∇fₖ_norm/(2*α), Δ_max(b))
-    
-    b.Hₖ = 1/α * b.Hₖ
-    
+
+    b.Δₖ = min(1.1 * b.∇fₖ_norm / (2 * α), Δ_max(b))
+
+    b.Hₖ = 1 / α * b.Hₖ
+
     blockQN(b)
-    
+
     return nothing
 end

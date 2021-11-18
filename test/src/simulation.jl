@@ -5,7 +5,7 @@
 
 
     @test isa(trace(s), BlockOptTrace)
-        
+
     @test isa(backend(s), BlockOptBackend)
 
 
@@ -38,13 +38,13 @@
         @test weave!(s, :ρ_vals, 4.0) ≈ [4.0]
 
         @test pop!(f_vals(s)) ≈ 0.0
-        
+
         @test pop!(∇f_norms(s)) ≈ 1.0
-        
+
         @test pop!(Δ_vals(s)) ≈ 2.0
-       
+
         @test pop!(p_norms(s)) ≈ 3.0
-        
+
         @test pop!(ρ_vals(s)) ≈ 4.0
 
         @test weave!(s, f_vals, 0.0) ≈ [0.0]
@@ -65,12 +65,12 @@
 
         @test isfile(io(s))
 
-        info!(s,  "This is an info! message.")
-        
+        info!(s, "This is an info! message.")
+
         debug!(s, "This is an debug! message.")
-        
-        warn!(s,  "This is an warn! message.")
-        
+
+        warn!(s, "This is an warn! message.")
+
         error!(s, "This is an error! message.")
 
         # Currently, the statements below print to console. Fix. 
@@ -78,11 +78,11 @@
         # info!(s,  "Simulation initilaized by:\\n", test_model, test_driver)
 
         # info!(s,  "Simulation initilized trace and backend:\\n", trace(s), backend(s))
-       
-        restricted_type_test(s);
+
+        restricted_type_test(s)
     end
 
-     
+
     @testset "edge case testing" begin
 
 
@@ -99,11 +99,11 @@ end
     s = Simulation(test_model, test_driver)
 
     @testset "initialize subroutine" begin
-        
+
         @test evaluations(ghs_counter(s)) ≡ 0
 
         initialize(s)
-        
+
         @test evaluations(ghs_counter(s)) ≡ 1
     end
 
@@ -113,7 +113,7 @@ end
 
 
         build_trs(s)
-  
+
 
         @testset "solve_trs subroutine" begin
 
@@ -133,7 +133,7 @@ end
 
 
         successful_trial = accept_trial(s)
-        
+
 
         @testset "accept_trial subroutine" begin
 
@@ -177,7 +177,7 @@ end
 
 
         successful_trial && blockQN(s)
-        
+
 
         update_Δₖ(s)
 
