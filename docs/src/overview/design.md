@@ -26,7 +26,8 @@ the iteration and a Simulation controls the observations information flow.
 
 ## `optimize` 
 ```@docs
-optimize
+optimize(model::Model, driver::Driver)
+optimize(f::Function, ∇f!::Function, x₀::AbstractArray)
 ```
 
 ### Entry Point: `optimize` call.
