@@ -355,7 +355,7 @@ The normed gradient data at each successful iterate is accessed through `∇f_no
 `∇f_norms(s2)`.
 
 ```julia-repl
-julia> gradtrace(s1t, s2)
+julia> gradtrace(s1, s2)
 
 ```
 ![](../assets/gradtrace_simple_case.png)
