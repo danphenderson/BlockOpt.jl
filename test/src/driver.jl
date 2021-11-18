@@ -10,14 +10,22 @@
     S_new = S_update_b(S, Y, p);
     
     @test S_new'*S_new ≈ I
+    
+    # test fails, 0.0 ≉ 1e-17 - the average order of lhs
+    # @test S_new'*S ≈ zeros(2w-1, 2w-1) # orthoganlity test 6.1.b
 
-    @test norm(S_new'*S) ≤ sqrt(eps(Float64)) # orthoganlity test
+    # resort to a weaker orthogonality test
+    @test norm(S_new'*S) ≤ (2w-1)^2eps(Float64) # orthoganlity test 6.1.b
     
     S_new = S_update_c(S, Y, p);
     
     @test S_new'*S_new ≈ I
 
-    @test norm(S_new'*S) ≤ sqrt(eps(Float64)) # orthoganlity test
+    # test fails, 0.0 ≉ 1e-17 - the average order of lhs
+    # @test S_new'*S ≈ zeros(2w-1, 2w-1) # orthoganlity test 6.1.b
+
+    # resort to a weaker orthogonality test
+    @test norm(S_new'*S) ≤ (2w-1)^2eps(Float64) # orthoganlity test 6.1.c
     
     S_new = S_update_d(S, Y, p);
     

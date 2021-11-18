@@ -11,7 +11,7 @@ import BlockOpt: Simulation, trs_timer, trs_counter, ghs_timer, ghs_counter, f_v
 Simulation
 ```
 
-## `optimize!`
+## Subroutines of `optimize!`
 
 When calling `optimize(model, driver)` the fallback is `optimize!(s)` where
 simulation `s` is internally constructed. The responsibility of `s` is to orchestrate
@@ -22,7 +22,6 @@ iteration. Since then backend delegates it's behavior to `s`, we dispatch the ba
 to `s` while adding additional execution steps to generate the simulations trace.
 
 
-### Subroutines
 
 ```@docs
 initialize(s::Simulation)
