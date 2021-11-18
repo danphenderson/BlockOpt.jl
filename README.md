@@ -30,7 +30,8 @@ Pkg.add(url="https://github.com/danphenderson/BlockOpt.jl")
 using the Julia package manager [Pkg.jl](https://pkgdocs.julialang.org/v1/).
 
 The [TRS package](https://github.com/oxfordcontrol/TRS.jl) hasn't been updated to install with
-the BlockOpt.jl supported julia releases (versions > `v1.3.0`). The TRS package was developed in an earlier
-release of Julia. The BlockOpt trust-region subproblem solve uses `trs_small` from a version of TRS which has been
-updated to the latest Pkg.jl requirements. There is an open pull-request to merge the
-[forked branch](https://github.com/danphenderson/TRS.jl) of TRS.jl used in BlockOpt.jl.
+the BlockOpt.jl supported julia release versrions ``≥`` `v1.3.0`. The TRS package was
+developed in an earlier release of Julia. The BlockOpt trust-region subproblem solve
+uses `trs_small` from an updated version of TRS using the current Pkg.jl `.toml` system.
+There is an open pull-request to merge the
+[forked TRS branch](https://github.com/danphenderson/TRS.jl) used in BlockOpt.jl

@@ -6,7 +6,9 @@ DocTestSetup = quote
 end
 ```
 
+
 # Simple Use Case
+
 Consider the [generalized rosenbrock](https://en.wikipedia.org/wiki/Rosenbrock_function)
 as an objective function which is
 
@@ -324,6 +326,7 @@ within the the tolerance given by `ϵ_tol(psb_driver)` (``1.0e-5``).
 
 See the `Options` and `Driver` sections of the Manual for more information
 on `Driver` options and configurations. 
+
 
 ## Simulation Recipes
 
