@@ -56,9 +56,12 @@ The number of `gHS` evaluations of simulation `s`.
 """
 ghs_counter(s::Simulation) = ghs_counter(trace(s))
 
+
 weave!(s::Simulation, field, val) = weave!(trace(s), field, val)
 
+
 weave_level(s::Simulation) = weave_level(trace(s))
+
 
 """
     f_vals(s::Simulation)
@@ -98,6 +101,21 @@ A vector storing the ratio of actual reduction to model reduction of
 each successful step.
 """
 ρ_vals(s::Simulation) = ρ_vals(trace(s))
+
+
+"""
+    weave(args::Simulation...)
+
+Generates a Weave.jl report of the simulation args. 
+"""
+function weave(args::Simulation...)
+    println(pwd())
+    Weave.weave(
+        "src/lib/trace.jmd"; 
+        args=args, 
+        out_path=mkpath(joinpath(directory(model(first(args))), "trace_$(trunc(now(), Minute))"))
+    )
+end
 
 
 io(s::Simulation) = io(trace(s))
@@ -362,6 +380,8 @@ function optimize!(simulation::Simulation)
 
         update_Δₖ(simulation)
     end
+
+    info!(simulation, "  Terminating:", trace(simulation))
 
     return simulation
 end

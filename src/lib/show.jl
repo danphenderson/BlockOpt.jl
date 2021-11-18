@@ -30,13 +30,14 @@ end
 
 function Base.show(io::IO, m::Model)
     println(io,"  Model: $(name(m))")
+    formula_here = (isa(formula(m), Missing) ? formula(m) : "loaded")
     println(io, "  -------------------")
     println(io, "    objective:         $(objective(m))")
     println(io, "    gradient:          $(gradient(m))") 
     println(io, "    initial iterate:   $(array_string_view(initial_iterate(m)))")    
     println(io, "    dimension:         $(dimension(m))")  
     println(io, "    directory:         $(directory(m))")
-    println(io, "    objective formula: $(formula(m))")  
+    println(io, "    objective formula: $(formula_here)")  
     flush(io)
     return nothing
 end
@@ -127,6 +128,7 @@ function Base.show(io::IO, s::Simulation)
         show(io, backend(s))
         show(io, trace(s))
     end
+    println(io, "")
     flush(io)
     return nothing
 end

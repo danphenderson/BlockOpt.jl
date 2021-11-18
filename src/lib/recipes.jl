@@ -92,7 +92,7 @@ function rhotrace end
 
     yaxis  --> :log
 
-    legend --> :topright
+    legend --> :bottomright
 
     @series begin
         x = []
@@ -136,11 +136,9 @@ end
 
     m = model(result.args[1])
 
-    y_lab = (isa(formula(m), Missing) || num_args > 1 ? "\$ f \$" : formula(m))
-
     xguide := "Iterates (gHS evaluations)"
 
-    yguide := y_lab 
+    yguide := "\$ ||\\nabla f ||\$"
 
     yguidefontsize := 7
 
@@ -152,8 +150,7 @@ end
 
     yaxis  --> :log
 
-    legend --> :topright
-
+    legend --> :bottomright
     @series begin
         x = []
 
@@ -206,7 +203,7 @@ end
 
     yaxis  --> :log
 
-    legend --> :topright
+    legend --> :bottomright
     
     @series begin
         x = []
@@ -260,7 +257,7 @@ end
 
     yaxis  --> :log
 
-    legend --> :topright
+    legend --> :bottomright
     
     @series begin
         x = []
@@ -315,7 +312,7 @@ end
 
     yaxis  --> :log
 
-    legend --> :topright
+    legend --> :bottomright
 
     @series begin
         x = []

@@ -62,6 +62,8 @@ function rosenbrock_model(n::Int)
 
     initial_iterate!(rosen_model, randn(100))
 
+    formula!(rosen_model, "\$\\sum_{i=1}^{N-1} \\left[100(x_{i+1}^2 - x_i^2)^2 + (1 - x_i)^2\\right]\$")
+
     return rosen_model
 end
 

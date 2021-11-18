@@ -134,6 +134,9 @@ rosen (generic function with 1 method)
 julia> gradient!(m, ∇rosen!)
 ∇rosen! (generic function with 1 method)
 
+
+julia> initial_iterate!(m, x₀)
+
 julia> m
   Model: Rosenbrock
   -------------------
@@ -166,7 +169,7 @@ julia> m
     initial iterate:   [-1.177973, ..., -0.535732, 1.304151, 1.194971]
     dimension:         100
     directory:         /Users/daniel/.julia/dev/BlockOpt/Rosenbrock
-    objective formula: $\sum_{i=1}^{N-1} \left[100(x_{i+1}^2 - x_i^2)^2 + (1 - x_i)^2\right]$
+    objective formula: loaded
 ```
 
 Our model `m` is fully constructed. Observe the directory path above, it was
@@ -359,9 +362,27 @@ The normed gradient data at each successful iterate is accessed through `∇f_no
 
 ```julia-repl
 julia> gradtrace(s1, s2)
-
 ```
 ![](../assets/gradtrace_simple_case.png)
 
 
-See: `radiustrace`, `steptrace`, `rhotrace` which have corresponding `!` versions.
+See: `radiustrace`, `steptrace`, `rhotrace` and corresponding `!` versions.
+
+
+## Weave
+
+Building upon the last example, we can skip generating the individual plots
+and weave one Weave.jl trace report.
+
+```julia-repl
+julia> Using Plots
+julia> weave(s1, s2);
+```
+
+The model directory of `s1` now contains a [trace.html report](../assets/trace.html) which can
+be viewed in your browser.
+
+
+[Here](../assets/trace-2.html) is another report comparing the generalized rosenbrock simulations driven
+by the $6$ different sample direction update configurations.
+

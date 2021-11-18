@@ -1,6 +1,6 @@
 # BlockOpt.jl
 
-This application supplements _QN Optimization with Hessian Samples_, an article currently under review. It's purpose is to explore block Quasi-Newton (QN) updates used in the unconstrained minimization of a smooth objective function, $f$. 
+This application supplements _QN Optimization with Hessian Samples_, an article currently under review. It's purpose is to explore block Quasi-Newton (QN) updates used in the unconstrained minimization of a smooth objective function.
 
 ## Documentation Structure
 

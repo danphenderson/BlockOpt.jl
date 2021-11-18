@@ -1,0 +1,43 @@
+---
+ title : `j name(WEAVE_ARGS[begin])`
+ date: `j import Dates; Dates.Date(Dates.now())`
+---
+
+
+
+# Weave BlockOpt Simulation Report
+
+```julia; echo=false
+using Plots, BlockOpt
+
+show.(WEAVE_ARGS);
+``` 
+
+
+```julia; echo=false
+objtrace(WEAVE_ARGS..., dpi=200)
+```
+
+
+```julia; echo=false
+gradtrace(WEAVE_ARGS..., dpi=200)
+```
+
+
+
+```julia; echo=false
+radiustrace(WEAVE_ARGS..., dpi=200)
+```
+
+
+
+```julia; echo=false
+steptrace(WEAVE_ARGS..., dpi=200)
+```
+
+
+
+
+```julia; echo=false
+rhotrace(WEAVE_ARGS..., dpi=200)
+```

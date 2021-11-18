@@ -10,11 +10,13 @@ import ForwardDiff: ForwardDiff, Dual, jacobian
 
 import TRS: trs_small, trs
 
+import Weave
+
 import RecipesBase: RecipesBase, @series, @recipe, @userplot
 
 import Printf: @sprintf, @printf
 
-import Dates: Second, now
+import Dates: Date, Second, now, Minute
 
 export optimize
 
@@ -48,6 +50,10 @@ export trace, Δt, evaluations, trs_timer, trs_counter, ghs_timer, ghs_counter, 
 # See recipes.jl
 export rhotrace, rhotrace!, steptrace, steptrace!, radiustrace, radiustrace!, objtrace,
     objtrace!, gradtrace, gradtrace!
+
+
+# See simulation.jl
+export weave
 
 
 include("util.jl")

@@ -156,7 +156,7 @@ struct BlockOptTrace
             BlockOptProfile(),
             Weaver(weave_level(driver)),
             log_level(driver),
-            open(joinpath(directory(model), "trace.log"), "w+"),  
+            open(joinpath(directory(model), "trace.log"), "w"),  
         )
     end
 end
