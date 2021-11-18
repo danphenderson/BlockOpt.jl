@@ -29,7 +29,7 @@ end
 
 
 function Base.show(io::IO, m::Model)
-    println(io,"  Model: ")
+    println(io,"  Model: $(name(m))")
     println(io, "  -------------------")
     println(io, "    objective:         $(objective(m))")
     println(io, "    gradient:          $(gradient(m))") 
