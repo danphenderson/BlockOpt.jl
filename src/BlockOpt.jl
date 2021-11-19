@@ -7,7 +7,7 @@ import LinearAlgebra:
     diagm, BLAS, Symmetric, mul!, norm, dot, issymmetric, rank, qr, I, pinv, eigvals
 
 
-    import Statistics: mean
+import Statistics: mean
 
 
 import ForwardDiff: ForwardDiff, Dual, jacobian
