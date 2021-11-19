@@ -178,7 +178,7 @@ end
 """
     formula!(m::Model, f)
 
-Assign model `m` an escaped ``\\LaTeX`` string represint `m`'s objective function.
+Assign model `m` an escaped ``\\LaTeX`` string represents `m`'s objective function.
 The formula is used to create visual plots showing a simulation trace of `m`.
 
 ## Example
@@ -186,7 +186,7 @@ The formula is used to create visual plots showing a simulation trace of `m`.
 julia> dot_formila = "\$ f(x) = x⋅x \$"; 
 julia> formula!(m, dot_formila);
 ```
-Here, the euclidean squared distance formula now represent's `m`'s objective formula.
+Here, the euclidean squared distance formula now represents `m`'s objective formula.
 """
 formula!(m::Model, formula) = setfield!(m, :formula, formula)
 
