@@ -387,6 +387,12 @@ The model directory of `s1` now contains a [trace.html report](../assets/trace.h
 be viewed in the browser.
 
 
-[Here](../assets/trace-2.html) is another report comparing the generalized Rosenbrock simulations driven
-by the $6$ different sample direction update configurations.
+[Here](../assets/trace-2.html) is another report comparing the generalized Rosenbrock simulations
+driven by the $6$ different sample direction update configurations.
+
+
+[Here](../assets/trace-3.html) is a block size comparison of using $4$ to $20$
+different sample directions with the `SR1` update and  `S_update=(6.1.d)`. We are
+still using model `m`.
+
 

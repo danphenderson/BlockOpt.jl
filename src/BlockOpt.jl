@@ -2,22 +2,31 @@ module BlockOpt
 
 import Base: copy
 
+
 import LinearAlgebra:
     diagm, BLAS, Symmetric, mul!, norm, dot, issymmetric, rank, qr, I, pinv, eigvals
 
-import Statistics: mean
+
+    import Statistics: mean
+
 
 import ForwardDiff: ForwardDiff, Dual, jacobian
 
+
 import TRS: trs_small, trs
+
 
 import Weave
 
+
 import RecipesBase: RecipesBase, @series, @recipe, @userplot
+
 
 import Printf: @sprintf, @printf
 
+
 import Dates: Date, Second, now, Minute
+
 
 export optimize
 
@@ -48,7 +57,8 @@ export model,
 
 
 # See options.jl
-export samples,
+export DriverOptions,
+    samples,
     Δ_max,
     δ_tol,
     ϵ_tol,

@@ -113,7 +113,7 @@ Generates a Weave.jl report of the simulation args.
 function weave(args::Simulation...)
     println(pwd())
     Weave.weave(
-        "src/lib/trace.jmd";
+        joinpath(dirname(pathof(BlockOpt)), "lib/trace.jmd");
         args = args,
         out_path = mkpath(
             joinpath(directory(model(first(args))), "trace_$(trunc(now(), Minute))"),
