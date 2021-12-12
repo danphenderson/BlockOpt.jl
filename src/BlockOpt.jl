@@ -4,7 +4,18 @@ import Base: copy
 
 
 import LinearAlgebra:
-    diagm, BLAS, Symmetric, mul!, norm, dot, issymmetric, rank, qr, I, pinv, eigvals
+    diagm,
+    BLAS,
+    Symmetric,
+    mul!,
+    norm,
+    dot,
+    issymmetric,
+    rank,
+    qr,
+    I,
+    pinv,
+    eigvals
 
 
 import Statistics: mean
@@ -161,7 +172,7 @@ optimize(model::Model, driver::Driver) = optimize!(Simulation(model, driver))
 
 
 """
-    optimize(model::Model, driver::Driver)
+    optimize(f::Function, ∇f!::Function, x₀::AbstractArray)
 
 
 Attempts to determine the unconstrained minimum of `f` via a first-order method with the initial iterate

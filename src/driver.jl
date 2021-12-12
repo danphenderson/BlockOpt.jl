@@ -133,7 +133,7 @@ Driver
 
 An immutable structure specifying a simulation's preliminary secant update flag (`pflag`),
 the ``Sₖ₊₁`` update formula, and the Quasi-Newton update formula used. If keyword arguments
-aren't provided to a drivers construction, then default `S_update`, `pflag`, and `QN_updates`
+aren't provided to a drivers' construction, then the default `S_update`, `pflag`, and `QN_updates`
 are assigned. A Driver contains a mutable `DriverOptions` instance, which allows for forwarding
 of the options interface to the Driver interface.
 

@@ -15,11 +15,11 @@ Simulation
 
 When calling `optimize(model, driver)` the fallback is `optimize!(s)` where
 simulation `s` is internally constructed. The responsibility of `s` is to orchestrate
-the iteration defined in it's `backend` and make observations to generate the `trace`.
+the iteration defined in its `backend` and make observations to generate the `trace`.
 
-The `backend` defines subroutines for `s`'s memory manipulations for each step in it's
-iteration. Since then backend delegates it's behavior to `s`, we dispatch the backends subroutines
-to `s` while adding additional execution steps to generate the simulations trace.
+The `backend` defines subroutines for `s`'s memory manipulations for each step in its
+iteration. Since then backend delegates its behavior to `s`, we dispatch the backends' 
+subroutines to `s` while adding additional execution steps to generate the simulations trace.
 
 
 

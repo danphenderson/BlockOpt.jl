@@ -26,7 +26,7 @@ end
     objtrace
 
 Provide any number of terminal simulations as arguments and `objtrace` displays
-a plot of each arguments objective function values at each succussful iterate.
+a plot of each arguments' objective function values at each succussful iterate.
 
 To add a simulation to the current `objtrace` plot use `objtrace!`.
 """
@@ -37,7 +37,7 @@ function objtrace end
     gradtrace
 
 Provide any number of terminal simulations as arguments and `gradtrace` displays
-a plot of each arguments normed gradient values at each succussful iterate.
+a plot of each arguments' normed gradient values at each succussful iterate.
 
 To add a simulation to the current `gradtrace` plot use `gradtrace!`.
 """
@@ -48,7 +48,7 @@ function gradtrace end
     radiustrace
 
 Provide any number of terminal simulations as arguments and `radiustrace` displays
-a plot of each arguments trust region subproblem radius values at each succussful iteration.
+a plot of each arguments' trust region subproblem radius values at each succussful iteration.
 
 To add a simulation to the current `radiustrace` plot use `radiustrace!`.
 """
@@ -59,7 +59,7 @@ function radiustrace end
     steptrace
 
 Provide any number of terminal simulations as arguments and `steptrace` displays
-a plot of each arguments step measure at each succussful iteration.
+a plot of each arguments' step measure at each succussful iteration.
 
 To add a simulation to the current `steptrace` plot use `steptrace!`.
 """
@@ -70,7 +70,7 @@ function steptrace end
     rhotrace
 
 Provide any number of terminal simulations as arguments and `rhotrace` displays
-a plot of each arguments ρ ratio at each successful iteration.
+a plot of each arguments' ρ ratio at each successful iteration.
 
 To add a simulation to the current `rhotrace` plot use `rhotrace!`.
 """

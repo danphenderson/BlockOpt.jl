@@ -125,7 +125,7 @@ julia> m = Model("Rosenbrock")
     objective formula: missing
 ```
 
-Above is an empty model which is incrementally loaded.
+Above is an empty model, which is incrementally loaded.
 
 ```julia-repl
 julia> objective!(m, rosen)
