@@ -200,7 +200,6 @@ blas_threads!(threads::Int) = (BLAS_THREADS[] = threads) > 1 && BLAS.set_num_thr
 
 
 function __init__()
-    Pkg.activate()
     blas_threads!(Threads.nthreads())
 end
 
