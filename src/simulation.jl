@@ -5,12 +5,14 @@ A simulation composes the observed trace and the backend solve of Algorithm 7.1.
 A simulation instance is returned from an `optimize` call. 
 """
 struct Simulation
+    model::Model
+    driver::Driver
     trace::BlockOptTrace
     backend::BlockOptBackend
 
     function Simulation(model::Model, driver::Driver)
         # TODO: Handle ill-formed input
-        new(BlockOptTrace(model, driver), BlockOptBackend(model, driver))
+        new(model, driver, BlockOptTrace(model, driver), BlockOptBackend(model, driver))
     end
 end
 

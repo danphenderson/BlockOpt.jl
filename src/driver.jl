@@ -139,7 +139,7 @@ of the options interface to the Driver interface.
 
 See `S_update`, `QN_update`, and `pflag` for more on keyword arguments.
 """
-struct Driver
+mutable struct Driver
     S_update::Function
     QN_update::Function
     pflag::Bool

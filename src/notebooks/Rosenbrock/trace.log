@@ -1,0 +1,246 @@
+2021-12-12T17:41:32 [INFO] 
+"Simulating:"
+  Model: Rosenbrock
+  -------------------
+    objective:         rosen
+    gradient:          ∇rosen!
+    initial iterate:   [0.640843, ..., 0.436067, -0.385382, -0.494696]
+    dimension:         100
+    directory:         /Users/dhenderson/.julia/dev/BlockOpt/src/notebooks/Rosenbrock
+    objective formula: missing
+  Driver:
+  -------------------
+    S_update:  S_update_d
+    QN_update: PSB
+    pflag:     true
+    Options:
+      samples:        2
+      Δ_max:          100.0
+      δ_tol:          1.0e-12
+      ϵ_tol:          1.0e-5
+      max_iterations: 12000
+
+
+
+2021-12-12T17:41:41 [INFO] 
+"Terminating:"
+  Trace:
+  -------------------
+    Weaver:
+      f_vals:   [40659.973622, ..., 0.000000, 0.000000, 0.000000]
+      ∇f_norms: [17511.657823, ..., 0.000574, 0.000102, 0.000004]
+      Δ_vals:   [2.614576, ..., 0.000638, 0.001277, 0.001277]
+      p_norms:  [2.614576, ..., 0.000638, 0.001144, 0.000001]
+      ρ_vals:   [1.115871, ..., 1.000054, 1.000419, 1.007686]
+    Profile:
+      trs_counter: 6524
+      trs_timer:   3.5033397674560547
+      ghs_counter: 5186
+      ghs_timer:   0.48541951179504395
+
+
+2021-12-12T17:41:42 [INFO] 
+"Simulating:"
+  Model: Rosenbrock
+  -------------------
+    objective:         rosen
+    gradient:          ∇rosen!
+    initial iterate:   [0.640843, ..., 0.436067, -0.385382, -0.494696]
+    dimension:         100
+    directory:         /Users/dhenderson/.julia/dev/BlockOpt/src/notebooks/Rosenbrock
+    objective formula: missing
+  Driver:
+  -------------------
+    S_update:  S_update_d
+    QN_update: PSB
+    pflag:     true
+    Options:
+      samples:        4
+      Δ_max:          100.0
+      δ_tol:          1.0e-12
+      ϵ_tol:          1.0e-5
+      max_iterations: 12000
+
+
+
+2021-12-12T17:41:50 [INFO] 
+"Terminating:"
+  Trace:
+  -------------------
+    Weaver:
+      f_vals:   [40659.973622, ..., 0.000000, 0.000000, 0.000000]
+      ∇f_norms: [17511.657823, ..., 0.000276, 0.000023, 0.000000]
+      Δ_vals:   [4.796733, ..., 0.000586, 0.001171, 0.001171]
+      p_norms:  [3.749945, ..., 0.000586, 0.000550, 0.000000]
+      ρ_vals:   [1.201662, ..., 1.000074, 1.000209, 1.002712]
+    Profile:
+      trs_counter: 8320
+      trs_timer:   0.683354377746582
+      ghs_counter: 6702
+      ghs_timer:   0.7049314975738525
+
+
+2021-12-12T17:41:50 [INFO] 
+"Simulating:"
+  Model: Rosenbrock
+  -------------------
+    objective:         rosen
+    gradient:          ∇rosen!
+    initial iterate:   [0.640843, ..., 0.436067, -0.385382, -0.494696]
+    dimension:         100
+    directory:         /Users/dhenderson/.julia/dev/BlockOpt/src/notebooks/Rosenbrock
+    objective formula: missing
+  Driver:
+  -------------------
+    S_update:  S_update_d
+    QN_update: PSB
+    pflag:     true
+    Options:
+      samples:        6
+      Δ_max:          100.0
+      δ_tol:          1.0e-12
+      ϵ_tol:          1.0e-5
+      max_iterations: 12000
+
+
+
+2021-12-12T17:41:59 [INFO] 
+"Terminating:"
+  Trace:
+  -------------------
+    Weaver:
+      f_vals:   [40659.973622, ..., 0.000000, 0.000000, 0.000000]
+      ∇f_norms: [17511.657823, ..., 0.000209, 0.000054, 0.000001]
+      Δ_vals:   [5.102706, ..., 0.000156, 0.000311, 0.000623]
+      p_norms:  [3.703745, ..., 0.000156, 0.000311, 0.000108]
+      ρ_vals:   [1.204828, ..., 1.000009, 1.000068, 1.000043]
+    Profile:
+      trs_counter: 8475
+      trs_timer:   1.1048190593719482
+      ghs_counter: 6787
+      ghs_timer:   0.8007385730743408
+
+
+2021-12-12T17:42:00 [INFO] 
+"Simulating:"
+  Model: Rosenbrock
+  -------------------
+    objective:         rosen
+    gradient:          ∇rosen!
+    initial iterate:   [0.640843, ..., 0.436067, -0.385382, -0.494696]
+    dimension:         100
+    directory:         /Users/dhenderson/.julia/dev/BlockOpt/src/notebooks/Rosenbrock
+    objective formula: missing
+  Driver:
+  -------------------
+    S_update:  S_update_d
+    QN_update: PSB
+    pflag:     true
+    Options:
+      samples:        8
+      Δ_max:          100.0
+      δ_tol:          1.0e-12
+      ϵ_tol:          1.0e-5
+      max_iterations: 12000
+
+
+
+2021-12-12T17:42:17 [INFO] 
+"Terminating:"
+  Trace:
+  -------------------
+    Weaver:
+      f_vals:   [40659.973622, ..., 0.000000, 0.000000, 0.000000]
+      ∇f_norms: [17511.657823, ..., 0.000309, 0.000026, 0.000001]
+      Δ_vals:   [5.322852, ..., 0.001300, 0.002599, 0.002599]
+      p_norms:  [3.714976, ..., 0.001300, 0.000561, 0.000000]
+      ρ_vals:   [1.205361, ..., 1.000252, 1.000257, 1.006176]
+    Profile:
+      trs_counter: 8064
+      trs_timer:   1.5898067951202393
+      ghs_counter: 6457
+      ghs_timer:   7.588680267333984
+
+
+2021-12-12T17:42:18 [INFO] 
+"Simulating:"
+  Model: Rosenbrock
+  -------------------
+    objective:         rosen
+    gradient:          ∇rosen!
+    initial iterate:   [0.640843, ..., 0.436067, -0.385382, -0.494696]
+    dimension:         100
+    directory:         /Users/dhenderson/.julia/dev/BlockOpt/src/notebooks/Rosenbrock
+    objective formula: missing
+  Driver:
+  -------------------
+    S_update:  S_update_d
+    QN_update: PSB
+    pflag:     true
+    Options:
+      samples:        10
+      Δ_max:          100.0
+      δ_tol:          1.0e-12
+      ϵ_tol:          1.0e-5
+      max_iterations: 12000
+
+
+
+2021-12-12T17:42:37 [INFO] 
+"Terminating:"
+  Trace:
+  -------------------
+    Weaver:
+      f_vals:   [40659.973622, ..., 0.000000, 0.000000, 0.000000]
+      ∇f_norms: [17511.657823, ..., 0.000173, 0.000011, 0.000000]
+      Δ_vals:   [5.503446, ..., 0.000168, 0.000336, 0.000672]
+      p_norms:  [3.712043, ..., 0.000168, 0.000336, 0.000011]
+      ρ_vals:   [1.205240, ..., 1.000012, 1.000117, 1.000012]
+    Profile:
+      trs_counter: 8141
+      trs_timer:   2.1925814151763916
+      ghs_counter: 6462
+      ghs_timer:   7.562939882278442
+
+
+2021-12-12T17:42:37 [INFO] 
+"Simulating:"
+  Model: Rosenbrock
+  -------------------
+    objective:         rosen
+    gradient:          ∇rosen!
+    initial iterate:   [0.640843, ..., 0.436067, -0.385382, -0.494696]
+    dimension:         100
+    directory:         /Users/dhenderson/.julia/dev/BlockOpt/src/notebooks/Rosenbrock
+    objective formula: missing
+  Driver:
+  -------------------
+    S_update:  S_update_d
+    QN_update: PSB
+    pflag:     true
+    Options:
+      samples:        12
+      Δ_max:          100.0
+      δ_tol:          1.0e-12
+      ϵ_tol:          1.0e-5
+      max_iterations: 12000
+
+
+
+2021-12-12T17:43:10 [INFO] 
+"Terminating:"
+  Trace:
+  -------------------
+    Weaver:
+      f_vals:   [40659.973622, ..., 0.000000, 0.000000, 0.000000]
+      ∇f_norms: [17511.657823, ..., 0.000244, 0.000015, 0.000000]
+      Δ_vals:   [5.580594, ..., 0.001362, 0.002725, 0.002725]
+      p_norms:  [3.699447, ..., 0.001362, 0.000398, 0.000000]
+      ρ_vals:   [1.205424, ..., 1.000310, 1.000208, 1.004363]
+    Profile:
+      trs_counter: 7764
+      trs_timer:   4.4022791385650635
+      ghs_counter: 6246
+      ghs_timer:   12.24766993522644
+
+

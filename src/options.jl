@@ -98,8 +98,8 @@ to some even natural number. The set value corresponds to ``2w`` in the
 article.
 """
 samples!(o::DriverOptions, s) = begin
-    mod(s, 2) ≡ 0 && s > 0 && setfield!(o, :samples, s)
-    samples(o)
+   mod(s, 2) ≡ 0 && s > 0 ? setfield!(o, :samples, s) : @warn "samples!: input must be an even natural!"  
+   samples(o)
 end
 
 

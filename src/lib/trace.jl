@@ -161,8 +161,12 @@ struct BlockOptTrace
             BlockOptProfile(),
             Weaver(weave_level(driver)),
             log_level(driver),
-            open(joinpath(directory(model), "trace.log"), "w"),
+            open(joinpath(directory(model), "trace.log"), "a"),
         )
+    end
+
+    function BlockOptTrace(args...)
+        new(args...)
     end
 end
 
@@ -215,6 +219,7 @@ Base.getproperty(t::BlockOptTrace, s::Symbol) = @restrict BlockOptTrace
 
 Base.propertynames(t::BlockOptTrace) = ()
 
+Base.copy(t::BlockOptTrace) = BlockOptTrace(model(t), driver(t), profile(t), weaver(t), log_level(t), io(t))
 
 # generates logging methods info!, warn!, debug!, error!
 for level in (:info, :debug, :warn, :error)

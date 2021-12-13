@@ -128,7 +128,7 @@ function rhotrace end
             labels[
                 1,
                 i,
-            ] = "\$ f \\quad \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            ] = "\$ f \\quad \\mathrm{$id}: ~ n=$dim \\quad w=$(Int(two_w/2.0)) \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -187,7 +187,7 @@ end
             labels[
                 1,
                 i,
-            ] = "\$ ||\\nabla f|| ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            ] = "\$ ||\\nabla f|| ~ \\mathrm{$id}: ~ n=$dim \\quad w=$(Int(two_w/2.0)) \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -244,7 +244,7 @@ end
             labels[
                 1,
                 i,
-            ] = "\$ \\Delta_k ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            ] = "\$ \\Delta_k ~ \\mathrm{$id}: ~ n=$dim \\quad w=$(Int(two_w/2.0)) \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -301,7 +301,7 @@ end
             labels[
                 1,
                 i,
-            ] = "\$ ||p_k|| ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            ] = "\$ ||p_k|| ~ \\mathrm{$id}: ~ n=$dim \\quad w=$(Int(two_w/2.0)) \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
@@ -359,7 +359,7 @@ end
             labels[
                 1,
                 i,
-            ] = "\$ \\rho ~ \\mathrm{$id}: ~ n=$dim \\quad 2w=$two_w \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
+            ] = "\$ \\rho ~ \\mathrm{$id}: ~ n=$dim \\quad w=$(Int(two_w/2.0)) \\quad (\\mathrm{$s_update}) \\quad \\mathrm{$qn_update} \$"
 
             push!(x, v)
         end
