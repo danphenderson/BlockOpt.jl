@@ -21,6 +21,9 @@ import LinearAlgebra:
 import Statistics: mean
 
 
+import Pkg: activate
+
+
 import ForwardDiff: ForwardDiff, Dual, jacobian
 
 
@@ -189,13 +192,16 @@ include("lib/show.jl")
 
 include("lib/recipes.jl")
 
+
 const BLAS_THREADS = Ref{Int}(1)
+
 
 blas_threads!(threads::Int) = (BLAS_THREADS[] = threads) > 1 && BLAS.set_num_threads(threads)
 
 
 function __init__()
-    blas_threads!(Threads.nthreads());
+    Pkg.activate()
+    blas_threads!(Threads.nthreads())
 end
 
 end # module
