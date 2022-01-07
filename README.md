@@ -1,5 +1,7 @@
 # BlockOpt.jl
 
+Supplemental Software to QN OPTIMIZATION WITH HESSIAN SAMPLES [article](QN OPTIMIZATION WITH HESSIAN SAMPLES).
+
 | **Documentation** | 
 |:-----------------:|
 | [![DOI](https://zenodo.org/badge/409367075.svg)](https://zenodo.org/badge/latestdoi/409367075) |
