@@ -2,7 +2,7 @@
 
 Supplemental Software to QN Optimization with Hessian Samples [article](http://mathgeek.us/research/papers/qn-hessian-sample.pdf).
 
-| [![DOI](https://zenodo.org/badge/409367075.svg)](https://zenodo.org/badge/latestdoi/409367075) | 
+| [![DOI](https://zenodo.org/badge/409367075.svg)](https://zenodo.org/badge/latestdoi/409367075)  
 | [![][docs-dev-img]](https://danphenderson.github.io/BlockOpt.jl/dev/) | 
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
