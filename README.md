@@ -1,5 +1,4 @@
 # BlockOpt.jl
-----------
 
 | **Documentation** | 
 |:-----------------:|
