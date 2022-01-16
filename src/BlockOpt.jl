@@ -4,18 +4,7 @@ import Base: copy
 
 
 import LinearAlgebra:
-    diagm,
-    BLAS,
-    Symmetric,
-    mul!,
-    norm,
-    dot,
-    issymmetric,
-    rank,
-    qr,
-    I,
-    pinv,
-    eigvals
+    diagm, BLAS, Symmetric, mul!, norm, dot, issymmetric, rank, qr, I, pinv, eigvals
 
 
 import Statistics: mean
@@ -196,7 +185,8 @@ include("lib/recipes.jl")
 const BLAS_THREADS = Ref{Int}(1)
 
 
-blas_threads!(threads::Int) = (BLAS_THREADS[] = threads) > 1 && BLAS.set_num_threads(threads)
+blas_threads!(threads::Int) =
+    (BLAS_THREADS[] = threads) > 1 && BLAS.set_num_threads(threads)
 
 
 function __init__()

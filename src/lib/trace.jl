@@ -219,7 +219,8 @@ Base.getproperty(t::BlockOptTrace, s::Symbol) = @restrict BlockOptTrace
 
 Base.propertynames(t::BlockOptTrace) = ()
 
-Base.copy(t::BlockOptTrace) = BlockOptTrace(model(t), driver(t), profile(t), weaver(t), log_level(t), io(t))
+Base.copy(t::BlockOptTrace) =
+    BlockOptTrace(model(t), driver(t), profile(t), weaver(t), log_level(t), io(t))
 
 # generates logging methods info!, warn!, debug!, error!
 for level in (:info, :debug, :warn, :error)
