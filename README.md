@@ -1,6 +1,6 @@
 # BlockOpt.jl
 
-Supplemental Software to QN Optimization with Hessian Samples [article](http://mathgeek.us/research/papers/qn-hessian-sample.pdf).
+Supplemental Software to QN Optimization with Hessian Samples [article](https://arxiv.org/abs/2201.02608).
 
 [![DOI](https://zenodo.org/badge/409367075.svg)](https://zenodo.org/badge/latestdoi/409367075) [![][docs-dev-img]](https://danphenderson.github.io/BlockOpt.jl/dev/)
 
@@ -8,7 +8,7 @@ Supplemental Software to QN Optimization with Hessian Samples [article](http://m
 
 
 See the [documentation](https://danphenderson.github.io/BlockOpt.jl/dev/) to learn more 
-about the `BlockOpt` package.
+about the `BlockOpt` software.
 
 ## Installation
 The BlockOpt package installs as
